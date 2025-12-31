@@ -1,0 +1,107 @@
+# ModernJS Framework
+
+A lightweight, dependency-free* JavaScript framework built from scratch to demonstrate modern web development concepts using native Web APIs.
+
+*Only `vite` is used for the dev server and bundling. The runtime framework has zero dependencies.
+
+## 🚀 Features
+
+- **Native Web Components**: Built on top of `HTMLElement` and Custom Elements v1.
+- **Reactive State**: Uses `Proxy` for transparent state management and DOM updates.
+- **Dependency Injection**: Built-in DI container for managing services and singletons.
+- **Virtual DOM & Diffing**: Efficient DOM updates with a custom rendering engine.
+- **Template Engine**: Custom syntax supporting `@if`, `@for`, and `{{ interpolation }}`.
+- **State Management**:
+  - Component-level local state.
+  - Global services with `subscribe` pattern.
+  - Persistence examples (SessionStorage, IndexedDB).
+
+## 🛠️ Installation
+
+```bash
+npm install
+```
+
+## 🚦 Running the App
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Build for production:
+
+```bash
+npm run build
+```
+
+## 📂 Project Structure
+
+```
+app/
+├── components/     # UI Components
+├── core/          # Framework Internals
+│   ├── component.js # Base Component class
+│   ├── di.js       # Dependency Injection
+│   ├── renderer.js # DOM Diffing Engine
+│   ├── service.js  # Base Service class
+│   └── template.js # Template Compiler
+├── services/      # Business Logic & State
+└── utils/         # Utilities (e.g., Database)
+```
+
+## 🧩 Core Concepts
+
+### Components
+
+Components extend the `Component` class and use a declarative configuration:
+
+```javascript
+import { Component } from '../core/component.js';
+
+export const MyComponent = Component.create({
+    selector: 'my-component',
+    state: { count: 0 },
+    template() {
+        return `<button (click)="increment">Count: {{ this.state.count }}</button>`;
+    },
+    increment() {
+        this.state.count++;
+    }
+});
+```
+
+### Services & DI
+
+Services manage global state and business logic. They are injected into components automatically.
+
+```javascript
+// Define a service
+export class UserService extends Service { ... }
+
+// Inject into component
+export const UserProfile = Component.create({
+    inject: { userService: UserService },
+    // ...
+});
+```
+
+### Templates
+
+The template engine supports control flow directives:
+
+- **Interpolation**: `{{ this.state.value }}`
+- **Conditionals**: `@if (condition) { ... } @else { ... }`
+- **Loops**: `@for (let item of list) { ... }`
+- **Event Binding**: `(click)="methodName"`
+- **Property Binding**: `[prop]="value"`
+
+## 📝 Examples Included
+
+1.  **Global Counter**: Demonstrates `sessionStorage` persistence and cross-component state sharing.
+2.  **Todo List**: Demonstrates `IndexedDB` persistence, list rendering, and complex state updates.
+
+---
+
+Built with ❤️ using vanilla JavaScript.

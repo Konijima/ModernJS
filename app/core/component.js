@@ -1,0 +1,236 @@
+import { resolve } from './di.js';
+import { render } from './renderer.js';
+import { compileTemplate } from './template.js';
+
+const log = (category, message, ...args) => {
+    console.log(
+        `%c[Framework] %c${category}%c ${message}`,
+        'background: #2563eb; color: white; padding: 2px 6px; border-radius: 4px; font-weight: bold;',
+        'color: #2563eb; font-weight: bold; margin-left: 4px;',
+        'color: inherit;',
+        ...args
+    );
+};
+
+/**
+ * Base Component class using Web Components and Proxy for reactivity.
+ * Provides a lightweight framework for building reactive UI components.
+ * @extends HTMLElement
+ */
+export class Component extends HTMLElement {
+    /**
+     * Create and register a component with a simple configuration object.
+     * This is a factory method that generates a class extending Component.
+     * 
+     * @param {object} config - The component configuration
+     * @param {string} config.selector - The HTML tag name for the component
+     * @param {string} [config.styles] - CSS styles for the component
+     * @param {object|Array} [config.inject] - Services to inject
+     * @param {object} [config.state] - Initial state object
+     * @param {Function} [config.connect] - Lifecycle hook for connecting to services
+     * @param {Function|string} [config.template] - Template function or string
+     * @returns {typeof Component} The generated component class
+     */
+    static create(config) {
+        const Base = this;
+        log('Class', `Created ${config.selector}`);
+        
+        class GeneratedComponent extends Base {
+            static selector = config.selector;
+            static styles = config.styles;
+            static inject = config.inject;
+            static state = config.state;
+            static connect = config.connect;
+            
+            static template = typeof config.template === 'string' 
+                ? () => config.template 
+                : config.template;
+        }
+
+        const reserved = ['selector', 'styles', 'inject', 'state', 'connect', 'template'];
+        
+        const descriptors = Object.getOwnPropertyDescriptors(config);
+        Object.keys(descriptors).forEach(key => {
+            if (!reserved.includes(key)) {
+                Object.defineProperty(GeneratedComponent.prototype, key, descriptors[key]);
+            }
+        });
+
+        GeneratedComponent.define();
+        return GeneratedComponent;
+    }
+
+    /**
+     * Define and register the component with the Custom Elements Registry.
+     * 
+     * @param {string|object} [config] - Selector string or config object. If omitted, uses static properties.
+     */
+    static define(config) {
+        const selector = this.selector || (config && config.selector);
+        log('Registry', `Defined ${selector}`);
+        
+        if (!config) {
+            if (this.template) {
+                this.prototype.render = this.template;
+            } else {
+                console.warn(`[Framework] ⚠️ No template found for ${selector}`);
+            }
+            if (this.selector) customElements.define(this.selector, this);
+            return;
+        }
+
+        if (typeof config === 'string') {
+            customElements.define(config, this);
+        } else {
+            if (config.styles) this.styles = config.styles;
+            if (config.inject) this.inject = config.inject;
+            if (config.template) this.prototype.render = config.template;
+            
+            if (config.selector) {
+                this.selector = config.selector;
+                customElements.define(config.selector, this);
+            }
+        }
+    }
+
+    /**
+     * Initialize the component.
+     * Sets up Shadow DOM, dependency injection, and reactive state.
+     */
+    constructor() {
+        super();
+        this.attachShadow({ mode: 'open' });
+        this._subscriptions = [];
+        this._refs = {}; // Registry for object references in templates
+        
+        // Dependency Injection (Support both static inject and manual inject)
+        const injections = this.constructor.inject || {};
+        
+        if (Array.isArray(injections)) {
+            injections.forEach(ServiceClass => {
+                const name = ServiceClass.name.charAt(0).toLowerCase() + ServiceClass.name.slice(1);
+                this[name] = resolve(ServiceClass);
+            });
+        } else {
+            Object.entries(injections).forEach(([propName, ServiceClass]) => {
+                this[propName] = resolve(ServiceClass);
+            });
+        }
+
+        // Initialize reactive state
+        let initialState = this.constructor.state || this.initialState || {};
+        
+        // Ensure state is a unique copy for this instance
+        if (initialState && typeof initialState === 'object') {
+            try {
+                initialState = JSON.parse(JSON.stringify(initialState));
+            } catch (e) {
+                initialState = { ...initialState };
+            }
+        }
+
+        this.state = new Proxy(initialState, {
+            set: (target, prop, value) => {
+                if (target[prop] !== value) {
+                    log('State', `Changed ${this.tagName}.${String(prop)}`, value);
+                    target[prop] = value;
+                    this.update();
+                }
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Lifecycle hook called when the component is added to the DOM.
+     * Triggers initial render and calls onInit hook.
+     */
+    connectedCallback() {
+        log('Lifecycle', `Connected ${this.tagName}`);
+        
+        // Call onInit hook if defined
+        if (this.onInit) {
+            this.onInit();
+        }
+        
+        // Call static connect if defined (for create() syntax)
+        if (this.constructor.connect) {
+            this.constructor.connect.call(this);
+        }
+
+        this.update();
+    }
+
+    /**
+     * Lifecycle hook called when the component is removed from the DOM.
+     * Cleans up subscriptions and calls onDestroy hook.
+     */
+    disconnectedCallback() {
+        this._subscriptions.forEach(unsubscribe => unsubscribe());
+        if (this.onDestroy) {
+            this.onDestroy();
+        }
+    }
+
+    /**
+     * Connect a service state to the component state.
+     * 
+     * @param {Service} service - The service to subscribe to
+     * @param {Function} mapFn - Function to map service state to component state
+     */
+    connect(service, mapFn) {
+        const unsubscribe = service.subscribe(state => {
+            const newState = mapFn(state);
+            Object.assign(this.state, newState);
+        });
+        this._subscriptions.push(unsubscribe);
+    }
+
+    /**
+     * Store a value reference for use in templates.
+     * Useful for passing objects to child components via attributes.
+     * 
+     * @param {any} value - The value to store
+     * @returns {string} A reference key string
+     */
+    bind(value) {
+        const key = `__ref_${Math.random().toString(36).substr(2, 9)}`;
+        this._refs[key] = value;
+        return key;
+    }
+
+    /**
+     * Re-render the component.
+     * Uses DOM diffing to update the Shadow DOM efficiently.
+     */
+    update() {
+        if (!this.render) {
+            console.warn(`[Framework] ⚠️ No render method found for ${this.tagName}`);
+            return;
+        }
+
+        log('Render', `Updated ${this.tagName}`);
+        const templateResult = this.render();
+        let newDom;
+
+        if (typeof templateResult === 'string') {
+            // Handle string template with directives
+            const html = compileTemplate(templateResult, this);
+            const temp = document.createElement('div');
+            temp.innerHTML = html;
+            newDom = temp;
+        } else {
+            // Handle direct DOM nodes (from h())
+            newDom = document.createElement('div');
+            newDom.appendChild(templateResult);
+        }
+        
+        if (this.constructor.styles) {
+            const style = document.createElement('style');
+            style.textContent = this.constructor.styles;
+            newDom.insertBefore(style, newDom.firstChild);
+        }
+
+        render(this.shadowRoot, newDom, this);
+    }
+}
