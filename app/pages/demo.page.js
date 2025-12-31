@@ -1,5 +1,5 @@
 import { Component } from '../core/component/component.js';
-import { UpperCasePipe, DatePipe } from '../core/pipes/common.pipes.js';
+import { UpperCasePipe, LowerCasePipe, DatePipe, CurrencyPipe } from '../core/pipes/common.pipes.js';
 import { ReversePipe } from '../pipes/reverse.pipe.js';
 import { TranslatePipe } from '../pipes/translate.pipe.js';
 import { ModalService } from '../services/modal.service.js';
@@ -13,7 +13,9 @@ export const DemoPage = Component.create({
     },
     pipes: {
         uppercase: UpperCasePipe,
+        lowercase: LowerCasePipe,
         date: DatePipe,
+        currency: CurrencyPipe,
         reverse: ReversePipe,
         translate: TranslatePipe
     },
@@ -164,8 +166,17 @@ export const DemoPage = Component.create({
                     <br><br>
                     <button class="btn-primary" (click)="showDateAlert">Show Modal Alert</button>
                 </p>
+            <div class="demo-section">
+                <h3>Common Pipes</h3>
+                <div style="text-align: left; display: inline-block;">
+                    <p><strong>Uppercase:</strong> {{ 'hello world' | uppercase }}</p>
+                    <p><strong>Lowercase:</strong> {{ 'HELLO WORLD' | lowercase }}</p>
+                    <p><strong>Currency:</strong> {{ 1234.56 | currency:'USD' }}</p>
+                </div>
             </div>
 
+            <div class="demo-section">
+                <h3>Custom Pipe (Reverse)</h3>
             <div class="demo-section">
                 <h3>Custom Pipe (Reverse)</h3>
                 <p>Original: "reverse pipe"</p>
