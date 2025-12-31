@@ -1,5 +1,7 @@
 # ModernJS Framework
 
+[https://github.com/Konijima/ModernJS](https://github.com/Konijima/ModernJS)
+
 A lightweight, dependency-free* JavaScript framework built from scratch to demonstrate modern web development concepts using native Web APIs.
 
 *Only `vite` is used for the dev server and bundling. The runtime framework has zero dependencies.

@@ -44,13 +44,27 @@ export const App = Component.create({
             padding-top: 1rem;
         }
 
-        .app-title {
+                .app-title {
             font-size: 3rem;
             font-weight: 800;
             color: #111827;
-            margin: 0;
-            letter-spacing: -0.025em;
-            line-height: 1;
+        }
+
+        .app-footer {
+            margin-top: 3rem;
+            text-align: center;
+            padding: 1rem;
+            border-top: 1px solid #e5e7eb;
+            color: #6b7280;
+        }
+
+        .app-footer a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+
+        .app-footer a:hover {
+            text-decoration: underline;
         }
         
         .highlight {
@@ -145,6 +159,10 @@ export const App = Component.create({
                         <todo-list></todo-list>
                     </section>
                 </main>
+
+                <footer class="app-footer">
+                    <p>View source on <a href="https://github.com/Konijima/ModernJS" target="_blank">GitHub</a></p>
+                </footer>
             </div>
         `;
     },

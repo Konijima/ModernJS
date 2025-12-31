@@ -2,6 +2,10 @@
   "name": "modernjs",
   "version": "1.0.0",
   "description": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Konijima/ModernJS"
+  },
   "main": "index.js",
   "scripts": {
     "dev": "vite",
