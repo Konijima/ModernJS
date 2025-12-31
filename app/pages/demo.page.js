@@ -166,6 +166,8 @@ export const DemoPage = Component.create({
                     <br><br>
                     <button class="btn-primary" (click)="showDateAlert">Show Modal Alert</button>
                 </p>
+            </div>
+
             <div class="demo-section">
                 <h3>Common Pipes</h3>
                 <div style="text-align: left; display: inline-block;">
@@ -175,8 +177,6 @@ export const DemoPage = Component.create({
                 </div>
             </div>
 
-            <div class="demo-section">
-                <h3>Custom Pipe (Reverse)</h3>
             <div class="demo-section">
                 <h3>Custom Pipe (Reverse)</h3>
                 <p>Original: "reverse pipe"</p>
