@@ -38,7 +38,8 @@ export function compileTemplate(template, context) {
             code += '}\n';
         } else if (token.startsWith('{{')) {
             // Interpolation: remove {{ and }} and add to code
-            const expr = token.slice(2, -2);
+            const content = token.slice(2, -2);
+            const expr = parsePipes(content);
             code += `__out += (${expr});\n`;
         }
         
@@ -61,4 +62,36 @@ export function compileTemplate(template, context) {
         console.debug("Generated Code:", code);
         return `<div class="error">Template Error: ${e.message}</div>`;
     }
+}
+
+/**
+ * Parses pipe syntax in expressions.
+ * Example: "value | uppercase" -> "this._pipes['uppercase'].transform(value)"
+ * @param {string} expression 
+ * @returns {string} Transformed expression
+ */
+function parsePipes(expression) {
+    // Simple pipe parser: splits by | that are not part of ||
+    // Note: This is a basic implementation and might fail on complex expressions containing strings with |
+    const parts = expression.split(/(?<!\|)\|(?!\|)/);
+    
+    if (parts.length === 1) return expression;
+
+    let result = parts[0].trim();
+    
+    for (let i = 1; i < parts.length; i++) {
+        const pipePart = parts[i].trim();
+        if (!pipePart) continue;
+        
+        // Parse pipe name and args: pipeName : arg1 : arg2
+        // Note: Simple split by : might break on object literals or ternary operators
+        const [name, ...args] = pipePart.split(':').map(s => s.trim());
+        
+        const argsStr = args.length > 0 ? `, ${args.join(', ')}` : '';
+        
+        // Generate code to transform value
+        result = `(this._pipes && this._pipes['${name}'] ? this._pipes['${name}'].transform(${result}${argsStr}) : ${result})`;
+    }
+    
+    return result;
 }

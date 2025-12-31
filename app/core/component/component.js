@@ -42,13 +42,14 @@ export class Component extends HTMLElement {
             static state = config.state;
             static connect = config.connect;
             static animations = config.animations;
+            static pipes = config.pipes;
             
             static template = typeof config.template === 'string' 
                 ? () => config.template 
                 : config.template;
         }
 
-        const reserved = ['selector', 'styles', 'inject', 'state', 'connect', 'template', 'animations'];
+        const reserved = ['selector', 'styles', 'inject', 'state', 'connect', 'template', 'animations', 'pipes'];
         
         const descriptors = Object.getOwnPropertyDescriptors(config);
         Object.keys(descriptors).forEach(key => {
@@ -86,6 +87,7 @@ export class Component extends HTMLElement {
             if (config.styles) this.styles = config.styles;
             if (config.inject) this.inject = config.inject;
             if (config.animations) this.animations = config.animations;
+            if (config.pipes) this.pipes = config.pipes;
             if (config.template) this.prototype.render = config.template;
             
             if (config.selector) {
@@ -118,6 +120,13 @@ export class Component extends HTMLElement {
                 this[propName] = resolve(ServiceClass);
             });
         }
+
+        // Initialize pipes
+        this._pipes = {};
+        const pipes = this.constructor.pipes || {};
+        Object.entries(pipes).forEach(([name, PipeClass]) => {
+            this._pipes[name] = new PipeClass();
+        });
 
         // Initialize reactive state
         let initialState = this.constructor.state || this.initialState || {};

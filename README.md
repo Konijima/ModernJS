@@ -146,3 +146,26 @@ export const MyPage = Component.create({
     template: `<div animate="fade-in">...</div>`
 });
 ```
+
+### Pipes
+
+Transform values in your templates using pipes. The framework comes with built-in pipes (`uppercase`, `lowercase`, `date`, `currency`) and supports custom pipes.
+
+1. **Register Pipes in Component:**
+```javascript
+import { UpperCasePipe, DatePipe } from '../core/pipes/common.pipes.js';
+
+export const MyComponent = Component.create({
+    pipes: {
+        uppercase: UpperCasePipe,
+        date: DatePipe
+    },
+    // ...
+});
+```
+
+2. **Use in Template:**
+```html
+<p>Hello {{ 'world' | uppercase }}</p>
+<p>Date: {{ new Date() | date:'full' }}</p>
+```
