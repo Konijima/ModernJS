@@ -1,6 +1,7 @@
 import { Component } from './core/component/component.js';
 import { Router } from './core/router/router.js';
 import './core/router/router-outlet.component.js';
+import './components/modal.component.js';
 import { HomePage } from './pages/home.page.js';
 import { TodoPage } from './pages/todo.page.js';
 import { CounterPage } from './pages/counter.page.js';
@@ -185,6 +186,8 @@ export const App = Component.create({
                 <main>
                     <router-outlet></router-outlet>
                 </main>
+
+                <app-modal></app-modal>
 
                 <footer class="app-footer">
                     <p>View source on <a href="https://github.com/Konijima/ModernJS" target="_blank">GitHub</a></p>

@@ -1,8 +1,12 @@
 import { Component } from '../core/component/component.js';
 import { UpperCasePipe, DatePipe } from '../core/pipes/common.pipes.js';
+import { ModalService } from '../services/modal.service.js';
 
 export const HomePage = Component.create({
     selector: 'home-page',
+    inject: {
+        modalService: ModalService
+    },
     pipes: {
         uppercase: UpperCasePipe,
         date: DatePipe
@@ -19,6 +23,30 @@ export const HomePage = Component.create({
         if (this.timer) {
             clearInterval(this.timer);
         }
+    },
+    showDateAlert() {
+        const datePipe = this.getPipe('date');
+        const formatted = datePipe.transform(new Date(), 'full');
+        
+        this.modalService.open({
+            title: 'Current Date',
+            content: `The formatted date is: ${formatted}`,
+            actions: [
+                { 
+                    label: 'Awesome!', 
+                    type: 'primary', 
+                    onClick: () => {
+                        console.log('User clicked Awesome');
+                        this.modalService.close();
+                    }
+                },
+                {
+                    label: 'Close',
+                    type: 'secondary',
+                    onClick: () => this.modalService.close()
+                }
+            ]
+        });
     },
     animations: {
         'fade-in': {
@@ -80,6 +108,24 @@ export const HomePage = Component.create({
             align-items: center;
             gap: 0.5rem;
         }
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            margin-left: 10px;
+        }
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
     `,
     template: `
         <div animate="fade-in">
@@ -90,6 +136,7 @@ export const HomePage = Component.create({
             </p>
             <p style="margin-top: 1rem; font-size: 0.9rem; color: #6b7280;">
                 Current Date: {{ this.state.currentDate | date:'full' }}
+                <button class="btn-primary" (click)="showDateAlert">Show Alert</button>
             </p>
 
             <div class="features">

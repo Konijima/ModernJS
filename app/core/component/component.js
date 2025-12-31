@@ -198,6 +198,15 @@ export class Component extends HTMLElement {
     }
 
     /**
+     * Retrieve a registered pipe instance programmatically.
+     * @param {string} name - The name of the pipe (e.g., 'date')
+     * @returns {Pipe} The pipe instance
+     */
+    getPipe(name) {
+        return this._pipes && this._pipes[name];
+    }
+
+    /**
      * Store a value reference for use in templates.
      * Useful for passing objects to child components via attributes.
      * 

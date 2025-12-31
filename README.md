@@ -50,6 +50,7 @@ app/
 │   ├── animations/ # Animation Manager
 │   ├── component/  # Component & Renderer
 │   ├── di/         # Dependency Injection
+│   ├── pipes/      # Pipe System
 │   ├── router/     # Routing System
 │   └── services/   # Base Services
 ├── services/       # Business Logic & State
@@ -168,4 +169,24 @@ export const MyComponent = Component.create({
 ```html
 <p>Hello {{ 'world' | uppercase }}</p>
 <p>Date: {{ new Date() | date:'full' }}</p>
+```
+
+3. **Use Programmatically:**
+```javascript
+const datePipe = this.getPipe('date');
+const formatted = datePipe.transform(new Date(), 'full');
+```
+
+### Modal System
+
+A global modal service is available to show dialogs from anywhere in the app.
+
+```javascript
+this.modalService.open({
+    title: 'Hello',
+    content: 'This is a modal',
+    actions: [
+        { label: 'Close', onClick: () => this.modalService.close(), type: 'primary' }
+    ]
+});
 ```
