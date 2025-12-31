@@ -22,10 +22,17 @@ export const CounterPage = Component.create({
             max-width: 600px;
             margin: 0 auto;
             background: white;
-            padding: 2rem;
+            padding: 1.5rem;
             border-radius: 12px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
+
+        @media (min-width: 768px) {
+            .page-container {
+                padding: 2rem;
+            }
+        }
+
         h2 {
             text-align: center;
             color: #374151;

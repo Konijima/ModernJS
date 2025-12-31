@@ -34,8 +34,15 @@ export const HomePage = Component.create({
         :host {
             display: block;
             text-align: center;
-            padding: 2rem;
+            padding: 1rem;
         }
+
+        @media (min-width: 768px) {
+            :host {
+                padding: 2rem;
+            }
+        }
+
         h2 {
             color: #1f2937;
             font-size: 2rem;

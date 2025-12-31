@@ -104,7 +104,13 @@ export const App = Component.create({
         .app-container {
             max-width: 1000px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .app-container {
+                padding: 2rem;
+            }
         }
 
         .app-header {
@@ -164,8 +170,15 @@ export const App = Component.create({
         .nav-links {
             display: flex;
             justify-content: center;
-            gap: 1rem;
+            gap: 0.5rem;
             margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        @media (min-width: 768px) {
+            .nav-links {
+                gap: 1rem;
+            }
         }
 
         .nav-links a {

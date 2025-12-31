@@ -83,8 +83,15 @@ export const DemoPage = Component.create({
         :host {
             display: block;
             text-align: center;
-            padding: 2rem;
+            padding: 1rem;
         }
+
+        @media (min-width: 768px) {
+            :host {
+                padding: 2rem;
+            }
+        }
+
         h2 {
             color: #1f2937;
             font-size: 2rem;
@@ -99,13 +106,21 @@ export const DemoPage = Component.create({
         }
         .demo-section {
             background: white;
-            padding: 2rem;
+            padding: 1.5rem;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             border: 1px solid #e5e7eb;
-            margin: 2rem auto;
+            margin: 1.5rem auto;
             max-width: 600px;
         }
+
+        @media (min-width: 768px) {
+            .demo-section {
+                padding: 2rem;
+                margin: 2rem auto;
+            }
+        }
+
         .btn-primary {
             background: #2563eb;
             color: white;
