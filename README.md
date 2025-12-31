@@ -11,6 +11,8 @@ A lightweight, dependency-free* JavaScript framework built from scratch to demon
 - **Native Web Components**: Built on top of `HTMLElement` and Custom Elements v1.
 - **Reactive State**: Uses `Proxy` for transparent state management and DOM updates.
 - **Dependency Injection**: Built-in DI container for managing services and singletons.
+- **Client-Side Routing**: Angular-inspired routing with `Router`, `RouterOutlet`, and lazy loading support.
+- **Animations**: Native Web Animations API integration with `:enter` and `:leave` triggers.
 - **Virtual DOM & Diffing**: Efficient DOM updates with a custom rendering engine.
 - **Template Engine**: Custom syntax supporting `@if`, `@for`, and `{{ interpolation }}`.
 - **State Management**:
@@ -43,14 +45,15 @@ npm run build
 ```
 app/
 ├── components/     # UI Components
-├── core/          # Framework Internals
-│   ├── component.js # Base Component class
-│   ├── di.js       # Dependency Injection
-│   ├── renderer.js # DOM Diffing Engine
-│   ├── service.js  # Base Service class
-│   └── template.js # Template Compiler
-├── services/      # Business Logic & State
-└── utils/         # Utilities (e.g., Database)
+├── pages/          # Page Components (Route Views)
+├── core/           # Framework Internals
+│   ├── animations/ # Animation Manager
+│   ├── component/  # Component & Renderer
+│   ├── di/         # Dependency Injection
+│   ├── router/     # Routing System
+│   └── services/   # Base Services
+├── services/       # Business Logic & State
+└── utils/          # Utilities (e.g., Database)
 ```
 
 ## 🧩 Core Concepts
@@ -107,3 +110,39 @@ The template engine supports control flow directives:
 ---
 
 Built with ❤️ using vanilla JavaScript.
+
+### Routing
+
+The framework includes a robust routing system. Define routes in your main component:
+
+```javascript
+this.router.register([
+    { 
+        path: '/', 
+        component: HomePage,
+        data: { title: 'Home' } // Meta tags support
+    },
+    { path: '/todo', component: TodoPage },
+    { path: '**', component: HomePage } // Wildcard
+]);
+```
+
+Use `<router-outlet>` to display the matched component and `this.router.navigate('/path')` to navigate.
+
+### Animations
+
+Add animations to your components using the Web Animations API syntax:
+
+```javascript
+export const MyPage = Component.create({
+    animations: {
+        'fade-in': {
+            ':enter': {
+                keyframes: [{ opacity: 0 }, { opacity: 1 }],
+                options: { duration: 300 }
+            }
+        }
+    },
+    template: `<div animate="fade-in">...</div>`
+});
+```
