@@ -21,6 +21,7 @@
 - **Reactive State**: Uses `Proxy` for transparent state management and DOM updates.
 - **Dependency Injection**: Built-in DI container for managing services and singletons.
 - **Client-Side Routing**: Angular-inspired routing with `Router`, `RouterOutlet`, and lazy loading support.
+- **Internationalization (i18n)**: Built-in support for multi-language applications with `I18nService` and `TranslatePipe`.
 - **Animations**: Native Web Animations API integration with `:enter` and `:leave` triggers.
 - **Virtual DOM & Diffing**: Efficient DOM updates with a custom rendering engine.
 - **Template Engine**: Custom syntax supporting `@if`, `@for`, and `{{ interpolation }}`.
@@ -116,7 +117,7 @@ The template engine supports control flow directives:
 
 1.  **Global Counter**: Demonstrates `sessionStorage` persistence and cross-component state sharing.
 2.  **Todo List**: Demonstrates `IndexedDB` persistence, list rendering, and complex state updates.
-3.  **Feature Demo**: Showcases the Pipe system (including custom pipes) and the Modal service.
+3.  **Feature Demo**: Showcases the Pipe system, Modal service, and Internationalization (i18n).
 
 ---
 
@@ -185,6 +186,26 @@ export const MyComponent = Component.create({
 ```javascript
 const datePipe = this.getPipe('date');
 const formatted = datePipe.transform(new Date(), 'full');
+```
+
+### Internationalization (i18n)
+
+The framework provides a simple yet powerful i18n system using a service and a pipe.
+
+1. **Define Translations:**
+```javascript
+// en.js
+export const en = { 'HELLO': 'Hello World' };
+```
+
+2. **Use in Template:**
+```html
+<h1>{{ 'HELLO' | translate }}</h1>
+```
+
+3. **Switch Language:**
+```javascript
+this.i18nService.setLocale('fr');
 ```
 
 
