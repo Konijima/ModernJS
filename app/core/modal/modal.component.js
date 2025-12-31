@@ -1,5 +1,5 @@
-import { Component } from '../core/component/component.js';
-import { ModalService } from '../services/modal.service.js';
+import { Component } from '../component/component.js';
+import { ModalService } from './modal.service.js';
 
 export const Modal = Component.create({
     selector: 'app-modal',

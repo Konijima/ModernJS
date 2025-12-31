@@ -1,5 +1,5 @@
-import { Pipe } from '../core/pipes/pipe.js';
-import { resolve } from '../core/di/di.js';
+import { Pipe } from './pipe.js';
+import { resolve } from '../di/di.js';
 import { I18nService } from '../services/i18n.service.js';
 
 export class TranslatePipe extends Pipe {

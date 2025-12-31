@@ -1,6 +1,6 @@
-import { Service } from '../core/services/service.js';
-import { en } from '../i18n/en.js';
-import { fr } from '../i18n/fr.js';
+import { Service } from './service.js';
+import { en } from '../../i18n/en.js';
+import { fr } from '../../i18n/fr.js';
 
 export class I18nService extends Service {
     constructor() {

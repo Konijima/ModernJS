@@ -1,4 +1,4 @@
-import { Service } from '../core/services/service.js';
+import { Service } from '../services/service.js';
 
 export class ModalService extends Service {
     constructor() {

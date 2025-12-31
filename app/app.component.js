@@ -1,7 +1,7 @@
 import { Component } from './core/component/component.js';
 import { Router } from './core/router/router.js';
 import './core/router/router-outlet.component.js';
-import './components/modal.component.js';
+import './core/modal/modal.component.js';
 import { HomePage } from './pages/home.page.js';
 import { DemoPage } from './pages/demo.page.js';
 import { TodoPage } from './pages/todo.page.js';

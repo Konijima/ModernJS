@@ -1,9 +1,9 @@
 import { Component } from '../core/component/component.js';
 import { UpperCasePipe, LowerCasePipe, DatePipe, CurrencyPipe } from '../core/pipes/common.pipes.js';
 import { ReversePipe } from '../pipes/reverse.pipe.js';
-import { TranslatePipe } from '../pipes/translate.pipe.js';
-import { ModalService } from '../services/modal.service.js';
-import { I18nService } from '../services/i18n.service.js';
+import { TranslatePipe } from '../core/pipes/translate.pipe.js';
+import { ModalService } from '../core/modal/modal.service.js';
+import { I18nService } from '../core/services/i18n.service.js';
 
 export const DemoPage = Component.create({
     selector: 'demo-page',
