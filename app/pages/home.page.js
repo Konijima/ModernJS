@@ -1,52 +1,14 @@
 import { Component } from '../core/component/component.js';
-import { UpperCasePipe, DatePipe } from '../core/pipes/common.pipes.js';
-import { ModalService } from '../services/modal.service.js';
+import { Router } from '../core/router/router.js';
+import { UpperCasePipe } from '../core/pipes/common.pipes.js';
 
 export const HomePage = Component.create({
     selector: 'home-page',
     inject: {
-        modalService: ModalService
+        router: Router
     },
     pipes: {
-        uppercase: UpperCasePipe,
-        date: DatePipe
-    },
-    state: {
-        currentDate: new Date()
-    },
-    onInit() {
-        this.timer = setInterval(() => {
-            this.state.currentDate = new Date();
-        }, 1000);
-    },
-    onDestroy() {
-        if (this.timer) {
-            clearInterval(this.timer);
-        }
-    },
-    showDateAlert() {
-        const datePipe = this.getPipe('date');
-        const formatted = datePipe.transform(new Date(), 'full');
-        
-        this.modalService.open({
-            title: 'Current Date',
-            content: `The formatted date is: ${formatted}`,
-            actions: [
-                { 
-                    label: 'Awesome!', 
-                    type: 'primary', 
-                    onClick: () => {
-                        console.log('User clicked Awesome');
-                        this.modalService.close();
-                    }
-                },
-                {
-                    label: 'Close',
-                    type: 'secondary',
-                    onClick: () => this.modalService.close()
-                }
-            ]
-        });
+        uppercase: UpperCasePipe
     },
     animations: {
         'fade-in': {
@@ -134,11 +96,7 @@ export const HomePage = Component.create({
                 A lightweight, dependency-free JavaScript framework demonstrating 
                 modern web capabilities with Web Components, Reactive State, and Dependency Injection.
             </p>
-            <p style="margin-top: 1rem; font-size: 0.9rem; color: #6b7280;">
-                Current Date: {{ this.state.currentDate | date:'full' }}
-                <button class="btn-primary" (click)="showDateAlert">Show Alert</button>
-            </p>
-
+            
             <div class="features">
                 <div class="feature-card" animate="stagger" style="animation-delay: 100ms">
                     <div class="feature-title">⚡️ {{ 'Web Components' | uppercase }}</div>

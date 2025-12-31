@@ -3,6 +3,7 @@ import { Router } from './core/router/router.js';
 import './core/router/router-outlet.component.js';
 import './components/modal.component.js';
 import { HomePage } from './pages/home.page.js';
+import { DemoPage } from './pages/demo.page.js';
 import { TodoPage } from './pages/todo.page.js';
 import { CounterPage } from './pages/counter.page.js';
     
@@ -26,6 +27,16 @@ export const App = Component.create({
                     title: 'ModernJS - Home',
                     meta: [
                         { name: 'description', content: 'Welcome to ModernJS Framework' }
+                    ]
+                }
+            },
+            { 
+                path: '/demo', 
+                component: DemoPage,
+                data: {
+                    title: 'ModernJS - Demo',
+                    meta: [
+                        { name: 'description', content: 'Feature demonstration' }
                     ]
                 }
             },
@@ -66,6 +77,11 @@ export const App = Component.create({
     navigateToCounter(e) {
         e.preventDefault();
         this.router.navigate('/counter');
+    },
+
+    navigateToDemo(e) {
+        e.preventDefault();
+        this.router.navigate('/demo');
     },
 
     styles: `
@@ -180,6 +196,7 @@ export const App = Component.create({
                         <a href="/" (click)="navigateToHome">Home</a>
                         <a href="/todo" (click)="navigateToTodo">Todo List</a>
                         <a href="/counter" (click)="navigateToCounter">Counter</a>
+                        <a href="/demo" (click)="navigateToDemo">Demo</a>
                     </nav>
                 </header>
                 

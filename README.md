@@ -1,10 +1,19 @@
+<div align="center">
+
 # ModernJS Framework
 
-[https://github.com/Konijima/ModernJS](https://github.com/Konijima/ModernJS)
+**A lightweight, dependency-free* JavaScript framework built from scratch.**
+*Demonstrating modern web development concepts using native Web APIs.*
 
-A lightweight, dependency-free* JavaScript framework built from scratch to demonstrate modern web development concepts using native Web APIs.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![JavaScript](https://img.shields.io/badge/ES6%2B-JavaScript-yellow)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![Vite](https://img.shields.io/badge/Bundler-Vite-646Cff)](https://vitejs.dev/)
 
-*Only `vite` is used for the dev server and bundling. The runtime framework has zero dependencies.
+</div>
+
+---
+
+> **Note**: *Only `vite` is used for the dev server and bundling. The runtime framework has zero dependencies.*
 
 ## 🚀 Features
 
@@ -107,6 +116,7 @@ The template engine supports control flow directives:
 
 1.  **Global Counter**: Demonstrates `sessionStorage` persistence and cross-component state sharing.
 2.  **Todo List**: Demonstrates `IndexedDB` persistence, list rendering, and complex state updates.
+3.  **Feature Demo**: Showcases the Pipe system (including custom pipes) and the Modal service.
 
 ---
 
@@ -177,16 +187,4 @@ const datePipe = this.getPipe('date');
 const formatted = datePipe.transform(new Date(), 'full');
 ```
 
-### Modal System
 
-A global modal service is available to show dialogs from anywhere in the app.
-
-```javascript
-this.modalService.open({
-    title: 'Hello',
-    content: 'This is a modal',
-    actions: [
-        { label: 'Close', onClick: () => this.modalService.close(), type: 'primary' }
-    ]
-});
-```
