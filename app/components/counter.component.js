@@ -32,12 +32,17 @@ export const Counter = Component.create({
             transform: translateY(0);
         }
         .count {
-            font-size: 3.5rem;
+            font-size: 2.5rem;
             font-weight: 800;
             color: #2563eb;
             margin: 0.5rem 0 1.5rem 0;
             line-height: 1;
             letter-spacing: -0.05em;
+        }
+        @media (min-width: 768px) {
+            .count {
+                font-size: 3.5rem;
+            }
         }
     `,
     state: {

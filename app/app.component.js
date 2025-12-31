@@ -29,25 +29,44 @@ export const App = Component.create({
             background-color: #f3f4f6;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             color: #1f2937;
-            padding: 2rem;
+            padding: 1rem;
             box-sizing: border-box;
+        }
+
+        @media (min-width: 768px) {
+            :host {
+                padding: 2rem;
+            }
         }
 
         .app-container {
             max-width: 1000px;
             margin: 0 auto;
+            padding: 2rem;
         }
 
         .app-header {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
             padding-top: 1rem;
         }
 
-                .app-title {
-            font-size: 3rem;
+        @media (min-width: 768px) {
+            .app-header {
+                margin-bottom: 3rem;
+            }
+        }
+
+        .app-title {
+            font-size: 2rem;
             font-weight: 800;
             color: #111827;
+        }
+
+        @media (min-width: 768px) {
+            .app-title {
+                font-size: 3rem;
+            }
         }
 
         .app-footer {

@@ -27,10 +27,15 @@ export const TodoList = Component.create({
         }
         .container {
             background: white;
-            padding: 2rem;
+            padding: 1.5rem;
             border-radius: 12px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             border: 1px solid #e5e7eb;
+        }
+        @media (min-width: 768px) {
+            .container {
+                padding: 2rem;
+            }
         }
         h2 {
             margin-top: 0;
@@ -44,8 +49,14 @@ export const TodoList = Component.create({
         }
         .input-group {
             display: flex;
+            flex-direction: column;
             gap: 12px;
             margin-bottom: 2rem;
+        }
+        @media (min-width: 768px) {
+            .input-group {
+                flex-direction: row;
+            }
         }
         input {
             flex: 1;
@@ -64,7 +75,7 @@ export const TodoList = Component.create({
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
         button.add-btn {
-            padding: 0 24px;
+            padding: 12px 24px;
             background: #2563eb;
             color: white;
             border: none;
