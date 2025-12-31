@@ -1,17 +1,21 @@
 import { Component } from '../core/component/component.js';
 import { UpperCasePipe, DatePipe } from '../core/pipes/common.pipes.js';
 import { ReversePipe } from '../pipes/reverse.pipe.js';
+import { TranslatePipe } from '../pipes/translate.pipe.js';
 import { ModalService } from '../services/modal.service.js';
+import { I18nService } from '../services/i18n.service.js';
 
 export const DemoPage = Component.create({
     selector: 'demo-page',
     inject: {
-        modalService: ModalService
+        modalService: ModalService,
+        i18nService: I18nService
     },
     pipes: {
         uppercase: UpperCasePipe,
         date: DatePipe,
-        reverse: ReversePipe
+        reverse: ReversePipe,
+        translate: TranslatePipe
     },
     state: {
         currentDate: new Date()
@@ -20,11 +24,25 @@ export const DemoPage = Component.create({
         this.timer = setInterval(() => {
             this.state.currentDate = new Date();
         }, 1000);
+
+        // Subscribe to language changes to trigger re-render
+        this.langSub = this.i18nService.subscribe(() => {
+            this.update();
+        });
     },
     onDestroy() {
         if (this.timer) {
             clearInterval(this.timer);
         }
+        if (this.langSub) {
+            this.langSub();
+        }
+    },
+    setLangEn() {
+        this.i18nService.setLocale('en');
+    },
+    setLangFr() {
+        this.i18nService.setLocale('fr');
     },
     showDateAlert() {
         const datePipe = this.getPipe('date');
@@ -113,6 +131,16 @@ export const DemoPage = Component.create({
             <p>
                 Showcasing Pipes, Modals, and programmatic usage.
             </p>
+
+            <div class="demo-section">
+                <h3>{{ 'DEMO_TITLE' | translate }}</h3>
+                <p>{{ 'WELCOME' | translate }}</p>
+                <p>{{ 'CURRENT_LANG' | translate:this.i18nService.state.locale }}</p>
+                <div style="margin-top: 1rem;">
+                    <button class="btn-primary" (click)="setLangEn">English</button>
+                    <button class="btn-primary" (click)="setLangFr">Français</button>
+                </div>
+            </div>
 
             <div class="demo-section">
                 <h3>Date Pipe & Modal</h3>
