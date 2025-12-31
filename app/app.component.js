@@ -1,7 +1,9 @@
 import { Component } from './core/component.js';
-import { CounterService } from './services/counter.service.js';
-import './components/counter.component.js';
-import './components/todo-list.component.js';
+import { Router } from './core/router.js';
+import './core/router-outlet.component.js';
+import { HomePage } from './pages/home.page.js';
+import { TodoPage } from './pages/todo.page.js';
+import { CounterPage } from './pages/counter.page.js';
     
 /**
  * Main Application Component.
@@ -10,16 +12,32 @@ import './components/todo-list.component.js';
 export const App = Component.create({
     selector: 'my-app',
     inject: {
-        counterService: CounterService
+        router: Router
     },
     
-    state: {
-        localCount: 0,
-        globalCount: 0
+    onInit() {
+        // Define Routes
+        this.router.register([
+            { path: '/', component: HomePage },
+            { path: '/todo', component: TodoPage },
+            { path: '/counter', component: CounterPage },
+            { path: '**', component: HomePage }
+        ]);
     },
 
-    onInit() {
-        this.connect(this.counterService, (count) => ({ globalCount: count }));
+    navigateToHome(e) {
+        e.preventDefault();
+        this.router.navigate('/');
+    },
+
+    navigateToTodo(e) {
+        e.preventDefault();
+        this.router.navigate('/todo');
+    },
+
+    navigateToCounter(e) {
+        e.preventDefault();
+        this.router.navigate('/counter');
     },
 
     styles: `
@@ -99,54 +117,29 @@ export const App = Component.create({
             font-weight: 400;
         }
 
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 2rem;
-            align-items: start;
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
         }
 
-        @media (min-width: 768px) {
-            .dashboard-grid {
-                grid-template-columns: 300px 1fr;
-            }
-        }
-
-        .card {
+        .nav-links a {
+            text-decoration: none;
+            color: #4b5563;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            transition: all 0.2s;
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid #e5e7eb;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
-        
-        .section-title {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: #6b7280;
-            margin-top: 0;
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+
+        .nav-links a:hover {
+            background-color: #f9fafb;
+            color: #2563eb;
         }
     `,
-
-    /**
-     * Helper getter for global count binding.
-     * @returns {string} Reference key for the global count
-     */
-    get globalCount() {
-        return this.bind(this.state.globalCount);
-    },
-
-    /**
-     * Helper getter for local count binding.
-     * @returns {string} Reference key for the local count
-     */
-    get localCount() {
-        return this.bind(this.state.localCount);
-    },
 
     template() {
         return `
@@ -154,29 +147,16 @@ export const App = Component.create({
                 <header class="app-header">
                     <h1 class="app-title">Modern <span class="highlight">JS</span></h1>
                     <p class="app-subtitle">Native Web Components • Reactive State • Dependency Injection</p>
+                    
+                    <nav class="nav-links">
+                        <a href="/" (click)="navigateToHome">Home</a>
+                        <a href="/todo" (click)="navigateToTodo">Todo List</a>
+                        <a href="/counter" (click)="navigateToCounter">Counter</a>
+                    </nav>
                 </header>
                 
-                <main class="dashboard-grid">
-                    <aside>
-                        <div class="card">
-                            <h3 class="section-title">Global State (Service)</h3>
-                            <my-counter 
-                                [count]="{{ this.globalCount }}"
-                                (increment)="incrementService"
-                            ></my-counter>
-                        </div>
-                        <div class="card">
-                            <h3 class="section-title">Local State (Component)</h3>
-                            <my-counter 
-                                [count]="{{ this.localCount }}"
-                                (increment)="incrementLocal"
-                            ></my-counter>
-                        </div>
-                    </aside>
-                    
-                    <section>
-                        <todo-list></todo-list>
-                    </section>
+                <main>
+                    <router-outlet></router-outlet>
                 </main>
 
                 <footer class="app-footer">
@@ -184,19 +164,5 @@ export const App = Component.create({
                 </footer>
             </div>
         `;
-    },
-
-    /**
-     * Increment the global counter service.
-     */
-    incrementService() {
-        this.counterService.increment();
-    },
-
-    /**
-     * Increment the local component state.
-     */
-    incrementLocal() {
-        this.state.localCount++;
     }
 });

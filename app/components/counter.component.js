@@ -1,4 +1,5 @@
 import { Component } from '../core/component.js';
+import { CounterService } from '../services/counter.service.js';
 
 /**
  * Counter Component.
@@ -6,6 +7,9 @@ import { Component } from '../core/component.js';
  */
 export const Counter = Component.create({
     selector: 'my-counter',
+    inject: {
+        counterService: CounterService
+    },
     styles: `
         :host {
             display: block;
@@ -49,6 +53,10 @@ export const Counter = Component.create({
         count: 0
     },
 
+    onInit() {
+        this.connect(this.counterService, (count) => ({ count }));
+    },
+
     /**
      * Setter for the count property.
      * Allows the parent component to bind to the count state.
@@ -72,6 +80,7 @@ export const Counter = Component.create({
      * Dispatches a custom 'increment' event to the parent.
      */
     handleIncrement() {
+        this.counterService.increment();
         this.dispatchEvent(new CustomEvent('increment'));
     }
 });
