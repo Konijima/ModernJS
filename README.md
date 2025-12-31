@@ -60,6 +60,7 @@ app/
 │   ├── animations/ # Animation Manager
 │   ├── component/  # Component & Renderer
 │   ├── di/         # Dependency Injection
+│   ├── modal/      # Modal System
 │   ├── pipes/      # Pipe System
 │   ├── router/     # Routing System
 │   └── services/   # Base Services
