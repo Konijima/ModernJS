@@ -1,4 +1,4 @@
-import { Service } from '../core/service.js';
+import { Service } from '../core/services/service.js';
 import { Database } from '../utils/db.js';
 
 /**

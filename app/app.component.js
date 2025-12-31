@@ -1,6 +1,6 @@
-import { Component } from './core/component.js';
-import { Router } from './core/router.js';
-import './core/router-outlet.component.js';
+import { Component } from './core/component/component.js';
+import { Router } from './core/router/router.js';
+import './core/router/router-outlet.component.js';
 import { HomePage } from './pages/home.page.js';
 import { TodoPage } from './pages/todo.page.js';
 import { CounterPage } from './pages/counter.page.js';
@@ -18,9 +18,36 @@ export const App = Component.create({
     onInit() {
         // Define Routes
         this.router.register([
-            { path: '/', component: HomePage },
-            { path: '/todo', component: TodoPage },
-            { path: '/counter', component: CounterPage },
+            { 
+                path: '/', 
+                component: HomePage,
+                data: {
+                    title: 'ModernJS - Home',
+                    meta: [
+                        { name: 'description', content: 'Welcome to ModernJS Framework' }
+                    ]
+                }
+            },
+            { 
+                path: '/todo', 
+                component: TodoPage,
+                data: {
+                    title: 'ModernJS - Todo List',
+                    meta: [
+                        { name: 'description', content: 'Manage your tasks efficiently' }
+                    ]
+                }
+            },
+            { 
+                path: '/counter', 
+                component: CounterPage,
+                data: {
+                    title: 'ModernJS - Counter',
+                    meta: [
+                        { name: 'description', content: 'Simple counter example' }
+                    ]
+                }
+            },
             { path: '**', component: HomePage }
         ]);
     },

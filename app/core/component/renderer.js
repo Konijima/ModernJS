@@ -1,3 +1,5 @@
+import { AnimationManager } from '../animations/animation.js';
+
 /**
  * Robust DOM Diffing and Rendering Engine.
  * Handles efficient DOM updates by comparing virtual/new nodes with the actual DOM.
@@ -57,13 +59,13 @@ function diffChildren(target, source, component) {
             // New node
             target.appendChild(sChild);
             processBindings(sChild, component);
+            checkAnimations(sChild, component, ':enter');
         } else if (!sChild) {
             // Remove node
-            target.removeChild(tChild);
+            handleRemoval(target, tChild, component);
         } else if (isDifferent(tChild, sChild)) {
             // Replace node
-            target.replaceChild(sChild, tChild);
-            processBindings(sChild, component);
+            handleReplacement(target, tChild, sChild, component);
         } else if (tChild.nodeType === Node.TEXT_NODE) {
             // Update text
             if (tChild.nodeValue !== sChild.nodeValue) {
@@ -195,4 +197,54 @@ function processBindings(node, component) {
         // Recurse
         node.childNodes.forEach(child => processBindings(child, component));
     }
+}
+
+/**
+ * Handles node removal with optional animation.
+ */
+async function handleRemoval(parent, node, component) {
+    await checkAnimations(node, component, ':leave');
+    if (parent.contains(node)) {
+        parent.removeChild(node);
+    }
+}
+
+/**
+ * Handles node replacement with optional animation.
+ */
+async function handleReplacement(parent, oldNode, newNode, component) {
+    // For replacement, we can animate out the old node then swap
+    // Or just swap immediately if no animation.
+    // Simpler approach: just swap for now, or animate leave then swap.
+    
+    // Check if oldNode has leave animation
+    const hasAnimation = await checkAnimations(oldNode, component, ':leave');
+    
+    if (parent.contains(oldNode)) {
+        parent.replaceChild(newNode, oldNode);
+        processBindings(newNode, component);
+        checkAnimations(newNode, component, ':enter');
+    }
+}
+
+/**
+ * Checks and executes animations for a node.
+ * @returns {Promise<boolean>} True if an animation was played
+ */
+async function checkAnimations(node, component, state) {
+    if (node.nodeType !== Node.ELEMENT_NODE) return false;
+    
+    const animationsConfig = component.constructor.animations;
+    if (!animationsConfig) return false;
+
+    // Look for animation triggers in attributes
+    // We support *animate="triggerName" or just matching trigger names if we had a parser
+    // For now, let's look for a specific attribute `animate`
+    const triggerName = node.getAttribute('animate');
+    
+    if (triggerName) {
+        await AnimationManager.animate(node, triggerName, state, animationsConfig);
+        return true;
+    }
+    return false;
 }

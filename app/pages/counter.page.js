@@ -1,8 +1,19 @@
-import { Component } from '../core/component.js';
+import { Component } from '../core/component/component.js';
 import '../components/counter.component.js';
 
 export const CounterPage = Component.create({
     selector: 'counter-page',
+    animations: {
+        'scale-in': {
+            ':enter': {
+                keyframes: [
+                    { opacity: 0, transform: 'scale(0.95)' },
+                    { opacity: 1, transform: 'scale(1)' }
+                ],
+                options: { duration: 300, easing: 'cubic-bezier(0.4, 0, 0.2, 1)', fill: 'forwards' }
+            }
+        }
+    },
     styles: `
         :host {
             display: block;
@@ -22,7 +33,7 @@ export const CounterPage = Component.create({
         }
     `,
     template: `
-        <div class="page-container">
+        <div class="page-container" animate="scale-in">
             <h2>Counter Demo</h2>
             <my-counter></my-counter>
         </div>

@@ -1,7 +1,27 @@
-import { Component } from '../core/component.js';
+import { Component } from '../core/component/component.js';
 
 export const HomePage = Component.create({
     selector: 'home-page',
+    animations: {
+        'fade-in': {
+            ':enter': {
+                keyframes: [
+                    { opacity: 0, transform: 'translateY(20px)' },
+                    { opacity: 1, transform: 'translateY(0)' }
+                ],
+                options: { duration: 500, easing: 'ease-out', fill: 'forwards' }
+            }
+        },
+        'stagger': {
+            ':enter': {
+                keyframes: [
+                    { opacity: 0, transform: 'scale(0.9)' },
+                    { opacity: 1, transform: 'scale(1)' }
+                ],
+                options: { duration: 400, easing: 'ease-out', fill: 'forwards' }
+            }
+        }
+    },
     styles: `
         :host {
             display: block;
@@ -44,28 +64,30 @@ export const HomePage = Component.create({
         }
     `,
     template: `
-        <h2>Welcome to ModernJS</h2>
-        <p>
-            A lightweight, dependency-free JavaScript framework demonstrating 
-            modern web capabilities with Web Components, Reactive State, and Dependency Injection.
-        </p>
+        <div animate="fade-in">
+            <h2>Welcome to ModernJS</h2>
+            <p>
+                A lightweight, dependency-free JavaScript framework demonstrating 
+                modern web capabilities with Web Components, Reactive State, and Dependency Injection.
+            </p>
 
-        <div class="features">
-            <div class="feature-card">
-                <div class="feature-title">⚡️ Web Components</div>
-                <p>Built on standard Custom Elements and Shadow DOM for true encapsulation.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-title">🔄 Reactive State</div>
-                <p>Proxy-based state management with automatic DOM updates and diffing.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-title">💉 Dependency Injection</div>
-                <p>Built-in DI container for managing services and component dependencies.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-title">🛣️ Routing</div>
-                <p>Client-side routing system for Single Page Application experience.</p>
+            <div class="features">
+                <div class="feature-card" animate="stagger" style="animation-delay: 100ms">
+                    <div class="feature-title">⚡️ Web Components</div>
+                    <p>Built on standard Custom Elements and Shadow DOM for true encapsulation.</p>
+                </div>
+                <div class="feature-card" animate="stagger" style="animation-delay: 200ms">
+                    <div class="feature-title">🔄 Reactive State</div>
+                    <p>Proxy-based state management with automatic DOM updates and diffing.</p>
+                </div>
+                <div class="feature-card" animate="stagger" style="animation-delay: 300ms">
+                    <div class="feature-title">💉 Dependency Injection</div>
+                    <p>Built-in DI container for managing services and component dependencies.</p>
+                </div>
+                <div class="feature-card" animate="stagger" style="animation-delay: 400ms">
+                    <div class="feature-title">🛣️ Routing</div>
+                    <p>Client-side routing system for Single Page Application experience.</p>
+                </div>
             </div>
         </div>
     `

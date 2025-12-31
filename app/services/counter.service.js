@@ -1,4 +1,4 @@
-import { Service } from '../core/service.js';
+import { Service } from '../core/services/service.js';
 
 /**
  * Service for managing the global counter state.

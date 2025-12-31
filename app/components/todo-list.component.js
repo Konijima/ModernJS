@@ -1,4 +1,4 @@
-import { Component } from '../core/component.js';
+import { Component } from '../core/component/component.js';
 import { TodoService } from '../services/todo.service.js';
 import './todo-item.component.js';
 

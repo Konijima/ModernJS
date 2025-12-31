@@ -1,9 +1,14 @@
+import { MetaService } from '../services/meta.service.js';
+
 /**
  * Router Service
  * Handles client-side routing and navigation.
  */
 export class Router {
-    constructor() {
+    static inject = [MetaService];
+
+    constructor(metaService) {
+        this.metaService = metaService;
         this.routes = [];
         this.currentRoute = null;
         this.listeners = [];
@@ -48,6 +53,12 @@ export class Router {
 
         if (route) {
             this.currentRoute = route;
+            
+            // Update Meta Tags if data is present
+            if (route.data) {
+                this.metaService.update(route.data);
+            }
+
             this.notify();
         } else {
             console.warn(`[Router] No route found for path: ${path}`);

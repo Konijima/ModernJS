@@ -1,4 +1,4 @@
-import { resolve } from './di.js';
+import { resolve } from '../di/di.js';
 import { render } from './renderer.js';
 import { compileTemplate } from './template.js';
 
@@ -41,13 +41,14 @@ export class Component extends HTMLElement {
             static inject = config.inject;
             static state = config.state;
             static connect = config.connect;
+            static animations = config.animations;
             
             static template = typeof config.template === 'string' 
                 ? () => config.template 
                 : config.template;
         }
 
-        const reserved = ['selector', 'styles', 'inject', 'state', 'connect', 'template'];
+        const reserved = ['selector', 'styles', 'inject', 'state', 'connect', 'template', 'animations'];
         
         const descriptors = Object.getOwnPropertyDescriptors(config);
         Object.keys(descriptors).forEach(key => {
@@ -84,6 +85,7 @@ export class Component extends HTMLElement {
         } else {
             if (config.styles) this.styles = config.styles;
             if (config.inject) this.inject = config.inject;
+            if (config.animations) this.animations = config.animations;
             if (config.template) this.prototype.render = config.template;
             
             if (config.selector) {

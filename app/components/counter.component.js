@@ -1,4 +1,4 @@
-import { Component } from '../core/component.js';
+import { Component } from '../core/component/component.js';
 import { CounterService } from '../services/counter.service.js';
 
 /**
