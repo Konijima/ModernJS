@@ -10,6 +10,8 @@ Welcome to the documentation for ModernJS, a lightweight, reactive web component
 - [Forms](./forms.md): **NEW** Build complex forms with Reactive Forms.
 - [HTTP Client](./http.md): **NEW** Make HTTP requests with the reactive HttpClient.
 - [Dependency Injection](./dependency-injection.md): Manage services and dependencies.
+- [Core Services](./services.md): **NEW** Built-in services (Storage, Device, Meta).
+- [Pipes](./pipes.md): **NEW** Transform data in templates (Async, Date, Currency).
 - [Router](./router.md): Handle client-side navigation.
 - [Animations](./animations.md): Add enter/leave animations to your elements.
 - [Internationalization](./i18n.md): Support multiple languages in your application.

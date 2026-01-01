@@ -103,6 +103,8 @@ Detailed documentation for the framework core is available in the `docs/` direct
 - [**Components**](docs/components.md): Lifecycle, templates, and styling.
 - [**Templates**](docs/templates.md): Syntax, control flow (`@if`, `@for`), and pipes.
 - [**Dependency Injection**](docs/dependency-injection.md): Services and injection.
+- [**Core Services**](docs/services.md): Built-in services (Storage, Device, Meta).
+- [**Pipes**](docs/pipes.md): Data transformation pipes.
 - [**Router**](docs/router.md): Navigation and route configuration.
 - [**Animations**](docs/animations.md): Enter/leave animations.
 - [**Modal**](docs/modal.md): Dialogs, alerts, confirms, and prompts.
