@@ -66,6 +66,7 @@ export const es = {
     'features.tabs.todo': 'Lista de Tareas',
     'features.tabs.counter': 'Contador',
     'features.tabs.pipes': 'Pipes e i18n',
+    'features.tabs.forms': 'Formularios Reactivos',
     'features.counter.title': 'Contador Reactivo',
     'features.counter.desc': 'Demuestra estado reactivo con persistencia en sessionStorage.',
     'features.pipes.date_modal.title': 'Pipe de Fecha y Modal',
