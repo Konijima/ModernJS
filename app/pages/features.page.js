@@ -74,17 +74,6 @@ export const FeaturesPage = Component.create({
             ]
         });
     },
-    animations: {
-        'fade-in': {
-            ':enter': {
-                keyframes: [
-                    { opacity: 0 },
-                    { opacity: 1 }
-                ],
-                options: { duration: 300, easing: 'ease-out', fill: 'forwards' }
-            }
-        }
-    },
     styles: `
         :host {
             display: block;
@@ -205,7 +194,7 @@ export const FeaturesPage = Component.create({
     template() {
         const { activeTab } = this.state;
         return `
-        <div class="page-container" animate="fade-in">
+        <div class="page-container">
             <div class="text-center" style="margin-bottom: 1.5rem;">
                 <span class="badge" style="margin-bottom: 1rem;"><i class="fas fa-flask"></i> Live Demos</span>
                 <h2 style="margin-bottom: 0.5rem;">Feature Showcase</h2>

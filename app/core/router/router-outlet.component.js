@@ -7,6 +7,7 @@ import { Router } from './router.js';
  */
 export const RouterOutlet = Component.create({
     selector: 'router-outlet',
+    noTemplate: true, // Suppress warnings as this component manages its own DOM
     inject: {
         router: Router
     },

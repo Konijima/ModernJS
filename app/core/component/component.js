@@ -2,14 +2,41 @@ import { resolve } from '../di/di.js';
 import { render } from './renderer.js';
 import { compileTemplate } from './template.js';
 
+// Cache for the global stylesheet to prevent FOUC
+let globalStyleSheet = null;
+
+const getGlobalStyleSheet = () => {
+    if (globalStyleSheet) return globalStyleSheet;
+
+    // Try to find styles.css in loaded stylesheets
+    const styleSheet = Array.from(document.styleSheets)
+        .find(s => s.href && s.href.includes('styles.css'));
+
+    if (styleSheet) {
+        try {
+            const cssText = Array.from(styleSheet.cssRules)
+                .map(rule => rule.cssText)
+                .join('\n');
+            const sheet = new CSSStyleSheet();
+            sheet.replaceSync(cssText);
+            globalStyleSheet = sheet;
+        } catch (e) {
+            console.warn('[Framework] Could not create Constructable Stylesheet from styles.css', e);
+        }
+    }
+    return globalStyleSheet;
+};
+
 const log = (category, message, ...args) => {
-    console.log(
-        `%c[Framework] %c${category}%c ${message}`,
-        'background: #2563eb; color: white; padding: 2px 6px; border-radius: 4px; font-weight: bold;',
-        'color: #2563eb; font-weight: bold; margin-left: 4px;',
-        'color: inherit;',
-        ...args
-    );
+    if (import.meta.env.DEV) {
+        console.log(
+            `%c[Framework] %c${category}%c ${message}`,
+            'background: #2563eb; color: white; padding: 2px 6px; border-radius: 4px; font-weight: bold;',
+            'color: #2563eb; font-weight: bold; margin-left: 4px;',
+            'color: inherit;',
+            ...args
+        );
+    }
 };
 
 /**
@@ -74,8 +101,11 @@ export class Component extends HTMLElement {
         if (!config) {
             if (this.template) {
                 this.prototype.render = this.template;
-            } else {
-                console.warn(`[Framework] ⚠️ No template found for ${selector}`);
+            } else if (!this.noTemplate) {
+                // Only warn if noTemplate is not explicitly set to true
+                if (import.meta.env.DEV) {
+                    console.warn(`[Framework] ⚠️ No template found for ${selector}`);
+                }
             }
             if (this.selector) customElements.define(this.selector, this);
             return;
@@ -104,6 +134,14 @@ export class Component extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({ mode: 'open' });
+        
+        // Apply global styles using Constructable Stylesheets if available
+        // This is much faster than injecting <link> tags and prevents FOUC
+        const globalSheet = getGlobalStyleSheet();
+        if (globalSheet) {
+            this.shadowRoot.adoptedStyleSheets = [globalSheet];
+        }
+
         this._subscriptions = [];
         this._refs = {}; // Registry for object references in templates
         
@@ -225,7 +263,9 @@ export class Component extends HTMLElement {
      */
     update() {
         if (!this.render) {
-            console.warn(`[Framework] ⚠️ No render method found for ${this.tagName}`);
+            if (!this.constructor.noTemplate && import.meta.env.DEV) {
+                console.warn(`[Framework] ⚠️ No render method found for ${this.tagName}`);
+            }
             return;
         }
 
@@ -251,8 +291,15 @@ export class Component extends HTMLElement {
             newDom.insertBefore(style, newDom.firstChild);
         }
 
-        // Inject global styles from document head
+        // Inject global styles from document head (excluding styles.css if already adopted)
         Array.from(document.head.querySelectorAll('link[rel="stylesheet"], style'))
+            .filter(node => {
+                // Skip styles.css if we successfully adopted it
+                if (globalStyleSheet && node.tagName === 'LINK' && node.getAttribute('href') && node.getAttribute('href').includes('styles.css')) {
+                    return false;
+                }
+                return true;
+            })
             .reverse()
             .forEach(node => {
                 newDom.insertBefore(node.cloneNode(true), newDom.firstChild);

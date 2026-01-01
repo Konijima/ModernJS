@@ -6,17 +6,6 @@ export const GetStartedPage = Component.create({
     inject: {
         router: Router
     },
-    animations: {
-        'fade-in': {
-            ':enter': {
-                keyframes: [
-                    { opacity: 0 },
-                    { opacity: 1 }
-                ],
-                options: { duration: 300, easing: 'ease-out', fill: 'forwards' }
-            }
-        }
-    },
     goToFeatures() {
         this.router.navigate('/features');
     },
@@ -46,6 +35,10 @@ export const GetStartedPage = Component.create({
             font-size: 0.875rem;
             flex-shrink: 0;
         }
+        .step-content {
+            flex: 1;
+            min-width: 0;
+        }
         .step-content h3 {
             margin: 0 0 0.5rem 0;
             font-size: 1.125rem;
@@ -66,6 +59,8 @@ export const GetStartedPage = Component.create({
             color: var(--primary-color);
             margin-top: 0.75rem;
             overflow-x: auto;
+            white-space: nowrap;
+            max-width: 100%;
         }
         .feature-list {
             display: grid;
@@ -89,7 +84,7 @@ export const GetStartedPage = Component.create({
         }
     `,
     template: `
-        <div class="page-container" animate="fade-in" style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <div class="page-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
             <div class="text-center" style="margin-bottom: 1rem;">
                 <span class="badge" style="margin-bottom: 1rem;"><i class="fas fa-rocket"></i> Quick Start</span>
                 <h2 style="margin-bottom: 0.5rem;">Get Started</h2>

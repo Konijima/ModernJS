@@ -10,26 +10,6 @@ export const HomePage = Component.create({
     pipes: {
         uppercase: UpperCasePipe
     },
-    animations: {
-        'fade-in': {
-            ':enter': {
-                keyframes: [
-                    { opacity: 0 },
-                    { opacity: 1 }
-                ],
-                options: { duration: 300, easing: 'ease-out', fill: 'forwards' }
-            }
-        },
-        'stagger': {
-            ':enter': {
-                keyframes: [
-                    { opacity: 0 },
-                    { opacity: 1 }
-                ],
-                options: { duration: 300, easing: 'ease-out', fill: 'forwards' }
-            }
-        }
-    },
     openGitHub() {
         window.open('https://github.com/Konijima/ModernJS', '_blank');
     },
@@ -44,7 +24,7 @@ export const HomePage = Component.create({
         }
     `,
     template: `
-        <div class="hero-section" animate="fade-in">
+        <div class="hero-section">
             <span class="badge" style="margin-bottom: 1.5rem;">
                 <i class="fas fa-code"></i> Open Source Framework
             </span>
@@ -68,22 +48,22 @@ export const HomePage = Component.create({
             </div>
 
             <div class="features-grid">
-                <div class="card hover-card" animate="stagger" style="animation-delay: 100ms">
+                <div class="card hover-card">
                     <div class="icon-box" style="margin-bottom: 1rem;"><i class="fas fa-bolt"></i></div>
                     <h3 class="feature-title">{{ 'Web Components' | uppercase }}</h3>
                     <p class="text-muted" style="font-size: 0.9375rem; line-height: 1.6; margin: 0;">Built on standard Custom Elements and Shadow DOM for true encapsulation.</p>
                 </div>
-                <div class="card hover-card" animate="stagger" style="animation-delay: 150ms">
+                <div class="card hover-card">
                     <div class="icon-box" style="margin-bottom: 1rem;"><i class="fas fa-sync"></i></div>
                     <h3 class="feature-title">Reactive State</h3>
                     <p class="text-muted" style="font-size: 0.9375rem; line-height: 1.6; margin: 0;">Proxy-based state management with automatic DOM updates and diffing.</p>
                 </div>
-                <div class="card hover-card" animate="stagger" style="animation-delay: 200ms">
+                <div class="card hover-card">
                     <div class="icon-box" style="margin-bottom: 1rem;"><i class="fas fa-syringe"></i></div>
                     <h3 class="feature-title">Dependency Injection</h3>
                     <p class="text-muted" style="font-size: 0.9375rem; line-height: 1.6; margin: 0;">Built-in DI container for managing services and component dependencies.</p>
                 </div>
-                <div class="card hover-card" animate="stagger" style="animation-delay: 250ms">
+                <div class="card hover-card">
                     <div class="icon-box" style="margin-bottom: 1rem;"><i class="fas fa-route"></i></div>
                     <h3 class="feature-title">Routing</h3>
                     <p class="text-muted" style="font-size: 0.9375rem; line-height: 1.6; margin: 0;">Client-side routing system for Single Page Application experience.</p>
