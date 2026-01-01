@@ -111,6 +111,7 @@ export const FormDemoComponent = Component.create({
                     <label>Username</label>
                     <input 
                         type="text"
+                        autocomplete="username"
                         [value]="{{ this.form.get('username').value }}"
                         (input)="this.form.get('username').setValue($event.target.value)"
                         (blur)="this.form.get('username').markAsTouched(); this.update()"
@@ -133,6 +134,7 @@ export const FormDemoComponent = Component.create({
                     <label>Email</label>
                     <input 
                         type="email"
+                        autocomplete="email"
                         [value]="{{ this.form.get('email').value }}"
                         (input)="this.form.get('email').setValue($event.target.value)"
                         (blur)="this.form.get('email').markAsTouched(); this.update()"
@@ -155,6 +157,7 @@ export const FormDemoComponent = Component.create({
                     <label>Password</label>
                     <input 
                         type="password"
+                        autocomplete="new-password"
                         [value]="{{ this.form.get('password').value }}"
                         (input)="this.form.get('password').setValue($event.target.value)"
                         (blur)="this.form.get('password').markAsTouched(); this.update()"
@@ -180,7 +183,7 @@ export const FormDemoComponent = Component.create({
                 <strong>Form Status:</strong> {{ this.form.valid ? 'VALID' : 'INVALID' }}
                 <br>
                 <strong>Form Value:</strong>
-                {{ JSON.stringify(this.form.value, null, 2) }}
+                <pre style="margin: 0;">{{ JSON.stringify(this.form.value, null, 2) }}</pre>
             </div>
         </div>
     `
