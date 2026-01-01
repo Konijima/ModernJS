@@ -1,18 +1,22 @@
 import { Service } from '../../core/services/service.js';
-import { Database } from '../utils/db.js';
+import { StorageService } from '../../core/services/storage.service.js';
 
 /**
  * Service for managing todo items.
  * Uses IndexedDB for persistence.
  */
 export class TodoService extends Service {
+    static inject = [StorageService];
+
     /**
      * Initialize the TodoService.
      * Sets up the database connection and loads initial data.
+     * @param {StorageService} storageService
      */
-    constructor() {
+    constructor(storageService) {
         super([]); // Initial state
-        this.db = new Database('TodoDB', 1, {
+        this.storageService = storageService;
+        this.db = this.storageService.init('TodoDB', 1, {
             todos: { keyPath: 'id', autoIncrement: true }
         });
         this.init();

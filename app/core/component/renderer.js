@@ -12,13 +12,14 @@ import { AnimationManager } from '../animations/animation.js';
  * @param {Node} target - The current live DOM node
  * @param {Node} source - The new node to match
  * @param {Object} component - The component instance (for event binding)
+ * @param {Object} [refs] - The references map for the current render cycle
  */
-export function render(target, source, component) {
+export function render(target, source, component, refs) {
     // If target is a shadow root, we need to diff its children
     if (target instanceof ShadowRoot) {
-        diffChildren(target, source, component);
+        diffChildren(target, source, component, refs);
     } else {
-        diff(target, source, component);
+        diff(target, source, component, refs);
     }
 }
 
@@ -28,15 +29,16 @@ export function render(target, source, component) {
  * @param {Node} target - The current live DOM node
  * @param {Node} source - The new node to match
  * @param {Object} component - The component instance
+ * @param {Object} [refs] - The references map for the current render cycle
  */
-export function diff(target, source, component) {
+export function diff(target, source, component, refs) {
     // 1. Update Attributes and Events
     if (target.nodeType === Node.ELEMENT_NODE && source.nodeType === Node.ELEMENT_NODE) {
-        updateAttributes(target, source, component);
+        updateAttributes(target, source, component, refs);
     }
 
     // 2. Diff Children
-    diffChildren(target, source, component);
+    diffChildren(target, source, component, refs);
 }
 
 /**
@@ -45,8 +47,9 @@ export function diff(target, source, component) {
  * @param {Node} target - The parent node in the live DOM
  * @param {Node} source - The parent node containing new children
  * @param {Object} component - The component instance
+ * @param {Object} [refs] - The references map for the current render cycle
  */
-function diffChildren(target, source, component) {
+function diffChildren(target, source, component, refs) {
     const targetChildren = Array.from(target.childNodes);
     const sourceChildren = Array.from(source.childNodes);
     const maxLength = Math.max(targetChildren.length, sourceChildren.length);
@@ -58,14 +61,14 @@ function diffChildren(target, source, component) {
         if (!tChild) {
             // New node
             target.appendChild(sChild);
-            processBindings(sChild, component);
+            processBindings(sChild, component, refs);
             checkAnimations(sChild, component, ':enter');
         } else if (!sChild) {
             // Remove node
             handleRemoval(target, tChild, component);
         } else if (isDifferent(tChild, sChild)) {
             // Replace node
-            handleReplacement(target, tChild, sChild, component);
+            handleReplacement(target, tChild, sChild, component, refs);
         } else if (tChild.nodeType === Node.TEXT_NODE) {
             // Update text
             if (tChild.nodeValue !== sChild.nodeValue) {
@@ -73,7 +76,7 @@ function diffChildren(target, source, component) {
             }
         } else if (tChild.nodeType === Node.ELEMENT_NODE) {
             // Recurse
-            diff(tChild, sChild, component);
+            diff(tChild, sChild, component, refs);
         }
     }
 }
@@ -96,8 +99,9 @@ function isDifferent(node1, node2) {
  * @param {Element} target - The element to update
  * @param {Element} source - The element with new attributes
  * @param {Object} component - The component instance
+ * @param {Object} [refs] - The references map for the current render cycle
  */
-function updateAttributes(target, source, component) {
+function updateAttributes(target, source, component, refs) {
     // Remove old attributes that are not in source
     Array.from(target.attributes).forEach(attr => {
         if (!source.hasAttribute(attr.name)) {
@@ -169,17 +173,18 @@ function updateAttributes(target, source, component) {
         // Property Binding: [prop]="value"
         if (name.startsWith('[') && name.endsWith(']')) {
             const propName = name.slice(1, -1);
-            // console.log('Found property binding:', propName);
             
             let resolvedValue = value;
             // Check if value is a reference key
-            if (component._refs && value in component._refs) {
-                resolvedValue = component._refs[value];
+            // Use passed refs if available, otherwise fallback to component._refs
+            const currentRefs = refs || component._refs;
+            
+            if (currentRefs && value in currentRefs) {
+                resolvedValue = currentRefs[value];
             }
 
             // Check for Directives
             if (component.getDirective && component.getDirective(propName)) {
-                // console.log('Applying directive:', propName);
                 applyDirective(target, propName, resolvedValue, component);
                 return;
             }
@@ -234,14 +239,15 @@ function applyDirective(element, selector, value, component) {
  * 
  * @param {Node} node - The new node to process
  * @param {Object} component - The component instance
+ * @param {Object} [refs] - The references map for the current render cycle
  */
-function processBindings(node, component) {
+function processBindings(node, component, refs) {
     if (node.nodeType === Node.ELEMENT_NODE) {
         // Apply attributes logic to set properties/events on new nodes
-        updateAttributes(node, node, component);
+        updateAttributes(node, node, component, refs);
         
         // Recurse
-        node.childNodes.forEach(child => processBindings(child, component));
+        node.childNodes.forEach(child => processBindings(child, component, refs));
     }
 }
 
@@ -266,7 +272,7 @@ async function handleRemoval(parent, node, component) {
 /**
  * Handles node replacement with optional animation.
  */
-async function handleReplacement(parent, oldNode, newNode, component) {
+async function handleReplacement(parent, oldNode, newNode, component, refs) {
     // For replacement, we can animate out the old node then swap
     // Or just swap immediately if no animation.
     // Simpler approach: just swap for now, or animate leave then swap.
@@ -276,7 +282,7 @@ async function handleReplacement(parent, oldNode, newNode, component) {
     
     if (parent.contains(oldNode)) {
         parent.replaceChild(newNode, oldNode);
-        processBindings(newNode, component);
+        processBindings(newNode, component, refs);
         checkAnimations(newNode, component, ':enter');
     }
 }

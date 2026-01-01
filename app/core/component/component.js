@@ -358,7 +358,9 @@ export class Component extends HTMLElement {
                 newDom.insertBefore(node.cloneNode(true), newDom.firstChild);
             });
 
-        render(this.shadowRoot, newDom, this);
+        // Capture current refs for this render cycle
+        const currentRefs = { ...this._refs };
+        render(this.shadowRoot, newDom, this, currentRefs);
 
         if (this.onUpdate) {
             this.onUpdate();
