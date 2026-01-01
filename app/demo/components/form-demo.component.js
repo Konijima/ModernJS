@@ -22,7 +22,7 @@ export const FormDemoComponent = Component.create({
             border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
             padding: 2rem;
-            max-width: 500px;
+            max-width: 800px;
             margin: 0 auto;
         }
         .form-group {
