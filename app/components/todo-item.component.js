@@ -13,63 +13,58 @@ export const TodoItem = Component.create({
         li {
             display: flex;
             align-items: center;
-            padding: 12px 16px;
-            border-bottom: 1px solid #f3f4f6;
-            gap: 16px;
-            transition: all 0.2s;
-            border-radius: 8px;
-            margin-bottom: 4px;
-            background: white;
+            padding: 0.875rem 1rem;
+            gap: 1rem;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: var(--bg-color);
+            border: 1px solid transparent;
         }
         li:hover {
-            background: #f9fafb;
+            background: var(--card-hover);
+            border-color: var(--border-color);
         }
         li.completed span {
             text-decoration: line-through;
-            color: #9ca3af;
+            color: var(--text-subtle);
         }
         li.completed {
-            background: #f9fafb;
-        }
-        input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            accent-color: #2563eb;
-            margin: 0;
-            border-radius: 4px;
+            opacity: 0.6;
         }
         span {
             flex: 1;
-            font-size: 1rem;
-            color: #374151;
+            font-size: 0.9375rem;
+            color: var(--text-color);
             transition: color 0.2s;
             cursor: pointer;
             user-select: none;
+            line-height: 1.4;
         }
-        .delete-btn {
+        .btn-icon {
+            opacity: 0.4;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
             background: transparent;
-            color: #ef4444;
+            color: var(--text-subtle);
             border: none;
-            padding: 8px;
-            border-radius: 6px;
             cursor: pointer;
-            font-size: 1rem;
             transition: all 0.2s;
-            opacity: 0;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 0.875rem;
         }
-        li:hover .delete-btn {
+        .btn-icon:hover {
+            opacity: 1;
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger-color);
+        }
+        li:hover .btn-icon {
             opacity: 1;
         }
-        .delete-btn:hover {
-            background: #fee2e2;
-            color: #dc2626;
-        }
         @media (max-width: 640px) {
-            .delete-btn {
+            .btn-icon {
                 opacity: 1;
             }
         }
@@ -97,6 +92,7 @@ export const TodoItem = Component.create({
                 <li class="${todo && todo.completed ? 'completed' : ''}">
                     <input 
                         type="checkbox" 
+                        class="form-checkbox"
                         ${todo && todo.completed ? 'checked' : ''}
                         onchange="this.getRootNode().host.dispatchEvent(new CustomEvent('toggle', { detail: ${todo ? todo.id : 'null'} }))"
                     >
@@ -104,10 +100,10 @@ export const TodoItem = Component.create({
                         ${todo ? todo.text : ''}
                     </span>
                     <button 
-                        class="delete-btn" 
+                        class="btn-icon danger" 
                         title="Delete task"
                         onclick="event.stopPropagation(); this.getRootNode().host.dispatchEvent(new CustomEvent('remove', { detail: ${todo ? todo.id : 'null'} }))"
-                    >🗑️</button>
+                    ><i class="fas fa-trash"></i></button>
                 </li>
             }
         `;

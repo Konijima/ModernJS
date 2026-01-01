@@ -3,9 +3,8 @@ import { Router } from './core/router/router.js';
 import './core/router/router-outlet.component.js';
 import './core/modal/modal.component.js';
 import { HomePage } from './pages/home.page.js';
-import { DemoPage } from './pages/demo.page.js';
-import { TodoPage } from './pages/todo.page.js';
-import { CounterPage } from './pages/counter.page.js';
+import { GetStartedPage } from './pages/get-started.page.js';
+import { FeaturesPage } from './pages/features.page.js';
     
 /**
  * Main Application Component.
@@ -31,37 +30,32 @@ export const App = Component.create({
                 }
             },
             { 
-                path: '/demo', 
-                component: DemoPage,
+                path: '/get-started', 
+                component: GetStartedPage,
                 data: {
-                    title: 'ModernJS - Demo',
+                    title: 'ModernJS - Get Started',
                     meta: [
-                        { name: 'description', content: 'Feature demonstration' }
+                        { name: 'description', content: 'Quick start guide for ModernJS' }
                     ]
                 }
             },
             { 
-                path: '/todo', 
-                component: TodoPage,
+                path: '/features', 
+                component: FeaturesPage,
                 data: {
-                    title: 'ModernJS - Todo List',
+                    title: 'ModernJS - Features',
                     meta: [
-                        { name: 'description', content: 'Manage your tasks efficiently' }
-                    ]
-                }
-            },
-            { 
-                path: '/counter', 
-                component: CounterPage,
-                data: {
-                    title: 'ModernJS - Counter',
-                    meta: [
-                        { name: 'description', content: 'Simple counter example' }
+                        { name: 'description', content: 'Feature demonstrations and examples' }
                     ]
                 }
             },
             { path: '**', component: HomePage }
         ]);
+
+        // Subscribe to route changes to update nav
+        this.router.subscribe(() => {
+            this.update();
+        });
     },
 
     navigateToHome(e) {
@@ -69,136 +63,34 @@ export const App = Component.create({
         this.router.navigate('/');
     },
 
-    navigateToTodo(e) {
+    navigateToGetStarted(e) {
         e.preventDefault();
-        this.router.navigate('/todo');
+        this.router.navigate('/get-started');
     },
 
-    navigateToCounter(e) {
+    navigateToFeatures(e) {
         e.preventDefault();
-        this.router.navigate('/counter');
-    },
-
-    navigateToDemo(e) {
-        e.preventDefault();
-        this.router.navigate('/demo');
+        this.router.navigate('/features');
     },
 
     styles: `
         :host {
             display: block;
             min-height: 100vh;
-            background-color: #f3f4f6;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            color: #1f2937;
-            padding: 1rem;
+            background-color: var(--bg-color);
+            font-family: inherit;
+            color: var(--text-color);
+            padding: 0;
             box-sizing: border-box;
         }
-
-        @media (min-width: 768px) {
-            :host {
-                padding: 2rem;
-            }
-        }
-
-        .app-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 1rem;
-        }
-
-        @media (min-width: 768px) {
-            .app-container {
-                padding: 2rem;
-            }
-        }
-
-        .app-header {
-            text-align: center;
-            margin-bottom: 2rem;
-            padding-top: 1rem;
-        }
-
-        @media (min-width: 768px) {
-            .app-header {
-                margin-bottom: 3rem;
-            }
-        }
-
-        .app-title {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #111827;
-        }
-
-        @media (min-width: 768px) {
-            .app-title {
-                font-size: 3rem;
-            }
-        }
-
-        .app-footer {
-            margin-top: 3rem;
-            text-align: center;
-            padding: 1rem;
-            border-top: 1px solid #e5e7eb;
-            color: #6b7280;
-        }
-
-        .app-footer a {
-            color: #3b82f6;
-            text-decoration: none;
-        }
-
-        .app-footer a:hover {
-            text-decoration: underline;
-        }
-        
-        .highlight {
-            background: linear-gradient(135deg, #dd0031 0%, #c3002f 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .app-subtitle {
-            color: #6b7280;
-            font-size: 1.25rem;
-            margin-top: 1rem;
-            font-weight: 400;
-        }
-
-        .nav-links {
-            display: flex;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-top: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        @media (min-width: 768px) {
-            .nav-links {
-                gap: 1rem;
-            }
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: #4b5563;
-            font-weight: 500;
-            padding: 0.5rem 1rem;
-            border-radius: 0.375rem;
-            transition: all 0.2s;
-            background: white;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        }
-
-        .nav-links a:hover {
-            background-color: #f9fafb;
-            color: #2563eb;
+        main {
+            flex: 1;
         }
     `,
 
     template() {
+        const path = window.location.pathname;
+        const isActive = (route) => path === route ? 'active' : '';
         return `
             <div class="app-container">
                 <header class="app-header">
@@ -206,10 +98,9 @@ export const App = Component.create({
                     <p class="app-subtitle">Native Web Components • Reactive State • Dependency Injection</p>
                     
                     <nav class="nav-links">
-                        <a href="/" (click)="navigateToHome">Home</a>
-                        <a href="/todo" (click)="navigateToTodo">Todo List</a>
-                        <a href="/counter" (click)="navigateToCounter">Counter</a>
-                        <a href="/demo" (click)="navigateToDemo">Demo</a>
+                        <a href="/" class="nav-link ${isActive('/')}" (click)="navigateToHome">Home</a>
+                        <a href="/get-started" class="nav-link ${isActive('/get-started')}" (click)="navigateToGetStarted">Get Started</a>
+                        <a href="/features" class="nav-link ${isActive('/features')}" (click)="navigateToFeatures">Features</a>
                     </nav>
                 </header>
                 

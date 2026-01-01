@@ -14,112 +14,79 @@ export const HomePage = Component.create({
         'fade-in': {
             ':enter': {
                 keyframes: [
-                    { opacity: 0, transform: 'translateY(20px)' },
-                    { opacity: 1, transform: 'translateY(0)' }
+                    { opacity: 0 },
+                    { opacity: 1 }
                 ],
-                options: { duration: 500, easing: 'ease-out', fill: 'forwards' }
+                options: { duration: 300, easing: 'ease-out', fill: 'forwards' }
             }
         },
         'stagger': {
             ':enter': {
                 keyframes: [
-                    { opacity: 0, transform: 'scale(0.9)' },
-                    { opacity: 1, transform: 'scale(1)' }
+                    { opacity: 0 },
+                    { opacity: 1 }
                 ],
-                options: { duration: 400, easing: 'ease-out', fill: 'forwards' }
+                options: { duration: 300, easing: 'ease-out', fill: 'forwards' }
             }
         }
     },
+    openGitHub() {
+        window.open('https://github.com/Konijima/ModernJS', '_blank');
+    },
+
+    goToGetStarted() {
+        this.router.navigate('/get-started');
+    },
+
     styles: `
         :host {
             display: block;
-            text-align: center;
-            padding: 1rem;
-        }
-
-        @media (min-width: 768px) {
-            :host {
-                padding: 2rem;
-            }
-        }
-
-        h2 {
-            color: #1f2937;
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-        p {
-            color: #4b5563;
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.6;
-        }
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-            text-align: left;
-        }
-        .feature-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            border: 1px solid #e5e7eb;
-        }
-        .feature-title {
-            font-weight: 600;
-            color: #111827;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .btn-primary {
-            background: #2563eb;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            margin-left: 10px;
-        }
-        .btn-primary:hover {
-            background: #1d4ed8;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
     `,
     template: `
-        <div animate="fade-in">
-            <h2>Welcome to ModernJS</h2>
-            <p>
+        <div class="hero-section" animate="fade-in">
+            <span class="badge" style="margin-bottom: 1.5rem;">
+                <i class="fas fa-code"></i> Open Source Framework
+            </span>
+            
+            <h2 class="hero-title">
+                Build <span class="highlight">Modern</span> Web Apps
+            </h2>
+            
+            <p class="hero-description">
                 A lightweight, dependency-free JavaScript framework demonstrating 
                 modern web capabilities with Web Components, Reactive State, and Dependency Injection.
             </p>
             
-            <div class="features">
-                <div class="feature-card" animate="stagger" style="animation-delay: 100ms">
-                    <div class="feature-title">⚡️ {{ 'Web Components' | uppercase }}</div>
-                    <p>Built on standard Custom Elements and Shadow DOM for true encapsulation.</p>
+            <div class="hero-actions">
+                <button class="btn btn-primary btn-lg" (click)="goToGetStarted">
+                    <i class="fas fa-play"></i> Get Started
+                </button>
+                <button class="btn btn-secondary btn-lg" (click)="openGitHub">
+                    <i class="fab fa-github"></i> View on GitHub
+                </button>
+            </div>
+
+            <div class="features-grid">
+                <div class="card hover-card" animate="stagger" style="animation-delay: 100ms">
+                    <div class="icon-box" style="margin-bottom: 1rem;"><i class="fas fa-bolt"></i></div>
+                    <h3 class="feature-title">{{ 'Web Components' | uppercase }}</h3>
+                    <p class="text-muted" style="font-size: 0.9375rem; line-height: 1.6; margin: 0;">Built on standard Custom Elements and Shadow DOM for true encapsulation.</p>
                 </div>
-                <div class="feature-card" animate="stagger" style="animation-delay: 200ms">
-                    <div class="feature-title">🔄 Reactive State</div>
-                    <p>Proxy-based state management with automatic DOM updates and diffing.</p>
+                <div class="card hover-card" animate="stagger" style="animation-delay: 150ms">
+                    <div class="icon-box" style="margin-bottom: 1rem;"><i class="fas fa-sync"></i></div>
+                    <h3 class="feature-title">Reactive State</h3>
+                    <p class="text-muted" style="font-size: 0.9375rem; line-height: 1.6; margin: 0;">Proxy-based state management with automatic DOM updates and diffing.</p>
                 </div>
-                <div class="feature-card" animate="stagger" style="animation-delay: 300ms">
-                    <div class="feature-title">💉 Dependency Injection</div>
-                    <p>Built-in DI container for managing services and component dependencies.</p>
+                <div class="card hover-card" animate="stagger" style="animation-delay: 200ms">
+                    <div class="icon-box" style="margin-bottom: 1rem;"><i class="fas fa-syringe"></i></div>
+                    <h3 class="feature-title">Dependency Injection</h3>
+                    <p class="text-muted" style="font-size: 0.9375rem; line-height: 1.6; margin: 0;">Built-in DI container for managing services and component dependencies.</p>
                 </div>
-                <div class="feature-card" animate="stagger" style="animation-delay: 400ms">
-                    <div class="feature-title">🛣️ Routing</div>
-                    <p>Client-side routing system for Single Page Application experience.</p>
+                <div class="card hover-card" animate="stagger" style="animation-delay: 250ms">
+                    <div class="icon-box" style="margin-bottom: 1rem;"><i class="fas fa-route"></i></div>
+                    <h3 class="feature-title">Routing</h3>
+                    <p class="text-muted" style="font-size: 0.9375rem; line-height: 1.6; margin: 0;">Client-side routing system for Single Page Application experience.</p>
                 </div>
             </div>
         </div>

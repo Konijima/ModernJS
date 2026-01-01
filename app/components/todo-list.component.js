@@ -25,74 +25,60 @@ export const TodoList = Component.create({
             display: block;
             font-family: inherit;
         }
-        .container {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            border: 1px solid #e5e7eb;
-        }
-        @media (min-width: 768px) {
-            .container {
-                padding: 2rem;
-            }
-        }
-        h2 {
-            margin-top: 0;
-            color: #111827;
-            font-weight: 700;
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
+        .header {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .header-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary-glow);
+            color: var(--primary-color);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+        h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
         }
         .input-group {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-bottom: 2rem;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
         }
         @media (min-width: 768px) {
             .input-group {
                 flex-direction: row;
             }
         }
-        input {
-            flex: 1;
-            padding: 12px 16px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.2s;
+        /* Input styles - defined here to prevent flash of unstyled content */
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1.25rem;
+            border: 1px solid var(--border-color, #1f2937);
+            border-radius: 1rem;
+            font-size: 0.9375rem;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             outline: none;
-            background: #f9fafb;
-            color: #1f2937;
+            background: var(--input-bg, #111827);
+            color: var(--text-color, #f9fafb);
+            box-sizing: border-box;
         }
-        input:focus {
-            border-color: #2563eb;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        .form-input::placeholder {
+            color: var(--text-subtle, #6b7280);
         }
-        button.add-btn {
-            padding: 12px 24px;
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.95rem;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        }
-        button.add-btn:hover {
-            background: #1d4ed8;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-        button.add-btn:active {
-            transform: translateY(0);
+        .form-input:focus {
+            border-color: var(--primary-color, #38bdf8);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+            background: var(--bg-color, #030712);
         }
         ul {
             list-style: none;
@@ -101,36 +87,62 @@ export const TodoList = Component.create({
         }
         .empty-state {
             text-align: center;
-            color: #6b7280;
+            color: var(--text-muted);
             padding: 3rem 2rem;
-            background: #f9fafb;
-            border-radius: 8px;
-            border: 2px dashed #e5e7eb;
+            background: var(--bg-color);
+            border-radius: 1rem;
+            border: 1px dashed var(--border-subtle);
+        }
+        .empty-state i {
+            display: block;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
         }
         .stats {
             margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid #e5e7eb;
-            color: #6b7280;
-            font-size: 0.875rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-subtle);
+            font-size: 0.8125rem;
             display: flex;
             justify-content: space-between;
+            align-items: center;
+        }
+        .success-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
             font-weight: 500;
+            border-radius: 9999px;
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.2);
         }
     `,
 
     template() {
         return `
-            <div class="container">
-                <h2>✨ My Tasks</h2>
+            <div class="card">
+                <div class="header">
+                    <div class="header-icon"><i class="fas fa-check-double"></i></div>
+                    <h2>My Tasks</h2>
+                </div>
                 
                 <div class="input-group">
-                    <input placeholder="What needs to be done?" onkeydown="if(event.key==='Enter') this.getRootNode().host.addTodo()">
-                    <button class="add-btn" onclick="this.getRootNode().host.addTodo()">Add</button>
+                    <input class="form-input" placeholder="What needs to be done?" onkeydown="if(event.key==='Enter') this.getRootNode().host.addTodo()">
+                    <button class="btn btn-primary" onclick="this.getRootNode().host.addTodo()">
+                        <i class="fas fa-plus"></i> Add
+                    </button>
                 </div>
 
                 @if (this.state.todos.length === 0) {
-                    <div class="empty-state">No tasks yet. Add one above to get started! 🚀</div>
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        No tasks yet. Add one above to get started!
+                    </div>
                 } @else {
                     <ul>
                         @for (let todo of this.state.todos) {
@@ -143,9 +155,9 @@ export const TodoList = Component.create({
                     </ul>
 
                     <div class="stats">
-                        <span>{{ this.state.todos.filter(t => t.completed).length }} / {{ this.state.todos.length }} completed</span>
+                        <span>{{ this.state.todos.filter(t => t.completed).length }} of {{ this.state.todos.length }} completed</span>
                         @if (this.state.todos.every(t => t.completed)) {
-                            <span style="color: #059669; font-weight: 600;">All done! 🎉</span>
+                            <span class="success-badge"><i class="fas fa-check"></i> All done!</span>
                         }
                     </div>
                 }

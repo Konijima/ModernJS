@@ -15,38 +15,29 @@ export const Counter = Component.create({
             display: block;
             text-align: center;
         }
-        button {
-            background: #2563eb;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        }
-        button:hover {
-            background: #1d4ed8;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-        button:active {
-            transform: translateY(0);
+        .count-display {
+            padding: 2rem 0;
         }
         .count {
-            font-size: 2.5rem;
+            font-size: 4rem;
             font-weight: 800;
-            color: #2563eb;
-            margin: 0.5rem 0 1.5rem 0;
+            background: linear-gradient(135deg, var(--primary-color), #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             line-height: 1;
             letter-spacing: -0.05em;
+            margin-bottom: 1.5rem;
         }
         @media (min-width: 768px) {
             .count {
-                font-size: 3.5rem;
+                font-size: 5rem;
             }
+        }
+        .btn-group {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
         }
     `,
     state: {
@@ -68,9 +59,13 @@ export const Counter = Component.create({
 
     template() {
         return `
-            <div>
+            <div class="count-display">
                 <div class="count">${this.state.count}</div>
-                <button (click)="handleIncrement">Increment +</button>
+                <div class="btn-group">
+                    <button class="btn btn-primary btn-lg" (click)="handleIncrement">
+                        <i class="fas fa-plus"></i> Increment
+                    </button>
+                </div>
             </div>
         `;
     },

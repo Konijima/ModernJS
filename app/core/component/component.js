@@ -251,6 +251,13 @@ export class Component extends HTMLElement {
             newDom.insertBefore(style, newDom.firstChild);
         }
 
+        // Inject global styles from document head
+        Array.from(document.head.querySelectorAll('link[rel="stylesheet"], style'))
+            .reverse()
+            .forEach(node => {
+                newDom.insertBefore(node.cloneNode(true), newDom.firstChild);
+            });
+
         render(this.shadowRoot, newDom, this);
     }
 }

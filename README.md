@@ -8,12 +8,30 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![JavaScript](https://img.shields.io/badge/ES6%2B-JavaScript-yellow)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![Vite](https://img.shields.io/badge/Bundler-Vite-646Cff)](https://vitejs.dev/)
+[![Vitest](https://img.shields.io/badge/Testing-Vitest-729B1B)](https://vitest.dev/)
 
 </div>
 
 ---
 
-> **Note**: *Only `vite` is used for the dev server and bundling. The runtime framework has zero dependencies.*
+> **Note**: *Only `vite` is used for the dev server and bundling, and `vitest` for testing. The runtime framework has zero dependencies.*
+
+## 📖 Table of Contents
+
+- [Features](#-features)
+- [Installation](#-installation)
+- [Development](#-development)
+- [Testing](#-testing)
+- [Project Structure](#-project-structure)
+- [Core Concepts](#-core-concepts)
+  - [Components](#components)
+  - [Services & DI](#services--dependency-injection)
+  - [Templates](#templates)
+  - [Routing](#routing)
+  - [Pipes](#pipes)
+  - [State Management](#state-management)
+  - [Internationalization](#internationalization-i18n)
+- [Examples](#-examples-included)
 
 ## 🚀 Features
 
@@ -21,24 +39,25 @@
 - **Reactive State**: Uses `Proxy` for transparent state management and DOM updates.
 - **Dependency Injection**: Built-in DI container for managing services and singletons.
 - **Client-Side Routing**: Angular-inspired routing with `Router`, `RouterOutlet`, and lazy loading support.
-- **Internationalization (i18n)**: Built-in support for multi-language applications with `I18nService` and `TranslatePipe`.
+- **Internationalization (i18n)**: Built-in support for multi-language applications.
 - **Animations**: Native Web Animations API integration with `:enter` and `:leave` triggers.
 - **Virtual DOM & Diffing**: Efficient DOM updates with a custom rendering engine.
 - **Template Engine**: Custom syntax supporting `@if`, `@for`, and `{{ interpolation }}`.
-- **State Management**:
-  - Component-level local state.
-  - Global services with `subscribe` pattern.
-  - Persistence examples (SessionStorage, IndexedDB).
+- **Comprehensive Testing**: Fully tested core modules using Vitest and JSDOM.
 
 ## 🛠️ Installation
 
+Clone the repository and install dependencies:
+
 ```bash
+git clone https://github.com/Konijima/ModernJS.git
+cd ModernJS
 npm install
 ```
 
-## 🚦 Running the App
+## 🚦 Development
 
-Start the development server:
+Start the development server with Hot Module Replacement (HMR):
 
 ```bash
 npm run dev
@@ -50,36 +69,70 @@ Build for production:
 npm run build
 ```
 
+Preview the production build:
+
+```bash
+npm run preview
+```
+
+## 🧪 Testing
+
+The framework includes a comprehensive test suite using **Vitest** and **JSDOM**.
+
+Run all tests:
+
+```bash
+npm test
+```
+
+Run tests in watch mode (default):
+
+```bash
+npm test -- --watch
+```
+
+Run with coverage:
+
+```bash
+npm test -- --coverage
+```
+
 ## 📂 Project Structure
 
 ```
 app/
-├── components/     # UI Components
+├── components/     # Reusable UI Components
 ├── pages/          # Page Components (Route Views)
 ├── core/           # Framework Internals
 │   ├── animations/ # Animation Manager
-│   ├── component/  # Component & Renderer
-│   ├── di/         # Dependency Injection
-│   ├── modal/      # Modal System
-│   ├── pipes/      # Pipe System
+│   ├── component/  # Component Factory, Renderer & Template Engine
+│   ├── di/         # Dependency Injection Container
+│   ├── modal/      # Modal Service & Component
+│   ├── pipes/      # Pipe System & Built-in Pipes
 │   ├── router/     # Routing System
-│   └── services/   # Base Services
-├── services/       # Business Logic & State
+│   └── services/   # Base Service Class
+├── services/       # Application Business Logic & State
+├── pipes/          # Custom Application Pipes
+├── i18n/           # Translation Files
 └── utils/          # Utilities (e.g., Database)
+tests/              # Unit Tests
 ```
 
 ## 🧩 Core Concepts
 
 ### Components
 
-Components extend the `Component` class and use a declarative configuration:
+Components extend the `Component` class and use a declarative configuration. They are registered as Custom Elements.
 
 ```javascript
-import { Component } from '../core/component.js';
+import { Component } from '../core/component/component.js';
 
 export const MyComponent = Component.create({
     selector: 'my-component',
     state: { count: 0 },
+    styles: `
+        button { color: blue; }
+    `,
     template() {
         return `<button (click)="increment">Count: {{ this.state.count }}</button>`;
     },
@@ -89,9 +142,9 @@ export const MyComponent = Component.create({
 });
 ```
 
-### Services & DI
+### Services & Dependency Injection
 
-Services manage global state and business logic. They are injected into components automatically.
+Services manage global state and business logic. They are singletons and can be injected into components automatically.
 
 ```javascript
 // Define a service
@@ -100,29 +153,21 @@ export class UserService extends Service { ... }
 // Inject into component
 export const UserProfile = Component.create({
     inject: { userService: UserService },
-    // ...
+    onInit() {
+        this.user = this.userService.getUser();
+    }
 });
 ```
 
 ### Templates
 
-The template engine supports control flow directives:
+The custom template engine supports control flow directives and interpolation:
 
 - **Interpolation**: `{{ this.state.value }}`
 - **Conditionals**: `@if (condition) { ... } @else { ... }`
 - **Loops**: `@for (let item of list) { ... }`
 - **Event Binding**: `(click)="methodName"`
 - **Property Binding**: `[prop]="value"`
-
-## 📝 Examples Included
-
-1.  **Global Counter**: Demonstrates `sessionStorage` persistence and cross-component state sharing.
-2.  **Todo List**: Demonstrates `IndexedDB` persistence, list rendering, and complex state updates.
-3.  **Feature Demo**: Showcases the Pipe system, Modal service, and Internationalization (i18n).
-
----
-
-Built with ❤️ using vanilla JavaScript.
 
 ### Routing
 
@@ -135,78 +180,59 @@ this.router.register([
         component: HomePage,
         data: { title: 'Home' } // Meta tags support
     },
-    { path: '/todo', component: TodoPage },
+    { path: '/features', component: FeaturesPage },
     { path: '**', component: HomePage } // Wildcard
 ]);
 ```
 
-Use `<router-outlet>` to display the matched component and `this.router.navigate('/path')` to navigate.
-
-### Animations
-
-Add animations to your components using the Web Animations API syntax:
-
-```javascript
-export const MyPage = Component.create({
-    animations: {
-        'fade-in': {
-            ':enter': {
-                keyframes: [{ opacity: 0 }, { opacity: 1 }],
-                options: { duration: 300 }
-            }
-        }
-    },
-    template: `<div animate="fade-in">...</div>`
-});
-```
+Use `<router-outlet>` to display the matched component and `this.router.navigate('/path')` to navigate programmatically.
 
 ### Pipes
 
 Transform values in your templates using pipes. The framework comes with built-in pipes (`uppercase`, `lowercase`, `date`, `currency`) and supports custom pipes.
 
-1. **Register Pipes in Component:**
 ```javascript
-import { UpperCasePipe, DatePipe } from '../core/pipes/common.pipes.js';
-
+// Register Pipes
 export const MyComponent = Component.create({
     pipes: {
         uppercase: UpperCasePipe,
         date: DatePipe
     },
-    // ...
+    template: `
+        <p>Hello {{ 'world' | uppercase }}</p>
+        <p>Date: {{ new Date() | date:'full' }}</p>
+    `
 });
 ```
 
-2. **Use in Template:**
-```html
-<p>Hello {{ 'world' | uppercase }}</p>
-<p>Date: {{ new Date() | date:'full' }}</p>
-```
+### State Management
 
-3. **Use Programmatically:**
-```javascript
-const datePipe = this.getPipe('date');
-const formatted = datePipe.transform(new Date(), 'full');
-```
+- **Component State**: Local reactive state using `this.state`.
+- **Global State**: Services extend the `Service` class which provides `subscribe` and `notify` methods.
+- **Persistence**: Examples included for `sessionStorage` and `IndexedDB`.
 
 ### Internationalization (i18n)
 
 The framework provides a simple yet powerful i18n system using a service and a pipe.
 
-1. **Define Translations:**
-```javascript
-// en.js
-export const en = { 'HELLO': 'Hello World' };
-```
-
-2. **Use in Template:**
 ```html
+<!-- Use in Template -->
 <h1>{{ 'HELLO' | translate }}</h1>
 ```
 
-3. **Switch Language:**
 ```javascript
+// Switch Language
 this.i18nService.setLocale('fr');
 ```
+
+## 📝 Examples Included
+
+1.  **Global Counter**: Demonstrates `sessionStorage` persistence and cross-component state sharing.
+2.  **Todo List**: Demonstrates `IndexedDB` persistence, list rendering, and complex state updates.
+3.  **Feature Demo**: Showcases the Pipe system, Modal service, and Internationalization (i18n).
+
+---
+
+Built with ❤️ using vanilla JavaScript.
 
 
