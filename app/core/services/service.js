@@ -1,15 +1,17 @@
+import { BehaviorSubject } from '../reactivity/observable.js';
+
 /**
  * Base Service class for state management.
  * Implements a simple observable pattern for state changes.
  */
-export class Service {
+export class Service extends BehaviorSubject {
     /**
      * Create a new Service instance.
      * @param {any} [initialState=null] - The initial state of the service
      */
     constructor(initialState = null) {
-        this.listeners = new Set();
-        this.state = initialState;
+        super(initialState);
+        this.state = initialState; // Keep for backward compatibility
     }
 
     /**
@@ -18,7 +20,7 @@ export class Service {
      */
     setState(newState) {
         this.state = newState;
-        this.notify();
+        this.next(newState);
     }
 
     /**
@@ -26,21 +28,7 @@ export class Service {
      * @returns {any} The current state
      */
     getState() {
-        return this.state;
-    }
-
-    /**
-     * Subscribe to state changes.
-     * The listener is called immediately with the current state.
-     * 
-     * @param {Function} listener - Callback function receiving the state
-     * @returns {Function} Unsubscribe function
-     */
-    subscribe(listener) {
-        this.listeners.add(listener);
-        // Return current state immediately
-        listener(this.state);
-        return () => this.listeners.delete(listener);
+        return this.value;
     }
 
     /**
@@ -49,10 +37,10 @@ export class Service {
      * 
      * @param {Function} selector - Function to select part of the state (state) => value
      * @param {Function} callback - Function called with the new value (value) => void
-     * @returns {Function} Unsubscribe function
+     * @returns {Object} Subscription object
      */
     select(selector, callback) {
-        let previousValue = selector(this.state);
+        let previousValue = selector(this.value);
         
         // Emit initial value immediately
         callback(previousValue);
@@ -66,13 +54,5 @@ export class Service {
                 callback(newValue);
             }
         });
-    }
-
-    /**
-     * Notify all listeners of the current state.
-     * @protected
-     */
-    notify() {
-        this.listeners.forEach(listener => listener(this.state));
     }
 }

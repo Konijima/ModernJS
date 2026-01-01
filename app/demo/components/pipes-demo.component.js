@@ -35,7 +35,7 @@ export const PipesDemoComponent = Component.create({
     },
     onDestroy() {
         if (this.timer) clearInterval(this.timer);
-        if (this.langSub) this.langSub();
+        if (this.langSub) this.langSub.unsubscribe();
     },
     handleLangClick(e) {
         const lang = e.target.closest('.btn-secondary').dataset.lang;

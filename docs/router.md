@@ -73,6 +73,26 @@ You can redirect a route to another path using the `redirectTo` property. This i
 { path: '', redirectTo: 'home' }
 ```
 
+## Route Guards
+
+You can protect routes using the `canActivate` property. Guards are classes that implement a `canActivate` method returning a boolean, Promise<boolean>, or Observable<boolean>.
+
+```javascript
+// auth.guard.js
+export class AuthGuard {
+    canActivate(route, state) {
+        return isLoggedIn(); 
+    }
+}
+
+// routes.js
+{ 
+    path: '/admin', 
+    component: AdminPage, 
+    canActivate: [AuthGuard] 
+}
+```
+
 ## Navigation
 
 ### Programmatic Navigation

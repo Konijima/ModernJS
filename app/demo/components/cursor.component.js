@@ -25,7 +25,7 @@ export const CursorComponent = Component.create({
     onInit() {
         this.initialized = false;
         
-        this.deviceService.subscribe(({ isMobile }) => {
+        this.sub = this.deviceService.subscribe(({ isMobile }) => {
             if (isMobile) {
                 this.style.display = 'none';
                 this.cleanupWebGL();
@@ -40,6 +40,7 @@ export const CursorComponent = Component.create({
     },
     
     onDestroy() {
+        if (this.sub) this.sub.unsubscribe();
         this.cleanupWebGL();
     },
 

@@ -1,4 +1,7 @@
 import { Pipe } from './pipe.js';
+import { AsyncPipe } from './async.pipe.js';
+
+export { AsyncPipe };
 
 export class UpperCasePipe extends Pipe {
     transform(value) {

@@ -232,7 +232,13 @@ export class Component extends HTMLElement {
      * Cleans up subscriptions and calls onDestroy hook.
      */
     disconnectedCallback() {
-        this._subscriptions.forEach(unsubscribe => unsubscribe());
+        this._subscriptions.forEach(unsubscribe => {
+            if (typeof unsubscribe === 'function') {
+                unsubscribe();
+            } else if (unsubscribe && typeof unsubscribe.unsubscribe === 'function') {
+                unsubscribe.unsubscribe();
+            }
+        });
         
         // Clean up pipes
         if (this._pipes) {

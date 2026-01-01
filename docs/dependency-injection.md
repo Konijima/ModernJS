@@ -70,6 +70,37 @@ export class UserService {
 }
 ```
 
+## State Management
+
+Services in ModernJS extend `BehaviorSubject`, making them reactive by default.
+
+```javascript
+import { Service } from '../core/services/service.js';
+
+export class CounterService extends Service {
+    constructor() {
+        super({ count: 0 });
+    }
+
+    increment() {
+        const current = this.value;
+        this.next({ count: current.count + 1 });
+    }
+}
+```
+
+Components can subscribe to the entire state or select specific slices.
+
+```javascript
+// In Component
+onInit() {
+    // Select specific slice
+    this.counterService.select(state => state.count, count => {
+        this.state.count = count;
+    });
+}
+```
+
 ## Manual Resolution
 
 You can manually resolve a service instance using the `resolve` function. This is useful outside of the component/service context.

@@ -1,4 +1,5 @@
 import { MetaService } from '../services/meta.service.js';
+import { resolve } from '../di/di.js';
 
 /**
  * Router Service
@@ -42,7 +43,7 @@ export class Router {
      * Internal method to handle route matching and notification
      * @param {string} path 
      */
-    handleRoute(path) {
+    async handleRoute(path) {
         let matchedRoutes = this.findRoutes(this.routes, path);
         
         // Fallback to wildcard route if defined
@@ -54,6 +55,39 @@ export class Router {
         }
 
         if (matchedRoutes) {
+            // Check Guards
+            for (const route of matchedRoutes) {
+                if (route.canActivate) {
+                    for (const Guard of route.canActivate) {
+                        try {
+                            const guard = resolve(Guard);
+                            let result = guard.canActivate(route, this.currentRoute);
+                            
+                            if (result && typeof result.then === 'function') {
+                                result = await result;
+                            } else if (result && typeof result.subscribe === 'function') {
+                                // Simple Observable handling: take first value
+                                result = await new Promise((resolve) => {
+                                    const sub = result.subscribe(val => {
+                                        resolve(val);
+                                        if (sub.unsubscribe) sub.unsubscribe();
+                                        else if (typeof sub === 'function') sub();
+                                    });
+                                });
+                            }
+
+                            if (!result) {
+                                console.warn(`[Router] Navigation prevented by guard ${Guard.name}`);
+                                return;
+                            }
+                        } catch (e) {
+                            console.error(`[Router] Error in guard ${Guard.name}`, e);
+                            return;
+                        }
+                    }
+                }
+            }
+
             // Handle Redirects
             const lastRoute = matchedRoutes[matchedRoutes.length - 1];
             if (lastRoute.redirectTo) {

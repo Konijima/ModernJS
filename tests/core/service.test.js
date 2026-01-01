@@ -25,8 +25,8 @@ describe('Service', () => {
         const service = new Service(0);
         const listener = vi.fn();
         
-        const unsubscribe = service.subscribe(listener);
-        unsubscribe();
+        const sub = service.subscribe(listener);
+        sub.unsubscribe();
         
         service.setState(1);
         expect(listener).toHaveBeenCalledTimes(1); // Only the initial call
