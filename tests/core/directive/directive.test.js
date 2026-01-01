@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render } from '../../app/core/component/renderer.js';
-import { Directive } from '../../app/core/directive/directive.js';
+import { render } from '../../../app/core/component/renderer.js';
+import { Directive } from '../../../app/core/directive/directive.js';
 
 describe('Directive System', () => {
     let container;

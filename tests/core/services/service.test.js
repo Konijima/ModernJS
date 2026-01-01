@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { Service } from '../../app/core/services/service.js';
+import { Service } from '../../../app/core/services/service.js';
 
 describe('Service', () => {
     it('should initialize with default state', () => {

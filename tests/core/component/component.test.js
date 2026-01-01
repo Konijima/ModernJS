@@ -1,19 +1,19 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { Component } from '../../app/core/component/component.js';
-import * as di from '../../app/core/di/di.js';
-import * as renderer from '../../app/core/component/renderer.js';
-import * as template from '../../app/core/component/template.js';
+import { Component } from '../../../app/core/component/component.js';
+import * as di from '../../../app/core/di/di.js';
+import * as renderer from '../../../app/core/component/renderer.js';
+import * as template from '../../../app/core/component/template.js';
 
 // Mock dependencies
-vi.mock('../../app/core/di/di.js', () => ({
+vi.mock('../../../app/core/di/di.js', () => ({
     resolve: vi.fn()
 }));
 
-vi.mock('../../app/core/component/renderer.js', () => ({
+vi.mock('../../../app/core/component/renderer.js', () => ({
     render: vi.fn()
 }));
 
-vi.mock('../../app/core/component/template.js', () => ({
+vi.mock('../../../app/core/component/template.js', () => ({
     compileTemplate: vi.fn((tpl) => tpl)
 }));
 

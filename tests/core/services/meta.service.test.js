@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { MetaService } from '../../app/core/services/meta.service.js';
+import { MetaService } from '../../../app/core/services/meta.service.js';
 
 describe('MetaService', () => {
     let service;

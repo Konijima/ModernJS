@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render } from '../../app/core/component/renderer.js';
-import { AnimationManager } from '../../app/core/animations/animation.js';
+import { render } from '../../../app/core/component/renderer.js';
+import { AnimationManager } from '../../../app/core/animations/animation.js';
 
 // Mock AnimationManager
-vi.mock('../../app/core/animations/animation.js', () => ({
+vi.mock('../../../app/core/animations/animation.js', () => ({
     AnimationManager: {
         animate: vi.fn().mockResolvedValue(true)
     }

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { compileTemplate } from '../../app/core/component/template.js';
+import { compileTemplate } from '../../../app/core/component/template.js';
 
 describe('Template Engine', () => {
     it('should compile simple text', () => {

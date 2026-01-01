@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { resolve, Injectable } from '../../app/core/di/di.js';
+import { resolve, Injectable } from '../../../app/core/di/di.js';
 
 class MockServiceA {}
 class MockServiceB {

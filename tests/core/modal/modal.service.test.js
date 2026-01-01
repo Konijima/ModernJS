@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { ModalService } from '../../app/core/modal/modal.service.js';
+import { ModalService } from '../../../app/core/modal/modal.service.js';
 
 describe('ModalService', () => {
     let modalService;

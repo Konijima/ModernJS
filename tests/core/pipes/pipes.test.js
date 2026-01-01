@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { UpperCasePipe, LowerCasePipe, DatePipe, CurrencyPipe } from '../../app/core/pipes/common.pipes.js';
+import { UpperCasePipe, LowerCasePipe, DatePipe, CurrencyPipe } from '../../../app/core/pipes/common.pipes.js';
 
 describe('Common Pipes', () => {
     describe('UpperCasePipe', () => {

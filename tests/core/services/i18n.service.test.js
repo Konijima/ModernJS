@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { I18nService } from '../../app/core/services/i18n.service.js';
+import { I18nService } from '../../../app/core/services/i18n.service.js';
 
 // Mock config
-vi.mock('../../app/i18n/config.js', () => ({
+vi.mock('../../../app/i18n/config.js', () => ({
     DEFAULT_LANGUAGE: 'en',
     LANGUAGES: {
         en: {

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { Router } from '../../app/core/router/router.js';
+import { Router } from '../../../app/core/router/router.js';
 
 // Mock MetaService
 class MockMetaService {

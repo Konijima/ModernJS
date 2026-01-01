@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { TranslatePipe } from '../../app/core/pipes/translate.pipe.js';
-import { I18nService } from '../../app/core/services/i18n.service.js';
-import { resolve } from '../../app/core/di/di.js';
+import { TranslatePipe } from '../../../app/core/pipes/translate.pipe.js';
+import { I18nService } from '../../../app/core/services/i18n.service.js';
+import { resolve } from '../../../app/core/di/di.js';
 
 // Mock DI
-vi.mock('../../app/core/di/di.js', () => ({
+vi.mock('../../../app/core/di/di.js', () => ({
     resolve: vi.fn()
 }));
 
