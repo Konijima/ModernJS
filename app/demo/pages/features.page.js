@@ -42,6 +42,9 @@ export const FeaturesPage = Component.create({
             grid-template-columns: 250px 1fr;
             gap: 2rem;
             align-items: start;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
         }
         .header {
             grid-column: 1 / -1;
@@ -86,6 +89,31 @@ export const FeaturesPage = Component.create({
         }
         .content-area {
             min-width: 0; /* Prevent overflow */
+        }
+
+        @media (max-width: 768px) {
+            .page-container {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+                gap: 1.5rem;
+            }
+            .tabs {
+                position: static;
+                flex-direction: row;
+                overflow-x: auto;
+                padding: 0.5rem;
+                margin-bottom: 0;
+                scrollbar-width: none; /* Firefox */
+                -ms-overflow-style: none; /* IE/Edge */
+            }
+            .tabs::-webkit-scrollbar {
+                display: none; /* Chrome/Safari */
+            }
+            .tab {
+                width: auto;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
         }
     `,
     template() {
