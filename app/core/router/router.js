@@ -43,8 +43,20 @@ export class Router {
      * @param {string} path 
      */
     handleRoute(path) {
-        // Simple exact match for now, can be extended for params
-        let route = this.routes.find(r => r.path === path);
+        let route = null;
+        let params = {};
+
+        // Find matching route
+        for (const r of this.routes) {
+            if (r.path === '**') continue;
+
+            const match = this.matchPath(path, r.path);
+            if (match) {
+                route = r;
+                params = match;
+                break;
+            }
+        }
         
         // Fallback to wildcard route if defined
         if (!route) {
@@ -52,7 +64,8 @@ export class Router {
         }
 
         if (route) {
-            this.currentRoute = route;
+            // Create a new route object with params to avoid mutating the original config
+            this.currentRoute = { ...route, params };
             
             // Update Meta Tags if data is present
             if (route.data) {
@@ -63,6 +76,42 @@ export class Router {
         } else {
             console.warn(`[Router] No route found for path: ${path}`);
         }
+    }
+
+    /**
+     * Matches a URL against a route path pattern.
+     * Supports :param syntax.
+     * @param {string} url 
+     * @param {string} routePath 
+     * @returns {Object|null} Params object if matched, null otherwise
+     */
+    matchPath(url, routePath) {
+        // Exact match
+        if (url === routePath) return {};
+
+        // Convert route path to regex
+        const paramNames = [];
+        const regexPath = routePath.replace(/:([^\/]+)/g, (_, key) => {
+            paramNames.push(key);
+            return '([^/]+)';
+        });
+
+        // If no params were found and it wasn't an exact match (checked above),
+        // then it's not a match unless the regex logic matches (which it shouldn't if no params)
+        // But we need to be careful: if routePath has no params, regexPath === routePath.
+        if (regexPath === routePath) return null;
+
+        const regex = new RegExp(`^${regexPath}$`);
+        const match = url.match(regex);
+
+        if (match) {
+            const params = {};
+            paramNames.forEach((name, index) => {
+                params[name] = match[index + 1];
+            });
+            return params;
+        }
+        return null;
     }
 
     /**

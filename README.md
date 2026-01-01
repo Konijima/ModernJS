@@ -24,15 +24,6 @@
 - [Testing](#-testing)
 - [Documentation](#-documentation)
 - [Project Structure](#-project-structure)
-- [Core Concepts](#-core-concepts)
-  - [Components](#components)
-  - [Services & DI](#services--dependency-injection)
-  - [Templates](#templates)
-  - [Routing](#routing)
-  - [Pipes](#pipes)
-  - [State Management](#state-management)
-  - [Internationalization](#internationalization-i18n)
-- [Examples](#-examples-included)
 
 ## 🚀 Features
 
@@ -113,8 +104,7 @@ Detailed documentation for the framework core is available in the `docs/` direct
 
 ```
 app/
-├── components/     # Reusable UI Components
-├── pages/          # Page Components (Route Views)
+├── demo/           # Demo Application
 ├── core/           # Framework Internals
 │   ├── animations/ # Animation Manager
 │   ├── component/  # Component Factory, Renderer & Template Engine
@@ -123,125 +113,10 @@ app/
 │   ├── pipes/      # Pipe System & Built-in Pipes
 │   ├── router/     # Routing System
 │   └── services/   # Base Service Class
-├── services/       # Application Business Logic & State
-├── pipes/          # Custom Application Pipes
 ├── i18n/           # Translation Files
-└── utils/          # Utilities (e.g., Database)
+docs/               # Documentation
 tests/              # Unit Tests
 ```
-
-## 🧩 Core Concepts
-
-### Components
-
-Components extend the `Component` class and use a declarative configuration. They are registered as Custom Elements.
-
-```javascript
-import { Component } from '../core/component/component.js';
-
-export const MyComponent = Component.create({
-    selector: 'my-component',
-    state: { count: 0 },
-    styles: `
-        button { color: blue; }
-    `,
-    template() {
-        return `<button (click)="increment">Count: {{ this.state.count }}</button>`;
-    },
-    increment() {
-        this.state.count++;
-    }
-});
-```
-
-### Services & Dependency Injection
-
-Services manage global state and business logic. They are singletons and can be injected into components automatically.
-
-```javascript
-// Define a service
-export class UserService extends Service { ... }
-
-// Inject into component
-export const UserProfile = Component.create({
-    inject: { userService: UserService },
-    onInit() {
-        this.user = this.userService.getUser();
-    }
-});
-```
-
-### Templates
-
-The custom template engine supports control flow directives and interpolation:
-
-- **Interpolation**: `{{ this.state.value }}`
-- **Conditionals**: `@if (condition) { ... } @else { ... }`
-- **Loops**: `@for (let item of list) { ... }`
-- **Event Binding**: `(click)="methodName"`
-- **Property Binding**: `[prop]="value"`
-
-### Routing
-
-The framework includes a robust routing system. Define routes in your main component:
-
-```javascript
-this.router.register([
-    { 
-        path: '/', 
-        component: HomePage,
-        data: { title: 'Home' } // Meta tags support
-    },
-    { path: '/features', component: FeaturesPage },
-    { path: '**', component: HomePage } // Wildcard
-]);
-```
-
-Use `<router-outlet>` to display the matched component and `this.router.navigate('/path')` to navigate programmatically.
-
-### Pipes
-
-Transform values in your templates using pipes. The framework comes with built-in pipes (`uppercase`, `lowercase`, `date`, `currency`) and supports custom pipes.
-
-```javascript
-// Register Pipes
-export const MyComponent = Component.create({
-    pipes: {
-        uppercase: UpperCasePipe,
-        date: DatePipe
-    },
-    template: `
-        <p>Hello {{ 'world' | uppercase }}</p>
-        <p>Date: {{ new Date() | date:'full' }}</p>
-    `
-});
-```
-
-### State Management
-
-- **Component State**: Local reactive state using `this.state`.
-- **Global State**: Services extend the `Service` class which provides `subscribe` and `notify` methods.
-- **Persistence**: Examples included for `sessionStorage` and `IndexedDB`.
-
-### Internationalization (i18n)
-
-The framework provides a simple yet powerful i18n system using a service and a pipe.
-
-```html
-<!-- Use in Template -->
-<h1>{{ 'HELLO' | translate }}</h1>
-```
-
-```javascript
-// Switch Language
-this.i18nService.setLocale('fr');
-```
-
-## 📝 Examples Included
-
-1.  **Global Counter**: Demonstrates `sessionStorage` persistence and cross-component state sharing.
-2.  **Todo List**: Demonstrates `IndexedDB` persistence, list rendering, and complex state updates.
-3.  **Feature Demo**: Showcases the Pipe system, Modal service, and Internationalization (i18n).
 
 ---
 

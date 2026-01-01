@@ -44,8 +44,8 @@ describe('Router', () => {
         router.navigate('/about');
 
         expect(window.history.pushState).toHaveBeenCalledWith({}, '', '/about');
-        expect(router.currentRoute).toBe(routes[1]);
-        expect(listener).toHaveBeenCalledWith(routes[1]);
+        expect(router.currentRoute).toMatchObject({ ...routes[1], params: {} });
+        expect(listener).toHaveBeenCalledWith(expect.objectContaining({ ...routes[1], params: {} }));
     });
 
     it('should handle wildcard routes', () => {
@@ -57,7 +57,7 @@ describe('Router', () => {
 
         router.navigate('/unknown');
         
-        expect(router.currentRoute).toBe(routes[1]);
+        expect(router.currentRoute).toMatchObject({ ...routes[1], params: {} });
     });
 
     it('should update meta tags on navigation', () => {
@@ -101,6 +101,22 @@ describe('Router', () => {
         const event = new PopStateEvent('popstate');
         window.dispatchEvent(event);
         
-        expect(router.currentRoute).toBe(routes[1]);
+        expect(router.currentRoute).toMatchObject({ ...routes[1], params: {} });
+    });
+
+    it('should handle dynamic route parameters', () => {
+        const routes = [
+            { path: '/user/:id', component: { name: 'User' } },
+            { path: '/post/:postId/comment/:commentId', component: { name: 'Comment' } }
+        ];
+        router.register(routes);
+
+        router.navigate('/user/123');
+        expect(router.currentRoute.component.name).toBe('User');
+        expect(router.currentRoute.params).toEqual({ id: '123' });
+
+        router.navigate('/post/456/comment/789');
+        expect(router.currentRoute.component.name).toBe('Comment');
+        expect(router.currentRoute.params).toEqual({ postId: '456', commentId: '789' });
     });
 });

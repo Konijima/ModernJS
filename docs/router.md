@@ -26,6 +26,12 @@ const routes = [
         component: AboutPage,
         data: { title: 'About Us' }
     },
+    // Dynamic route with parameter
+    {
+        path: '/user/:id',
+        component: UserPage,
+        data: { title: 'User Profile' }
+    },
     // Wildcard route for 404s
     { 
         path: '**', 
@@ -33,6 +39,7 @@ const routes = [
         data: { title: 'Page Not Found' }
     }
 ];
+
 
 const router = resolve(Router);
 router.register(routes);
@@ -71,6 +78,40 @@ The `<router-outlet>` component is a placeholder where the matched component wil
 <main>
     <router-outlet></router-outlet>
 </main>
+```
+
+## Route Parameters
+
+You can define dynamic segments in your routes using the `:paramName` syntax.
+
+```javascript
+{ path: '/user/:id', component: UserPage }
+```
+
+### Accessing Parameters
+
+The parameters are automatically passed to the component instance as a `params` property.
+
+```javascript
+export class UserPage extends Component {
+    onInit() {
+        // Access the 'id' parameter
+        const userId = this.params.id;
+        this.loadUser(userId);
+    }
+}
+```
+
+Alternatively, you can access them via the injected `Router` service:
+
+```javascript
+export class UserPage extends Component {
+    static inject = { router: Router };
+
+    onInit() {
+        const userId = this.router.currentRoute.params.id;
+    }
+}
 ```
 
 ## Route Data & Meta Tags

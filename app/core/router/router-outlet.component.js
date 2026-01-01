@@ -28,6 +28,12 @@ export const RouterOutlet = Component.create({
             
             if (selector) {
                 const element = document.createElement(selector);
+                
+                // Pass route params to the component
+                if (route.params) {
+                    element.params = route.params;
+                }
+                
                 root.appendChild(element);
             } else {
                 console.error('[RouterOutlet] Component has no selector:', ComponentClass);
