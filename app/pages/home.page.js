@@ -46,29 +46,39 @@ export const HomePage = Component.create({
                     <i class="fab fa-github"></i> View on GitHub
                 </button>
             </div>
+        </div>
 
-            <div class="features-grid">
+        <div class="features-grid">
+            <div class="card hover-card">
+                <div class="icon-box"><i class="fas fa-bolt"></i></div>
+                <h3 class="feature-title">Web Components</h3>
+                <p class="text-muted" style="font-size: 0.9375rem; line-height: 1.6; margin: 0;">Built on standard Custom Elements and Shadow DOM for true encapsulation.</p>
+            </div>
                 <div class="card hover-card">
-                    <div class="icon-box" style="margin-bottom: 1rem;"><i class="fas fa-bolt"></i></div>
-                    <h3 class="feature-title">{{ 'Web Components' | uppercase }}</h3>
-                    <p class="text-muted" style="font-size: 0.9375rem; line-height: 1.6; margin: 0;">Built on standard Custom Elements and Shadow DOM for true encapsulation.</p>
-                </div>
-                <div class="card hover-card">
-                    <div class="icon-box" style="margin-bottom: 1rem;"><i class="fas fa-sync"></i></div>
+                    <div class="icon-box"><i class="fas fa-sync"></i></div>
                     <h3 class="feature-title">Reactive State</h3>
                     <p class="text-muted" style="font-size: 0.9375rem; line-height: 1.6; margin: 0;">Proxy-based state management with automatic DOM updates and diffing.</p>
                 </div>
                 <div class="card hover-card">
-                    <div class="icon-box" style="margin-bottom: 1rem;"><i class="fas fa-syringe"></i></div>
+                    <div class="icon-box"><i class="fas fa-syringe"></i></div>
                     <h3 class="feature-title">Dependency Injection</h3>
                     <p class="text-muted" style="font-size: 0.9375rem; line-height: 1.6; margin: 0;">Built-in DI container for managing services and component dependencies.</p>
                 </div>
                 <div class="card hover-card">
-                    <div class="icon-box" style="margin-bottom: 1rem;"><i class="fas fa-route"></i></div>
+                    <div class="icon-box"><i class="fas fa-route"></i></div>
                     <h3 class="feature-title">Routing</h3>
                     <p class="text-muted" style="font-size: 0.9375rem; line-height: 1.6; margin: 0;">Client-side routing system for Single Page Application experience.</p>
                 </div>
+                <div class="card hover-card">
+                    <div class="icon-box"><i class="fas fa-filter"></i></div>
+                    <h3 class="feature-title">Pipes</h3>
+                    <p class="text-muted" style="font-size: 0.9375rem; line-height: 1.6; margin: 0;">Transform data in templates with built-in or custom pipes.</p>
+                </div>
+                <div class="card hover-card">
+                    <div class="icon-box"><i class="fas fa-globe"></i></div>
+                    <h3 class="feature-title">i18n Support</h3>
+                    <p class="text-muted" style="font-size: 0.9375rem; line-height: 1.6; margin: 0;">Built-in internationalization service for multi-language support.</p>
+                </div>
             </div>
-        </div>
     `
 });
