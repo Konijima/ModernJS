@@ -2,8 +2,8 @@
 
 # ModernJS Framework
 
-**A lightweight, dependency-free* JavaScript framework built from scratch.**
-*Demonstrating modern web development concepts using native Web APIs.*
+**A modern, lightweight JavaScript framework built on native Web Standards.**
+*Features a custom component system, dependency injection, and reactive state management—all with zero runtime dependencies.*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![JavaScript](https://img.shields.io/badge/ES6%2B-JavaScript-yellow)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)

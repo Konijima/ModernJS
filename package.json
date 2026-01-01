@@ -1,7 +1,7 @@
 {
   "name": "modernjs",
   "version": "1.0.0",
-  "description": "",
+  "description": "A lightweight, zero-dependency JavaScript framework built on Web Components and native Web APIs.",
   "repository": {
     "type": "git",
     "url": "https://github.com/Konijima/ModernJS"
