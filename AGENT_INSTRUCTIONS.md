@@ -21,8 +21,8 @@ The project is divided into two main parts:
     -   **Services**: Core services (e.g., `I18nService`, `MetaService`).
     -   **Pipes**: Data transformation pipes.
 
-2.  **Demo (`app/demo/`)**: A reference application built using the framework.
-    -   Demonstrates usage of components, services, routing, and pipes.
+2.  **Application**: The user's application logic.
+    -   Built using the framework's components, services, and routing.
 
 ## Coding Standards & Conventions
 
@@ -88,9 +88,9 @@ npx vitest run
 ```
 app/
   core/       # Framework internals
-  demo/       # Demo application
   i18n/       # Localization files
   styles/     # Global styles
+docs/         # Framework documentation
 tests/        # Unit tests
 index.html    # Entry point
 package.json  # Dependencies and scripts
@@ -98,8 +98,10 @@ package.json  # Dependencies and scripts
 
 ## Agent Workflow
 
-1.  **Analyze**: Determine if the task involves Core framework logic or the Demo application.
-2.  **Context**: Read relevant files in `app/core` for framework changes or `app/demo` for app features.
+1.  **Analyze**: Determine if the task involves Core framework logic or Application logic.
+2.  **Context**:
+    -   Read relevant files in `app/core` for framework changes or the application directory for features.
+    -   **Consult Documentation**: Read files in `docs/` for in-depth explanations of framework features (e.g., `docs/router.md`, `docs/dependency-injection.md`) if you need to understand how a specific system works.
 3.  **Implementation**:
     -   Follow the `Component.create` pattern.
     -   Ensure all imports have `.js` extensions.

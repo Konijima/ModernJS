@@ -39,6 +39,11 @@ describe('Component', () => {
     });
 
     describe('Static Methods', () => {
+        it('should return the framework version', () => {
+            expect(Component.version).toBeDefined();
+            expect(typeof Component.version).toBe('string');
+        });
+
         it('should create a component class using create()', () => {
             const config = {
                 selector: 'created-component',

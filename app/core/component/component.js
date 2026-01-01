@@ -1,6 +1,7 @@
 import { resolve } from '../di/di.js';
 import { render } from './renderer.js';
 import { compileTemplate } from './template.js';
+import { FRAMEWORK_VERSION } from '../version.js';
 
 // Cache for the global stylesheet to prevent FOUC
 let globalStyleSheet = null;
@@ -39,12 +40,28 @@ const log = (category, message, ...args) => {
     }
 };
 
+// Log framework version on load
+if (import.meta.env.DEV) {
+    console.log(
+        `%c ModernJS %c v${FRAMEWORK_VERSION} `,
+        'background: #2563eb; color: white; padding: 2px 4px; border-radius: 4px 0 0 4px; font-weight: bold;',
+        'background: #1e40af; color: white; padding: 2px 4px; border-radius: 0 4px 4px 0;'
+    );
+}
+
 /**
  * Base Component class using Web Components and Proxy for reactivity.
  * Provides a lightweight framework for building reactive UI components.
  * @extends HTMLElement
  */
 export class Component extends HTMLElement {
+    /**
+     * Get the current framework version
+     */
+    static get version() {
+        return FRAMEWORK_VERSION;
+    }
+
     /**
      * Create and register a component with a simple configuration object.
      * This is a factory method that generates a class extending Component.
