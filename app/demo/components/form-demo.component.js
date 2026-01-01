@@ -73,7 +73,6 @@ export const FormDemoComponent = Component.create({
             border-radius: var(--radius-md);
             font-family: monospace;
             font-size: 0.875rem;
-            white-space: pre-wrap;
         }
     `,
     onInit() {
