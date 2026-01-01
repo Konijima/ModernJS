@@ -126,7 +126,7 @@ export const FormDemoComponent = Component.create({
                     @if(this.form.get('username').invalid && this.form.get('username').touched) {
                         <div class="error-message">
                             @if(this.form.get('username').errors.required) {
-                                {{ 'forms.error.required' | translate:'forms.username' | translate }}
+                                {{ 'forms.error.required' | translate : this.getPipe('translate').transform('forms.username') }}
                             }
                             @else if(this.form.get('username').errors.minLength) {
                                 {{ 'forms.error.minlength' | translate:'3' }}
@@ -149,7 +149,7 @@ export const FormDemoComponent = Component.create({
                     @if(this.form.get('email').invalid && this.form.get('email').touched) {
                         <div class="error-message">
                             @if(this.form.get('email').errors.required) {
-                                {{ 'forms.error.required' | translate:'forms.email' | translate }}
+                                {{ 'forms.error.required' | translate : this.getPipe('translate').transform('forms.email') }}
                             }
                             @else if(this.form.get('email').errors.email) {
                                 {{ 'forms.error.email' | translate }}
@@ -172,7 +172,7 @@ export const FormDemoComponent = Component.create({
                     @if(this.form.get('password').invalid && this.form.get('password').touched) {
                         <div class="error-message">
                             @if(this.form.get('password').errors.required) {
-                                {{ 'forms.error.required' | translate:'forms.password' | translate }}
+                                {{ 'forms.error.required' | translate : this.getPipe('translate').transform('forms.password') }}
                             }
                             @else if(this.form.get('password').errors.minLength) {
                                 {{ 'forms.error.minlength' | translate:'6' }}
