@@ -3,10 +3,14 @@ import { FormGroup } from '../../core/forms/form-group.js';
 import { FormControl } from '../../core/forms/form-control.js';
 import { Validators } from '../../core/forms/validators.js';
 import { fadeAnimation } from '../../core/animations/fade.animation.js';
+import { I18nService } from '../../core/services/i18n.service.js';
+import { TranslatePipe } from '../../core/pipes/translate.pipe.js';
 
 export const FormDemoComponent = Component.create({
     selector: 'form-demo',
     animations: fadeAnimation,
+    inject: { i18nService: I18nService },
+    pipes: { translate: TranslatePipe },
     styles: `
         :host {
             display: block;
@@ -76,6 +80,7 @@ export const FormDemoComponent = Component.create({
         }
     `,
     onInit() {
+        this.connect(this.i18nService, () => ({})); // Re-render on language change
         this.form = new FormGroup({
             username: new FormControl('', [Validators.required, Validators.minLength(3)]),
             email: new FormControl('', [Validators.required, Validators.email]),
@@ -103,11 +108,11 @@ export const FormDemoComponent = Component.create({
     },
     template: `
         <div class="form-container" @animation="fade">
-            <h2 style="margin-top: 0; margin-bottom: 1.5rem;">Reactive Form Demo</h2>
+            <h2 style="margin-top: 0; margin-bottom: 1.5rem;">{{ 'forms.title' | translate }}</h2>
             
             <form (submit)="handleSubmit">
                 <div class="form-group">
-                    <label>Username</label>
+                    <label>{{ 'forms.username' | translate }}</label>
                     <input 
                         type="text"
                         autocomplete="username"
@@ -115,22 +120,22 @@ export const FormDemoComponent = Component.create({
                         (input)="this.form.get('username').setValue($event.target.value)"
                         (blur)="this.form.get('username').markAsTouched(); this.update()"
                         class="{{ this.form.get('username').invalid && this.form.get('username').touched ? 'invalid' : '' }}"
-                        placeholder="Enter username"
+                        placeholder="{{ 'forms.placeholder.username' | translate }}"
                     >
                     @if(this.form.get('username').invalid && this.form.get('username').touched) {
                         <div class="error-message">
                             @if(this.form.get('username').errors.required) {
-                                Username is required
+                                {{ 'forms.error.required' | translate:'forms.username' | translate }}
                             }
                             @else if(this.form.get('username').errors.minLength) {
-                                Must be at least 3 characters
+                                {{ 'forms.error.minlength' | translate:'3' }}
                             }
                         </div>
                     }
                 </div>
 
                 <div class="form-group">
-                    <label>Email</label>
+                    <label>{{ 'forms.email' | translate }}</label>
                     <input 
                         type="email"
                         autocomplete="email"
@@ -138,22 +143,22 @@ export const FormDemoComponent = Component.create({
                         (input)="this.form.get('email').setValue($event.target.value)"
                         (blur)="this.form.get('email').markAsTouched(); this.update()"
                         class="{{ this.form.get('email').invalid && this.form.get('email').touched ? 'invalid' : '' }}"
-                        placeholder="Enter email"
+                        placeholder="{{ 'forms.placeholder.email' | translate }}"
                     >
                     @if(this.form.get('email').invalid && this.form.get('email').touched) {
                         <div class="error-message">
                             @if(this.form.get('email').errors.required) {
-                                Email is required
+                                {{ 'forms.error.required' | translate:'forms.email' | translate }}
                             }
                             @else if(this.form.get('email').errors.email) {
-                                Invalid email format
+                                {{ 'forms.error.email' | translate }}
                             }
                         </div>
                     }
                 </div>
 
                 <div class="form-group">
-                    <label>Password</label>
+                    <label>{{ 'forms.password' | translate }}</label>
                     <input 
                         type="password"
                         autocomplete="new-password"
@@ -161,27 +166,27 @@ export const FormDemoComponent = Component.create({
                         (input)="this.form.get('password').setValue($event.target.value)"
                         (blur)="this.form.get('password').markAsTouched(); this.update()"
                         class="{{ this.form.get('password').invalid && this.form.get('password').touched ? 'invalid' : '' }}"
-                        placeholder="Enter password"
+                        placeholder="{{ 'forms.placeholder.password' | translate }}"
                     >
                     @if(this.form.get('password').invalid && this.form.get('password').touched) {
                         <div class="error-message">
                             @if(this.form.get('password').errors.required) {
-                                Password is required
+                                {{ 'forms.error.required' | translate:'forms.password' | translate }}
                             }
                             @else if(this.form.get('password').errors.minLength) {
-                                Must be at least 6 characters
+                                {{ 'forms.error.minlength' | translate:'6' }}
                             }
                         </div>
                     }
                 </div>
 
-                <button type="submit" {{ !this.form.valid ? 'disabled' : '' }}>Register</button>
+                <button type="submit" {{ !this.form.valid ? 'disabled' : '' }}>{{ 'forms.register' | translate }}</button>
             </form>
 
             <div class="debug-info">
-                <strong>Form Status:</strong> {{ this.form.valid ? 'VALID' : 'INVALID' }}
+                <strong>{{ 'forms.status' | translate }}:</strong> {{ this.form.valid ? 'VALID' : 'INVALID' }}
                 <br>
-                <strong>Form Value:</strong>
+                <strong>{{ 'forms.value' | translate }}:</strong>
                 <pre style="margin: 0;">{{ JSON.stringify(this.form.value, null, 2) }}</pre>
             </div>
         </div>

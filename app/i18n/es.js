@@ -87,5 +87,20 @@ export const es = {
     'todo.empty': 'No hay tareas aún. ¡Añade una arriba!',
 
     // Counter
-    'counter.increment': 'Incrementar'
+    'counter.increment': 'Incrementar',
+
+    // Forms
+    'forms.title': 'Demo de Formulario Reactivo',
+    'forms.username': 'Usuario',
+    'forms.email': 'Correo',
+    'forms.password': 'Contraseña',
+    'forms.register': 'Registrarse',
+    'forms.status': 'Estado del Formulario',
+    'forms.value': 'Valor del Formulario',
+    'forms.error.required': '{0} es requerido',
+    'forms.error.minlength': 'Debe tener al menos {0} caracteres',
+    'forms.error.email': 'Formato de correo inválido',
+    'forms.placeholder.username': 'Ingrese usuario',
+    'forms.placeholder.email': 'Ingrese correo',
+    'forms.placeholder.password': 'Ingrese contraseña'
 };

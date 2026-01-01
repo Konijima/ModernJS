@@ -87,5 +87,20 @@ export const en = {
     'todo.empty': 'No tasks yet. Add one above!',
 
     // Counter
-    'counter.increment': 'Increment'
+    'counter.increment': 'Increment',
+
+    // Forms
+    'forms.title': 'Reactive Form Demo',
+    'forms.username': 'Username',
+    'forms.email': 'Email',
+    'forms.password': 'Password',
+    'forms.register': 'Register',
+    'forms.status': 'Form Status',
+    'forms.value': 'Form Value',
+    'forms.error.required': '{0} is required',
+    'forms.error.minlength': 'Must be at least {0} characters',
+    'forms.error.email': 'Invalid email format',
+    'forms.placeholder.username': 'Enter username',
+    'forms.placeholder.email': 'Enter email',
+    'forms.placeholder.password': 'Enter password'
 };
