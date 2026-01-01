@@ -86,7 +86,10 @@ Available validators in `Validators` class:
 
 - `required`: Field must not be empty.
 - `minLength(length)`: Field must have at least `length` characters.
+- `maxLength(length)`: Field must have at most `length` characters.
 - `email`: Field must be a valid email format.
+- `alphanumeric`: Field must contain only letters and numbers.
+- `pattern(regex)`: Field must match the provided regular expression.
 
 You can also create custom validators:
 
