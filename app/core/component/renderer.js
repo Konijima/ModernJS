@@ -145,10 +145,18 @@ function updateAttributes(target, source, component) {
                 }
 
                 const handler = (e) => {
-                    if (component[methodName]) {
+                    // 1. Try direct method call
+                    if (typeof component[methodName] === 'function') {
                         component[methodName](e);
-                    } else {
-                        console.warn(`Method ${methodName} not found on component`);
+                        return;
+                    }
+
+                    // 2. Try evaluating as expression
+                    try {
+                        // Create function with $event available and 'this' bound to component
+                        new Function('$event', methodName).call(component, e);
+                    } catch (err) {
+                        console.warn(`Method ${methodName} not found on component and evaluation failed:`, err);
                     }
                 };
 

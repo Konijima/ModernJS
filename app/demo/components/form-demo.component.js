@@ -113,7 +113,7 @@ export const FormDemoComponent = Component.create({
                         type="text"
                         [value]="{{ this.form.get('username').value }}"
                         (input)="this.form.get('username').setValue($event.target.value)"
-                        (blur)="this.form.get('username').markAsTouched(); update()"
+                        (blur)="this.form.get('username').markAsTouched(); this.update()"
                         class="{{ this.form.get('username').invalid && this.form.get('username').touched ? 'invalid' : '' }}"
                         placeholder="Enter username"
                     >
@@ -135,7 +135,7 @@ export const FormDemoComponent = Component.create({
                         type="email"
                         [value]="{{ this.form.get('email').value }}"
                         (input)="this.form.get('email').setValue($event.target.value)"
-                        (blur)="this.form.get('email').markAsTouched(); update()"
+                        (blur)="this.form.get('email').markAsTouched(); this.update()"
                         class="{{ this.form.get('email').invalid && this.form.get('email').touched ? 'invalid' : '' }}"
                         placeholder="Enter email"
                     >
@@ -157,7 +157,7 @@ export const FormDemoComponent = Component.create({
                         type="password"
                         [value]="{{ this.form.get('password').value }}"
                         (input)="this.form.get('password').setValue($event.target.value)"
-                        (blur)="this.form.get('password').markAsTouched(); update()"
+                        (blur)="this.form.get('password').markAsTouched(); this.update()"
                         class="{{ this.form.get('password').invalid && this.form.get('password').touched ? 'invalid' : '' }}"
                         placeholder="Enter password"
                     >
