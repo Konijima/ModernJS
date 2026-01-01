@@ -56,6 +56,26 @@ describe('TranslatePipe', () => {
         expect(true).toBe(true);
     });
 
+    it('should transform value using service', () => {
+        const pipe = new TranslatePipe();
+        expect(pipe.transform('HELLO')).toBe('Bonjour');
+        expect(mockService.translate).toHaveBeenCalledWith('HELLO', []);
+    });
+
+    it('should handle array arguments correctly', () => {
+        const pipe = new TranslatePipe();
+        pipe.transform('PARAMS', ['a', 'b']);
+        // Should unwrap the array
+        expect(mockService.translate).toHaveBeenCalledWith('PARAMS', ['a', 'b']);
+    });
+
+    it('should handle multiple arguments correctly', () => {
+        const pipe = new TranslatePipe();
+        pipe.transform('PARAMS', 'a', 'b');
+        // Should pass as array
+        expect(mockService.translate).toHaveBeenCalledWith('PARAMS', ['a', 'b']);
+    });
+
     it('should unsubscribe on destroy', () => {
         const pipe = new TranslatePipe(mockComponent);
         

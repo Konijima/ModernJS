@@ -15,6 +15,10 @@ export class TranslatePipe extends Pipe {
     }
 
     transform(value, ...args) {
+        // If the first argument is an array and it's the only argument, use it as the params
+        if (args.length === 1 && Array.isArray(args[0])) {
+            return this.i18n.translate(value, args[0]);
+        }
         return this.i18n.translate(value, args);
     }
 
