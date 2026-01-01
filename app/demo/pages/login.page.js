@@ -23,27 +23,30 @@ export const LoginPage = Component.create({
     styles: `
         :host {
             display: block;
-            max-width: 400px;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 100%;
         }
         .login-card {
             background: var(--card-bg);
             border-radius: var(--radius-lg);
             border: 1px solid var(--border-color);
-            padding: 2rem;
+            padding: 3rem;
             box-shadow: var(--shadow-sm);
+            max-width: 500px;
+            margin: 0 auto;
         }
         h1 {
             margin-bottom: 0.5rem;
             color: var(--text-primary);
-            font-size: 1.5rem;
+            font-size: 2rem;
             text-align: center;
+            font-weight: 800;
         }
         .subtitle {
             color: var(--text-secondary);
             text-align: center;
-            margin-bottom: 2rem;
-            font-size: 0.875rem;
+            margin-bottom: 2.5rem;
+            font-size: 1rem;
         }
         .form-group {
             margin-bottom: 1.5rem;
@@ -57,13 +60,14 @@ export const LoginPage = Component.create({
         }
         input {
             width: 100%;
-            padding: 0.75rem;
+            padding: 1rem;
             border-radius: var(--radius-md);
             border: 1px solid var(--border-color);
             background: var(--bg-secondary);
             color: var(--text-primary);
             box-sizing: border-box;
             transition: all 0.2s;
+            font-size: 1rem;
         }
         input:focus {
             outline: none;
@@ -72,7 +76,7 @@ export const LoginPage = Component.create({
         }
         button {
             width: 100%;
-            padding: 0.75rem;
+            padding: 1rem;
             background: var(--primary-color);
             color: white;
             border: none;
@@ -80,6 +84,8 @@ export const LoginPage = Component.create({
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
+            font-size: 1rem;
+            margin-top: 1rem;
         }
         button:hover {
             opacity: 0.9;
