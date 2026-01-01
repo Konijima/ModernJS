@@ -107,6 +107,7 @@ export const FormDemoComponent = Component.create({
         }
     },
     template: `
+        @if(this.form) {
         <div class="form-container" @animation="fade">
             <h2 style="margin-top: 0; margin-bottom: 1.5rem;">{{ 'forms.title' | translate }}</h2>
             
@@ -190,5 +191,6 @@ export const FormDemoComponent = Component.create({
                 <pre style="margin: 0;">{{ JSON.stringify(this.form.value, null, 2) }}</pre>
             </div>
         </div>
+        }
     `
 });
