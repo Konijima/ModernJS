@@ -18,6 +18,15 @@ export const LoginPage = Component.create({
         this.form = new FormGroup({
             username: new FormControl('', [Validators.required])
         });
+
+        // Subscribe to form changes to update the view
+        this.sub = this.form.valueChanges.subscribe(() => {
+            this.update();
+        });
+    },
+
+    onDestroy() {
+        if (this.sub) this.sub.unsubscribe();
     },
 
     styles: `
@@ -32,7 +41,7 @@ export const LoginPage = Component.create({
             border: 1px solid var(--border-color);
             padding: 3rem;
             box-shadow: var(--shadow-sm);
-            max-width: 500px;
+            max-width: 800px;
             margin: 0 auto;
         }
         h1 {
