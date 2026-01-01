@@ -85,6 +85,8 @@ export const fr = {
     'todo.placeholder': 'Ajouter une nouvelle tâche...',
     'todo.add': 'Ajouter',
     'todo.empty': 'Pas encore de tâches. Ajoutez-en une ci-dessus !',
+    'todo.stats.completed': '{0} sur {1} tâches terminées',
+    'todo.stats.all_done': 'Toutes les tâches sont terminées !',
 
     // Counter
     'counter.increment': 'Incrémenter',

@@ -85,6 +85,8 @@ export const en = {
     'todo.placeholder': 'Add a new task...',
     'todo.add': 'Add',
     'todo.empty': 'No tasks yet. Add one above!',
+    'todo.stats.completed': '{0} of {1} tasks completed',
+    'todo.stats.all_done': 'All tasks completed!',
 
     // Counter
     'counter.increment': 'Increment',

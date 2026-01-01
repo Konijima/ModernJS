@@ -85,6 +85,8 @@ export const es = {
     'todo.placeholder': 'Añadir nueva tarea...',
     'todo.add': 'Añadir',
     'todo.empty': 'No hay tareas aún. ¡Añade una arriba!',
+    'todo.stats.completed': '{0} de {1} tareas completadas',
+    'todo.stats.all_done': '¡Todas las tareas completadas!',
 
     // Counter
     'counter.increment': 'Incrementar',
