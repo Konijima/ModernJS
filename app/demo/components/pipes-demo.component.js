@@ -4,9 +4,11 @@ import { ReversePipe } from '../pipes/reverse.pipe.js';
 import { TranslatePipe } from '../../core/pipes/translate.pipe.js';
 import { ModalService } from '../../core/modal/modal.service.js';
 import { I18nService } from '../../core/services/i18n.service.js';
+import { fadeAnimation } from '../../core/animations/fade.animation.js';
 
 export const PipesDemoComponent = Component.create({
     selector: 'pipes-demo',
+    animations: fadeAnimation,
     inject: {
         modalService: ModalService,
         i18nService: I18nService
@@ -168,14 +170,20 @@ export const PipesDemoComponent = Component.create({
             <p class="text-muted" style="font-size: 0.9375rem;">{{ 'WELCOME' | translate }}</p>
             <p class="text-subtle" style="font-size: 0.875rem; margin-top: 0.5rem;">{{ 'CURRENT_LANG' | translate:this.i18nService.state.locale }}</p>
             <div style="margin-top: 1rem; display: flex; gap: 0.75rem;">
-                ${this.i18nService.supportedLanguages.map(lang => `
+                ${this.i18nService.supportedLanguages.map(lang => {
+                    const labels = {
+                        'en': 'English',
+                        'fr': 'Français',
+                        'es': 'Español'
+                    };
+                    return `
                     <button 
                         class="btn btn-secondary" 
                         data-lang="${lang.code}"
                         (click)="handleLangClick">
-                        ${lang.label === 'EN' ? 'English' : 'Français'}
+                        ${labels[lang.code] || lang.label}
                     </button>
-                `).join('')}
+                `}).join('')}
             </div>
         </div>
 

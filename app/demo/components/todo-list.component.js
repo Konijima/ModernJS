@@ -2,6 +2,7 @@ import { Component } from '../../core/component/component.js';
 import { TodoService } from '../services/todo.service.js';
 import { I18nService } from '../../core/services/i18n.service.js';
 import { TranslatePipe } from '../../core/pipes/translate.pipe.js';
+import { fadeAnimation } from '../../core/animations/fade.animation.js';
 import './todo-item.component.js';
 
 /**
@@ -10,6 +11,7 @@ import './todo-item.component.js';
  */
 export const TodoListComponent = Component.create({
     selector: 'todo-list',
+    animations: fadeAnimation,
     inject: {
         todoService: TodoService,
         i18nService: I18nService

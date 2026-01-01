@@ -2,9 +2,11 @@ import { Component } from '../../core/component/component.js';
 import { Router } from '../../core/router/router.js';
 import { I18nService } from '../../core/services/i18n.service.js';
 import { TranslatePipe } from '../../core/pipes/translate.pipe.js';
+import { fadeAnimation } from '../../core/animations/fade.animation.js';
 
 export const GetStartedPage = Component.create({
     selector: 'get-started-page',
+    animations: fadeAnimation,
     inject: {
         router: Router,
         i18nService: I18nService

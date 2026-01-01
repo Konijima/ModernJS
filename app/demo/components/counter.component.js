@@ -2,6 +2,7 @@ import { Component } from '../../core/component/component.js';
 import { CounterService } from '../services/counter.service.js';
 import { I18nService } from '../../core/services/i18n.service.js';
 import { TranslatePipe } from '../../core/pipes/translate.pipe.js';
+import { fadeAnimation } from '../../core/animations/fade.animation.js';
 
 /**
  * Counter Component.
@@ -9,6 +10,7 @@ import { TranslatePipe } from '../../core/pipes/translate.pipe.js';
  */
 export const CounterComponent = Component.create({
     selector: 'my-counter',
+    animations: fadeAnimation,
     inject: {
         counterService: CounterService,
         i18nService: I18nService

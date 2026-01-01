@@ -11,4 +11,9 @@ export class Pipe {
     transform(value, ...args) {
         return value;
     }
+
+    /**
+     * Lifecycle hook called when the component using the pipe is destroyed.
+     */
+    destroy() {}
 }

@@ -1,5 +1,6 @@
 import { Component } from '../component/component.js';
 import { Router } from './router.js';
+import { AnimationManager } from '../animations/animation.js';
 
 /**
  * Router Outlet Component
@@ -38,7 +39,14 @@ export const RouterOutlet = Component.create({
         });
     },
 
-    loadComponent(route) {
+    styles: `
+        :host {
+            display: block;
+            position: relative;
+        }
+    `,
+
+    async loadComponent(route) {
         const root = this.shadowRoot;
         
         // If no route for this depth, clear
@@ -47,8 +55,9 @@ export const RouterOutlet = Component.create({
             return;
         }
 
-        // Optimization: Check if component class is same
         const currentElement = root.firstElementChild;
+
+        // Optimization: Check if component class is same
         if (currentElement && currentElement.constructor === route.component) {
              // Update params if needed
              if (route.params) {
@@ -57,7 +66,27 @@ export const RouterOutlet = Component.create({
              return;
         }
 
-        root.innerHTML = ''; // Clear current view
+        // Helper to get animation config
+        const getAnimationConfig = (componentClass) => {
+            if (componentClass && componentClass.animations && componentClass.animations.route) {
+                return componentClass.animations;
+            }
+            return null;
+        };
+
+        // Animate out current element
+        if (currentElement) {
+            const config = getAnimationConfig(currentElement.constructor);
+            if (config) {
+                await AnimationManager.animate(currentElement, 'route', ':leave', config);
+            }
+            
+            if (currentElement.parentNode === root) {
+                root.removeChild(currentElement);
+            }
+        } else {
+            root.innerHTML = ''; // Safety clear
+        }
         
         if (route.component) {
             const ComponentClass = route.component;
@@ -73,8 +102,21 @@ export const RouterOutlet = Component.create({
                 if (route.params) {
                     element.params = route.params;
                 }
+
+                const config = getAnimationConfig(ComponentClass);
+                
+                // Set initial state for animation if config exists
+                if (config) {
+                    element.style.opacity = '0';
+                }
                 
                 root.appendChild(element);
+
+                // Animate in
+                if (config) {
+                    await AnimationManager.animate(element, 'route', ':enter', config);
+                    element.style.opacity = '';
+                }
             } else {
                 console.error('[RouterOutlet] Component has no selector:', ComponentClass);
             }

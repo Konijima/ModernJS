@@ -176,13 +176,6 @@ export class Component extends HTMLElement {
             });
         }
 
-        // Initialize pipes
-        this._pipes = {};
-        const pipes = this.constructor.pipes || {};
-        Object.entries(pipes).forEach(([name, PipeClass]) => {
-            this._pipes[name] = new PipeClass();
-        });
-
         // Initialize reactive state
         let initialState = this.constructor.state || this.initialState || {};
         
@@ -204,6 +197,13 @@ export class Component extends HTMLElement {
                 }
                 return true;
             }
+        });
+
+        // Initialize pipes
+        this._pipes = {};
+        const pipes = this.constructor.pipes || {};
+        Object.entries(pipes).forEach(([name, PipeClass]) => {
+            this._pipes[name] = new PipeClass(this);
         });
     }
 
@@ -233,6 +233,14 @@ export class Component extends HTMLElement {
      */
     disconnectedCallback() {
         this._subscriptions.forEach(unsubscribe => unsubscribe());
+        
+        // Clean up pipes
+        if (this._pipes) {
+            Object.values(this._pipes).forEach(pipe => {
+                if (pipe.destroy) pipe.destroy();
+            });
+        }
+
         if (this.onDestroy) {
             this.onDestroy();
         }

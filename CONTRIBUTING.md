@@ -11,6 +11,7 @@ By participating in this project, you agree to abide by our Code of Conduct. Ple
 ### Reporting Bugs
 
 If you find a bug, please open an issue on GitHub. Include as much detail as possible:
+
 - Steps to reproduce the issue
 - Expected behavior
 - Actual behavior
@@ -23,43 +24,47 @@ We love hearing ideas for new features! Please open an issue to discuss your ide
 
 ### Pull Requests
 
-1.  **Fork the repository** and create your branch from `main`.
-2.  **Install dependencies**: `npm install`
-3.  **Make your changes**. Ensure your code follows the project's style and conventions.
-4.  **Run tests**: `npm test`. Add new tests for your changes if applicable.
-5.  **Commit your changes** using descriptive commit messages.
-6.  **Push to your fork** and submit a Pull Request.
+1. **Fork the repository** and create your branch from `main`.
+2. **Install dependencies**: `npm install`
+3. **Make your changes**. Ensure your code follows the project's style and conventions.
+4. **Run tests**: `npm test`. Add new tests for your changes if applicable.
+5. **Commit your changes** using descriptive commit messages.
+6. **Push to your fork** and submit a Pull Request.
 
 ## Development Setup
 
-1.  Clone the repository:
+1. Clone the repository:
+
     ```bash
     git clone https://github.com/Konijima/ModernJS.git
     cd ModernJS
     ```
 
-2.  Install dependencies:
+2. Install dependencies:
+
     ```bash
     npm install
     ```
 
-3.  Start the development server:
+3. Start the development server:
+
     ```bash
     npm run dev
     ```
 
-4.  Run tests:
+4. Run tests:
+
     ```bash
     npm test
     ```
 
 ## Coding Standards
 
--   Use modern JavaScript (ES6+).
--   Follow the existing project structure.
--   Keep components and services focused and single-purpose.
--   Write clean, readable code with comments where necessary.
--   Ensure all tests pass before submitting a PR.
+- Use modern JavaScript (ES6+).
+- Follow the existing project structure.
+- Keep components and services focused and single-purpose.
+- Write clean, readable code with comments where necessary.
+- Ensure all tests pass before submitting a PR.
 
 ## License
 

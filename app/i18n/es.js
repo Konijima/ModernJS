@@ -1,0 +1,90 @@
+export const es = {
+    'HELLO': 'Hola',
+    'WELCOME': 'Bienvenido a ModernJS',
+    'CHANGE_LANG': 'Cambiar Idioma',
+    'CURRENT_LANG': 'Idioma Actual: {0}',
+    'DEMO_TITLE': 'Demo i18n',
+
+    // App
+    'app.title': 'Modern JS',
+    'app.subtitle': 'Componentes Web Nativos • Estado Reactivo • Inyección de Dependencias',
+    'app.nav.home': 'Inicio',
+    'app.nav.get_started': 'Comenzar',
+    'app.nav.features': 'Características',
+    'app.footer.view_source': 'Ver código en',
+
+    // Meta
+    'meta.home.title': 'ModernJS - Inicio',
+    'meta.home.desc': 'Bienvenido al Framework ModernJS',
+    'meta.get_started.title': 'ModernJS - Comenzar',
+    'meta.get_started.desc': 'Guía de inicio rápido para ModernJS',
+    'meta.features.title': 'ModernJS - Características',
+    'meta.features.desc': 'Demostraciones de características y ejemplos',
+
+    // Home
+    'home.hero.badge': 'Framework de Código Abierto',
+    'home.hero.title': 'Construye Apps Web <span class="highlight">Modernas</span>',
+    'home.hero.description': 'Un framework JavaScript ligero y sin dependencias que demuestra capacidades web modernas con Web Components, Estado Reactivo e Inyección de Dependencias.',
+    'home.hero.get_started': 'Comenzar',
+    'home.hero.github': 'Ver en GitHub',
+    'home.features.web_components.title': 'Web Components',
+    'home.features.web_components.desc': 'Construido sobre Custom Elements estándar y Shadow DOM para una verdadera encapsulación.',
+    'home.features.reactive_state.title': 'Estado Reactivo',
+    'home.features.reactive_state.desc': 'Gestión de estado basada en Proxy con actualizaciones automáticas del DOM y diffing.',
+    'home.features.di.title': 'Inyección de Dependencias',
+    'home.features.di.desc': 'Contenedor DI integrado para gestionar servicios y dependencias de componentes.',
+    'home.features.routing.title': 'Enrutamiento',
+    'home.features.routing.desc': 'Sistema de enrutamiento del lado del cliente para experiencia de Single Page Application.',
+    'home.features.pipes.title': 'Pipes',
+    'home.features.pipes.desc': 'Transforma datos en plantillas con pipes integrados o personalizados.',
+    'home.features.i18n.title': 'Soporte i18n',
+    'home.features.i18n.desc': 'Servicio de internacionalización integrado para soporte multi-idioma.',
+
+    // Get Started
+    'get_started.badge': 'Inicio Rápido',
+    'get_started.title': 'Comenzar',
+    'get_started.subtitle': 'Configura ModernJS en minutos y comienza a construir.',
+    'get_started.step1.title': 'Clonar el Repositorio',
+    'get_started.step1.desc': 'Obtén el código fuente de GitHub para comenzar a explorar.',
+    'get_started.step2.title': 'Instalar Dependencias',
+    'get_started.step2.desc': 'Instala las dependencias mínimas de desarrollo (solo Vite para el servidor de desarrollo).',
+    'get_started.step3.title': 'Iniciar Servidor de Desarrollo',
+    'get_started.step3.desc': 'Lanza el servidor de desarrollo con recarga en caliente.',
+    'get_started.step4.title': 'Explorar las Características',
+    'get_started.step4.desc': 'Revisa las demostraciones en vivo para ver qué puede hacer ModernJS.',
+    'get_started.features.web_components': 'Web Components con Shadow DOM',
+    'get_started.features.reactive_state': 'Gestión de Estado Reactivo',
+    'get_started.features.di': 'Inyección de Dependencias',
+    'get_started.features.routing': 'Enrutamiento del Lado del Cliente',
+    'get_started.features.pipes': 'Pipes y Soporte i18n',
+    'get_started.view_features': 'Ver Características',
+    'get_started.github': 'GitHub',
+
+    // Features
+    'features.showcase.title': 'Escaparate de Características',
+    'features.showcase.desc': 'Ejemplos interactivos demostrando las capacidades del framework.',
+    'features.tabs.todo': 'Lista de Tareas',
+    'features.tabs.counter': 'Contador',
+    'features.tabs.pipes': 'Pipes e i18n',
+    'features.counter.title': 'Contador Reactivo',
+    'features.counter.desc': 'Demuestra estado reactivo con persistencia en sessionStorage.',
+    'features.pipes.date_modal.title': 'Pipe de Fecha y Modal',
+    'features.pipes.date_modal.current_date': 'Fecha Actual:',
+    'features.pipes.date_modal.show_modal': 'Mostrar Modal',
+    'features.pipes.common.title': 'Pipes Comunes',
+    'features.pipes.static.title': 'Activos Estáticos',
+    'features.pipes.static.desc': 'Sirviendo activos estáticos desde el directorio <code>public/</code>.',
+    'features.modal.title': 'Demo de Modal',
+    'features.modal.content': 'Este modal fue activado programáticamente. Hora actual: {0}',
+    'features.modal.action.got_it': '¡Entendido!',
+    'features.modal.action.cancel': 'Cancelar',
+
+    // Todo
+    'todo.title': 'Lista de Tareas',
+    'todo.placeholder': 'Añadir nueva tarea...',
+    'todo.add': 'Añadir',
+    'todo.empty': 'No hay tareas aún. ¡Añade una arriba!',
+
+    // Counter
+    'counter.increment': 'Incrementar'
+};

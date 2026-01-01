@@ -1,10 +1,12 @@
 import { Component } from '../../core/component/component.js';
 import { TranslatePipe } from '../../core/pipes/translate.pipe.js';
 import { Router } from '../../core/router/router.js';
+import { fadeAnimation } from '../../core/animations/fade.animation.js';
 import '../../core/router/router-outlet.component.js';
 
 export const FeaturesPage = Component.create({
     selector: 'features-page',
+    animations: fadeAnimation,
     inject: {
         router: Router
     },

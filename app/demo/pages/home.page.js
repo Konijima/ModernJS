@@ -3,9 +3,11 @@ import { Router } from '../../core/router/router.js';
 import { UpperCasePipe } from '../../core/pipes/common.pipes.js';
 import { TranslatePipe } from '../../core/pipes/translate.pipe.js';
 import { I18nService } from '../../core/services/i18n.service.js';
+import { fadeAnimation } from '../../core/animations/fade.animation.js';
 
 export const HomePage = Component.create({
     selector: 'home-page',
+    animations: fadeAnimation,
     inject: {
         router: Router,
         i18nService: I18nService
@@ -15,16 +17,6 @@ export const HomePage = Component.create({
         translate: TranslatePipe
     },
     
-    onInit() {
-        this.langSub = this.i18nService.onLangChange(() => {
-            this.update();
-        });
-    },
-
-    onDestroy() {
-        if (this.langSub) this.langSub();
-    },
-
     openGitHub() {
         window.open('https://github.com/Konijima/ModernJS', '_blank');
     },
