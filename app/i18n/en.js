@@ -21,6 +21,13 @@ export const en = {
     'meta.features.title': 'ModernJS - Features',
     'meta.features.desc': 'Feature demonstrations and examples',
 
+    // Login
+    'login.title': 'Login Demo',
+    'login.subtitle': 'Enter a username to access the dashboard',
+    'login.username': 'Username',
+    'login.placeholder': 'e.g. John Doe',
+    'login.button': 'Login',
+
     // Home
     'home.hero.badge': 'Open Source Framework',
     'home.hero.title': 'Build <span class="highlight">Modern</span> Web Apps',
@@ -39,6 +46,20 @@ export const en = {
     'home.features.pipes.desc': 'Transform data in templates with built-in or custom pipes.',
     'home.features.i18n.title': 'i18n Support',
     'home.features.i18n.desc': 'Built-in internationalization service for multi-language support.',
+    'home.features.directives.title': 'Directives',
+    'home.features.directives.desc': 'Extend HTML capabilities with custom attributes and behaviors.',
+    'home.features.forms.title': 'Forms Handling',
+    'home.features.forms.desc': 'Robust form handling with validation, groups, and controls.',
+    'home.features.http.title': 'HTTP Client',
+    'home.features.http.desc': 'Lightweight HTTP client for making API requests.',
+
+    // HTTP Demo
+    'http.title': 'HTTP Client & Interceptors',
+    'http.desc': 'Demonstrating API requests and request/response interception.',
+    'http.refresh': 'Refresh Data',
+    'http.users_title': 'Users (JSONPlaceholder)',
+    'http.logs_title': 'Interceptor Logs',
+    'http.no_logs': 'No logs yet...',
 
     // Get Started
     'get_started.badge': 'Quick Start',
@@ -67,6 +88,7 @@ export const en = {
     'features.tabs.counter': 'Counter',
     'features.tabs.pipes': 'Pipes & i18n',
     'features.tabs.forms': 'Reactive Forms',
+    'features.tabs.http': 'HTTP Client',
     'features.tabs.auth': 'Auth Guard',
     'features.counter.title': 'Reactive Counter',
     'features.counter.desc': 'Demonstrates reactive state with sessionStorage persistence.',

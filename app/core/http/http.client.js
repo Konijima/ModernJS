@@ -1,8 +1,30 @@
 import { Observable } from '../reactivity/observable.js';
+import { resolve } from '../di/di.js';
 
 export class HttpClient {
+    static registry = [];
+
+    /**
+     * Register a global interceptor class.
+     * The class will be resolved via DI when HttpClient is instantiated.
+     * @param {Class} InterceptorClass 
+     */
+    static provide(InterceptorClass) {
+        this.registry.push(InterceptorClass);
+    }
+
     constructor() {
         this.interceptors = [];
+
+        // Initialize global interceptors
+        HttpClient.registry.forEach(InterceptorClass => {
+            try {
+                const interceptor = resolve(InterceptorClass);
+                this.interceptors.push(interceptor);
+            } catch (e) {
+                console.error('[HttpClient] Failed to resolve interceptor:', InterceptorClass.name, e);
+            }
+        });
     }
 
     addInterceptor(interceptor) {
@@ -41,10 +63,10 @@ export class HttpClient {
                     }
 
                     const data = await res.json();
-                    observer.next(data);
-                    observer.complete();
+                    if (observer.next) observer.next(data);
+                    if (observer.complete) observer.complete();
                 } catch (err) {
-                    observer.error(err);
+                    if (observer.error) observer.error(err);
                 }
             };
 

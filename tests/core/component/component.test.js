@@ -242,9 +242,11 @@ describe('Component', () => {
             NoRenderComponent.define();
             
             const instance = new NoRenderComponent();
+            document.body.appendChild(instance);
             instance.update();
             
             expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('No render method found'));
+            document.body.removeChild(instance);
             warnSpy.mockRestore();
             vi.unstubAllEnvs();
         });
@@ -282,10 +284,12 @@ describe('Component', () => {
             RenderComponent.define();
             
             const instance = new RenderComponent();
+            document.body.appendChild(instance);
             instance.update();
             
             expect(template.compileTemplate).toHaveBeenCalled();
             expect(renderer.render).toHaveBeenCalled();
+            document.body.removeChild(instance);
         });
     });
 });

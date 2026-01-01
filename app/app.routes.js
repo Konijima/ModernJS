@@ -5,6 +5,7 @@ import { TodoListComponent } from './demo/components/todo-list.component.js';
 import { CounterComponent } from './demo/components/counter.component.js';
 import { PipesDemoComponent } from './demo/components/pipes-demo.component.js';
 import { FormDemoComponent } from './demo/components/form-demo.component.js';
+import { HttpDemoComponent } from './demo/components/http-demo.component.js';
 import { LoginPage } from './demo/pages/login.page.js';
 import { DashboardPage } from './demo/pages/dashboard.page.js';
 import { AuthGuard } from './demo/guards/auth.guard.js';
@@ -45,10 +46,11 @@ export const routes = [
             { path: 'counter', component: CounterComponent },
             { path: 'pipes', component: PipesDemoComponent },
             { path: 'form', component: FormDemoComponent },
+            { path: 'http', component: HttpDemoComponent },
             { 
                 path: 'login', 
                 component: LoginPage,
-                data: { title: 'Login Demo' }
+                data: { title: 'login.title' }
             },
             { 
                 path: 'dashboard', 

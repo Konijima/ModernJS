@@ -21,6 +21,13 @@ export const fr = {
     'meta.features.title': 'ModernJS - Fonctionnalités',
     'meta.features.desc': 'Démonstrations et exemples de fonctionnalités',
 
+    // Login
+    'login.title': 'Démo Connexion',
+    'login.subtitle': 'Entrez un nom d\'utilisateur pour accéder au tableau de bord',
+    'login.username': 'Nom d\'utilisateur',
+    'login.placeholder': 'ex: Jean Dupont',
+    'login.button': 'Se connecter',
+
     // Home
     'home.hero.badge': 'Framework Open Source',
     'home.hero.title': 'Créez des Apps Web <span class="highlight">Modernes</span>',
@@ -39,6 +46,20 @@ export const fr = {
     'home.features.pipes.desc': 'Transformez les données dans les templates avec des pipes intégrés ou personnalisés.',
     'home.features.i18n.title': 'Support i18n',
     'home.features.i18n.desc': 'Service d\'internationalisation intégré pour le support multilingue.',
+    'home.features.directives.title': 'Directives',
+    'home.features.directives.desc': 'Étendez les capacités HTML avec des attributs et comportements personnalisés.',
+    'home.features.forms.title': 'Gestion de Formulaires',
+    'home.features.forms.desc': 'Gestion robuste des formulaires avec validation, groupes et contrôles.',
+    'home.features.http.title': 'Client HTTP',
+    'home.features.http.desc': 'Client HTTP léger pour effectuer des requêtes API.',
+
+    // HTTP Demo
+    'http.title': 'Client HTTP & Intercepteurs',
+    'http.desc': 'Démonstration des requêtes API et de l\'interception requête/réponse.',
+    'http.refresh': 'Actualiser',
+    'http.users_title': 'Utilisateurs (JSONPlaceholder)',
+    'http.logs_title': 'Logs Intercepteur',
+    'http.no_logs': 'Aucun log pour le moment...',
 
     // Get Started
     'get_started.badge': 'Démarrage Rapide',
@@ -67,6 +88,7 @@ export const fr = {
     'features.tabs.counter': 'Compteur',
     'features.tabs.pipes': 'Pipes & i18n',
     'features.tabs.forms': 'Formulaires Réactifs',
+    'features.tabs.http': 'Client HTTP',
     'features.tabs.auth': 'Garde d\'Auth',
     'features.counter.title': 'Compteur Réactif',
     'features.counter.desc': 'Démontre l\'état réactif avec persistance sessionStorage.',

@@ -311,6 +311,11 @@ export class Component extends HTMLElement {
      * Uses DOM diffing to update the Shadow DOM efficiently.
      */
     update() {
+        // Prevent updates if not connected to DOM (e.g. during construction)
+        if (!this.isConnected) {
+            return;
+        }
+
         if (!this.render) {
             if (!this.constructor.noTemplate && import.meta.env.DEV && import.meta.env.VITE_DEBUG) {
                 console.warn(`[Framework] ⚠️ No render method found for ${this.tagName}`);

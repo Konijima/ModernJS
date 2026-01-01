@@ -21,6 +21,13 @@ export const es = {
     'meta.features.title': 'ModernJS - Características',
     'meta.features.desc': 'Demostraciones de características y ejemplos',
 
+    // Login
+    'login.title': 'Demo de Inicio de Sesión',
+    'login.subtitle': 'Ingrese un nombre de usuario para acceder al panel',
+    'login.username': 'Nombre de usuario',
+    'login.placeholder': 'ej. Juan Pérez',
+    'login.button': 'Iniciar Sesión',
+
     // Home
     'home.hero.badge': 'Framework de Código Abierto',
     'home.hero.title': 'Construye Apps Web <span class="highlight">Modernas</span>',
@@ -39,6 +46,20 @@ export const es = {
     'home.features.pipes.desc': 'Transforma datos en plantillas con pipes integrados o personalizados.',
     'home.features.i18n.title': 'Soporte i18n',
     'home.features.i18n.desc': 'Servicio de internacionalización integrado para soporte multi-idioma.',
+    'home.features.directives.title': 'Directivas',
+    'home.features.directives.desc': 'Extienda las capacidades HTML con atributos y comportamientos personalizados.',
+    'home.features.forms.title': 'Gestión de Formularios',
+    'home.features.forms.desc': 'Manejo robusto de formularios con validación, grupos y controles.',
+    'home.features.http.title': 'Cliente HTTP',
+    'home.features.http.desc': 'Cliente HTTP ligero para realizar solicitudes API.',
+
+    // HTTP Demo
+    'http.title': 'Cliente HTTP e Interceptores',
+    'http.desc': 'Demostración de solicitudes API e intercepción de solicitud/respuesta.',
+    'http.refresh': 'Actualizar',
+    'http.users_title': 'Usuarios (JSONPlaceholder)',
+    'http.logs_title': 'Registros del Interceptor',
+    'http.no_logs': 'No hay registros aún...',
 
     // Get Started
     'get_started.badge': 'Inicio Rápido',
@@ -67,6 +88,7 @@ export const es = {
     'features.tabs.counter': 'Contador',
     'features.tabs.pipes': 'Pipes e i18n',
     'features.tabs.forms': 'Formularios Reactivos',
+    'features.tabs.http': 'Cliente HTTP',
     'features.tabs.auth': 'Guardia de Auth',
     'features.counter.title': 'Contador Reactivo',
     'features.counter.desc': 'Demuestra estado reactivo con persistencia en sessionStorage.',

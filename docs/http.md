@@ -40,6 +40,10 @@ All methods return an `Observable`.
 
 You can add interceptors to modify requests or responses globally (e.g., adding auth tokens).
 
+### Functional Interceptors (Runtime)
+
+You can add interceptors dynamically at runtime:
+
 ```javascript
 import { resolve } from '../core/di/di.js';
 import { HttpClient } from '../core/http/http.client.js';
@@ -47,10 +51,11 @@ import { HttpClient } from '../core/http/http.client.js';
 const http = resolve(HttpClient);
 
 http.addInterceptor({
+    name: 'auth-interceptor',
     // Modify request
     request: (req) => {
-        req.headers = { ...req.headers, 'Authorization': 'Bearer token' };
-        return req;
+        const headers = { ...req.headers, 'Authorization': 'Bearer token' };
+        return { ...req, headers };
     },
     // Modify response
     response: (res) => {
@@ -60,4 +65,39 @@ http.addInterceptor({
         return res;
     }
 });
+```
+
+### Global Class-Based Interceptors
+
+For application-wide interceptors (like Authentication), you can define a class and register it globally.
+
+**1. Define the Interceptor:**
+
+```javascript
+export class AuthInterceptor {
+    request(req) {
+        const token = sessionStorage.getItem('token');
+        if (token) {
+            const headers = { ...req.headers, 'Authorization': `Bearer ${token}` };
+            return { ...req, headers };
+        }
+        return req;
+    }
+
+    response(res) {
+        return res;
+    }
+}
+```
+
+**2. Register it in your main entry point (e.g., `app.component.js`):**
+
+```javascript
+import { HttpClient } from './core/http/http.client.js';
+import { AuthInterceptor } from './interceptors/auth.interceptor.js';
+
+// Register before app initialization
+HttpClient.provide(AuthInterceptor);
+
+export const App = Component.create({ ... });
 ```

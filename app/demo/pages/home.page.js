@@ -85,6 +85,21 @@ export const HomePage = Component.create({
                     <h3 class="feature-title">{{ 'home.features.i18n.title' | translate }}</h3>
                     <p class="text-muted" style="font-size: 0.9375rem; line-height: 1.6; margin: 0;">{{ 'home.features.i18n.desc' | translate }}</p>
                 </div>
+                <div class="card hover-card">
+                    <div class="icon-box"><i class="fas fa-magic"></i></div>
+                    <h3 class="feature-title">{{ 'home.features.directives.title' | translate }}</h3>
+                    <p class="text-muted" style="font-size: 0.9375rem; line-height: 1.6; margin: 0;">{{ 'home.features.directives.desc' | translate }}</p>
+                </div>
+                <div class="card hover-card">
+                    <div class="icon-box"><i class="fas fa-clipboard-check"></i></div>
+                    <h3 class="feature-title">{{ 'home.features.forms.title' | translate }}</h3>
+                    <p class="text-muted" style="font-size: 0.9375rem; line-height: 1.6; margin: 0;">{{ 'home.features.forms.desc' | translate }}</p>
+                </div>
+                <div class="card hover-card">
+                    <div class="icon-box"><i class="fas fa-cloud"></i></div>
+                    <h3 class="feature-title">{{ 'home.features.http.title' | translate }}</h3>
+                    <p class="text-muted" style="font-size: 0.9375rem; line-height: 1.6; margin: 0;">{{ 'home.features.http.desc' | translate }}</p>
+                </div>
             </div>
     `
 });

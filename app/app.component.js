@@ -3,9 +3,14 @@ import { Router } from './core/router/router.js';
 import { I18nService } from './core/services/i18n.service.js';
 import { TranslatePipe } from './core/pipes/translate.pipe.js';
 import { routes } from './app.routes.js';
+import { HttpClient } from './core/http/http.client.js';
+import { AuthInterceptor } from './demo/interceptors/auth.interceptor.js';
 import './core/router/router-outlet.component.js';
 import './core/modal/modal.component.js';
 import './demo/components/cursor.component.js';
+
+// Register Global Interceptors
+HttpClient.provide(AuthInterceptor);
     
 /**
  * Main Application Component.
@@ -143,6 +148,17 @@ export const App = Component.create({
             justify-content: center;
             gap: 0.5rem;
             flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+            .brand {
+                text-align: center;
+            }
         }
     `,
 

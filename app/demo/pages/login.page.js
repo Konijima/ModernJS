@@ -5,14 +5,18 @@ import { FormControlDirective } from '../../core/forms/form-control.directive.js
 import { FormGroup } from '../../core/forms/form-group.js';
 import { FormControl } from '../../core/forms/form-control.js';
 import { Validators } from '../../core/forms/validators.js';
+import { TranslatePipe } from '../../core/pipes/translate.pipe.js';
+import { fadeAnimation } from '../../core/animations/fade.animation.js';
 
 export const LoginPage = Component.create({
     selector: 'login-page',
+    animations: fadeAnimation,
     inject: { 
         authService: AuthService,
         router: Router
     },
     directives: { formControl: FormControlDirective },
+    pipes: { translate: TranslatePipe },
     
     onInit() {
         this.form = new FormGroup({
@@ -39,53 +43,50 @@ export const LoginPage = Component.create({
             background: var(--card-bg);
             border-radius: var(--radius-lg);
             border: 1px solid var(--border-color);
-            padding: 3rem;
+            padding: 2rem;
             box-shadow: var(--shadow-sm);
-            max-width: 800px;
-            margin: 0 auto;
+            max-width: 100%;
+            margin: 0;
         }
         h1 {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
             color: var(--text-primary);
-            font-size: 2rem;
+            font-size: 1.1rem;
             text-align: center;
-            font-weight: 800;
+            font-weight: 700;
         }
         .subtitle {
             color: var(--text-secondary);
             text-align: center;
-            margin-bottom: 2.5rem;
-            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
         }
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
         label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
             color: var(--text-secondary);
-            font-size: 0.875rem;
+            font-size: 0.75rem;
             font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
         input {
             width: 100%;
-            padding: 1rem;
+            padding: 0.75rem;
             border-radius: var(--radius-md);
             border: 1px solid var(--border-color);
             background: var(--bg-secondary);
             color: var(--text-primary);
             box-sizing: border-box;
             transition: all 0.2s;
-            font-size: 1rem;
-        }
-        input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px var(--primary-color-alpha);
+            font-size: 0.875rem;
         }
         button {
             width: 100%;
-            padding: 1rem;
+            padding: 0.75rem;
             background: var(--primary-color);
             color: white;
             border: none;
@@ -93,8 +94,8 @@ export const LoginPage = Component.create({
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 1rem;
-            margin-top: 1rem;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
         }
         button:hover {
             opacity: 0.9;
@@ -118,19 +119,19 @@ export const LoginPage = Component.create({
 
     template: `
         <div class="login-card">
-            <h1>Login Demo</h1>
-            <p class="subtitle">Enter a username to access the dashboard</p>
+            <h1>{{ 'login.title' | translate }}</h1>
+            <p class="subtitle">{{ 'login.subtitle' | translate }}</p>
             <form (submit)="handleLogin">
                 <div class="form-group">
-                    <label>Username</label>
+                    <label>{{ 'login.username' | translate }}</label>
                     <input 
                         type="text" 
                         [formControl]="{{ this.bind(this.form.get('username')) }}"
-                        placeholder="e.g. John Doe"
+                        placeholder="{{ 'login.placeholder' | translate }}"
                     >
                 </div>
                 <button type="submit" [disabled]="{{ this.bind(!this.form.valid) }}">
-                <i class="fas fa-sign-in-alt"></i> Login
+                <i class="fas fa-sign-in-alt"></i> {{ 'login.button' | translate }}
             </button>
             </form>
         </div>
