@@ -45,6 +45,34 @@ const router = resolve(Router);
 router.register(routes);
 ```
 
+## Nested Routes (Child Routes)
+
+You can define nested routes using the `children` property. This allows you to create complex layouts where a parent component renders a child component within its own `<router-outlet>`.
+
+```javascript
+const routes = [
+    { 
+        path: '/dashboard', 
+        component: DashboardLayout,
+        children: [
+            { path: '', redirectTo: 'stats' }, // Default child
+            { path: 'stats', component: StatsComponent },
+            { path: 'settings', component: SettingsComponent }
+        ]
+    }
+];
+```
+
+In this example, `DashboardLayout` must contain a `<router-outlet>` to render `StatsComponent` or `SettingsComponent`.
+
+## Redirects
+
+You can redirect a route to another path using the `redirectTo` property. This is useful for default child routes or legacy path handling.
+
+```javascript
+{ path: '', redirectTo: 'home' }
+```
+
 ## Navigation
 
 ### Programmatic Navigation

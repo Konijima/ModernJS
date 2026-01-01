@@ -10,7 +10,7 @@ export class Router {
     constructor(metaService) {
         this.metaService = metaService;
         this.routes = [];
-        this.currentRoute = null;
+        this.currentRoute = [];
         this.listeners = [];
         
         // Handle browser back/forward buttons
@@ -43,33 +43,35 @@ export class Router {
      * @param {string} path 
      */
     handleRoute(path) {
-        let route = null;
-        let params = {};
-
-        // Find matching route
-        for (const r of this.routes) {
-            if (r.path === '**') continue;
-
-            const match = this.matchPath(path, r.path);
-            if (match) {
-                route = r;
-                params = match;
-                break;
-            }
-        }
+        let matchedRoutes = this.findRoutes(this.routes, path);
         
         // Fallback to wildcard route if defined
-        if (!route) {
-            route = this.routes.find(r => r.path === '**');
+        if (!matchedRoutes) {
+            const wildcard = this.routes.find(r => r.path === '**');
+            if (wildcard) {
+                matchedRoutes = [{ ...wildcard, params: {} }];
+            }
         }
 
-        if (route) {
-            // Create a new route object with params to avoid mutating the original config
-            this.currentRoute = { ...route, params };
+        if (matchedRoutes) {
+            // Handle Redirects
+            const lastRoute = matchedRoutes[matchedRoutes.length - 1];
+            if (lastRoute.redirectTo) {
+                const currentPath = window.location.pathname;
+                const newPath = currentPath.endsWith('/') 
+                   ? currentPath + lastRoute.redirectTo 
+                   : currentPath + '/' + lastRoute.redirectTo;
+                
+                this.navigate(newPath);
+                return;
+            }
+
+            this.currentRoute = matchedRoutes;
             
-            // Update Meta Tags if data is present
-            if (route.data) {
-                this.metaService.update(route.data);
+            // Update Meta Tags from the last route
+            const leaf = matchedRoutes[matchedRoutes.length - 1];
+            if (leaf.data) {
+                this.metaService.update(leaf.data);
             }
 
             this.notify();
@@ -78,16 +80,48 @@ export class Router {
         }
     }
 
+    findRoutes(routes, url) {
+        for (const route of routes) {
+            if (route.path === '**') continue;
+
+            const match = this.matchPath(url, route.path, !!route.children);
+            
+            if (match) {
+                const { params, remaining } = match;
+                const matchedRoute = { ...route, params };
+                
+                if (route.children) {
+                    const childUrl = remaining.startsWith('/') ? remaining.slice(1) : remaining;
+                    const childMatches = this.findRoutes(route.children, childUrl);
+                    
+                    if (childMatches) {
+                        return [matchedRoute, ...childMatches];
+                    }
+                } else if (!remaining || remaining === '/' || remaining === '') {
+                    return [matchedRoute];
+                }
+            }
+        }
+        return null;
+    }
+
     /**
      * Matches a URL against a route path pattern.
      * Supports :param syntax.
      * @param {string} url 
      * @param {string} routePath 
+     * @param {boolean} prefix - Whether to match as a prefix
      * @returns {Object|null} Params object if matched, null otherwise
      */
-    matchPath(url, routePath) {
-        // Exact match
-        if (url === routePath) return {};
+    matchPath(url, routePath, prefix = false) {
+        // Normalize url
+        if (url.startsWith('/')) url = url.slice(1);
+        if (routePath.startsWith('/')) routePath = routePath.slice(1);
+        
+        // Handle empty path (e.g. default child)
+        if (routePath === '') {
+            return { params: {}, remaining: url };
+        }
 
         // Convert route path to regex
         const paramNames = [];
@@ -96,20 +130,24 @@ export class Router {
             return '([^/]+)';
         });
 
-        // If no params were found and it wasn't an exact match (checked above),
-        // then it's not a match unless the regex logic matches (which it shouldn't if no params)
-        // But we need to be careful: if routePath has no params, regexPath === routePath.
-        if (regexPath === routePath) return null;
-
-        const regex = new RegExp(`^${regexPath}$`);
+        const regex = new RegExp(`^${regexPath}${prefix ? '(?:/(.*))?$' : '$'}`);
         const match = url.match(regex);
 
         if (match) {
             const params = {};
+            let remaining = '';
+            
+            const paramCount = paramNames.length;
+            
             paramNames.forEach((name, index) => {
                 params[name] = match[index + 1];
             });
-            return params;
+
+            if (prefix) {
+                remaining = match[paramCount + 1] || '';
+            }
+
+            return { params, remaining };
         }
         return null;
     }

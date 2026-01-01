@@ -7,7 +7,7 @@ import { TranslatePipe } from '../../core/pipes/translate.pipe.js';
  * Counter Component.
  * A simple component to demonstrate state management and event handling.
  */
-export const Counter = Component.create({
+export const CounterComponent = Component.create({
     selector: 'my-counter',
     inject: {
         counterService: CounterService,

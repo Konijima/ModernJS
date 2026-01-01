@@ -8,7 +8,7 @@ import './todo-item.component.js';
  * Todo List Component.
  * Displays a list of todo items and allows adding new ones.
  */
-export const TodoList = Component.create({
+export const TodoListComponent = Component.create({
     selector: 'todo-list',
     inject: {
         todoService: TodoService,

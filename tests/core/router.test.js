@@ -44,8 +44,10 @@ describe('Router', () => {
         router.navigate('/about');
 
         expect(window.history.pushState).toHaveBeenCalledWith({}, '', '/about');
-        expect(router.currentRoute).toMatchObject({ ...routes[1], params: {} });
-        expect(listener).toHaveBeenCalledWith(expect.objectContaining({ ...routes[1], params: {} }));
+        expect(router.currentRoute).toHaveLength(1);
+        expect(router.currentRoute[0]).toMatchObject({ ...routes[1], params: {} });
+        // Listener receives the array of routes
+        expect(listener).toHaveBeenCalledWith(expect.arrayContaining([expect.objectContaining({ ...routes[1], params: {} })]));
     });
 
     it('should handle wildcard routes', () => {
@@ -57,7 +59,7 @@ describe('Router', () => {
 
         router.navigate('/unknown');
         
-        expect(router.currentRoute).toMatchObject({ ...routes[1], params: {} });
+        expect(router.currentRoute[0]).toMatchObject({ ...routes[1], params: {} });
     });
 
     it('should update meta tags on navigation', () => {
@@ -101,7 +103,7 @@ describe('Router', () => {
         const event = new PopStateEvent('popstate');
         window.dispatchEvent(event);
         
-        expect(router.currentRoute).toMatchObject({ ...routes[1], params: {} });
+        expect(router.currentRoute[0]).toMatchObject({ ...routes[1], params: {} });
     });
 
     it('should handle dynamic route parameters', () => {
@@ -112,11 +114,11 @@ describe('Router', () => {
         router.register(routes);
 
         router.navigate('/user/123');
-        expect(router.currentRoute.component.name).toBe('User');
-        expect(router.currentRoute.params).toEqual({ id: '123' });
+        expect(router.currentRoute[0].component.name).toBe('User');
+        expect(router.currentRoute[0].params).toEqual({ id: '123' });
 
         router.navigate('/post/456/comment/789');
-        expect(router.currentRoute.component.name).toBe('Comment');
-        expect(router.currentRoute.params).toEqual({ postId: '456', commentId: '789' });
+        expect(router.currentRoute[0].component.name).toBe('Comment');
+        expect(router.currentRoute[0].params).toEqual({ postId: '456', commentId: '789' });
     });
 });

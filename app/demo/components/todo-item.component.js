@@ -6,7 +6,7 @@ import { TranslatePipe } from '../../core/pipes/translate.pipe.js';
  * Todo Item Component.
  * Represents a single todo item in the list.
  */
-export const TodoItem = Component.create({
+export const TodoItemComponent = Component.create({
     selector: 'todo-item',
     inject: {
         i18nService: I18nService

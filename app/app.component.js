@@ -2,12 +2,10 @@ import { Component } from './core/component/component.js';
 import { Router } from './core/router/router.js';
 import { I18nService } from './core/services/i18n.service.js';
 import { TranslatePipe } from './core/pipes/translate.pipe.js';
+import { routes } from './app.routes.js';
 import './core/router/router-outlet.component.js';
 import './core/modal/modal.component.js';
 import './demo/components/cursor.component.js';
-import { HomePage } from './demo/pages/home.page.js';
-import { GetStartedPage } from './demo/pages/get-started.page.js';
-import { FeaturesPage } from './demo/pages/features.page.js';
     
 /**
  * Main Application Component.
@@ -25,39 +23,7 @@ export const App = Component.create({
     
     onInit() {
         // Define Routes
-        this.router.register([
-            { 
-                path: '/', 
-                component: HomePage,
-                data: {
-                    title: 'meta.home.title',
-                    meta: [
-                        { name: 'description', content: 'meta.home.desc' }
-                    ]
-                }
-            },
-            { 
-                path: '/get-started', 
-                component: GetStartedPage,
-                data: {
-                    title: 'meta.get_started.title',
-                    meta: [
-                        { name: 'description', content: 'meta.get_started.desc' }
-                    ]
-                }
-            },
-            { 
-                path: '/features', 
-                component: FeaturesPage,
-                data: {
-                    title: 'meta.features.title',
-                    meta: [
-                        { name: 'description', content: 'meta.features.desc' }
-                    ]
-                }
-            },
-            { path: '**', component: HomePage }
-        ]);
+        this.router.register(routes);
 
         // Subscribe to route changes to update nav
         this.router.subscribe(() => {
@@ -182,7 +148,12 @@ export const App = Component.create({
 
     template() {
         const path = window.location.pathname;
-        const isActive = (route) => path === route ? 'active' : '';
+        const isActive = (route) => {
+            if (route === '/') {
+                return path === '/' ? 'active' : '';
+            }
+            return path === route || path.startsWith(route + '/') ? 'active' : '';
+        };
         return `
             <div class="app-container">
                 <cursor-overlay></cursor-overlay>
