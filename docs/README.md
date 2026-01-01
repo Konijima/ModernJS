@@ -15,6 +15,7 @@ Welcome to the documentation for ModernJS, a lightweight, reactive web component
 - [Router](./router.md): Handle client-side navigation.
 - [Animations](./animations.md): Add enter/leave animations to your elements.
 - [Internationalization](./i18n.md): Support multiple languages in your application.
+- [Docker & Deployment](./docker.md): **NEW** Run the application with Docker and Nginx.
 
 ## Getting Started
 

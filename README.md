@@ -109,6 +109,7 @@ Detailed documentation for the framework core is available in the `docs/` direct
 - [**Animations**](docs/animations.md): Enter/leave animations.
 - [**Modal**](docs/modal.md): Dialogs, alerts, confirms, and prompts.
 - [**Internationalization**](docs/i18n.md): Multi-language support.
+- [**Docker**](docs/docker.md): Deployment with Docker and Nginx.
 
 ## 📂 Project Structure
 
