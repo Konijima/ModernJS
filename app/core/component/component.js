@@ -29,7 +29,7 @@ const getGlobalStyleSheet = () => {
 };
 
 const log = (category, message, ...args) => {
-    if (import.meta.env.DEV) {
+    if (import.meta.env.DEV && import.meta.env.VITE_DEBUG) {
         console.log(
             `%c[Framework] %c${category}%c ${message}`,
             'background: #2563eb; color: white; padding: 2px 6px; border-radius: 4px; font-weight: bold;',
@@ -120,7 +120,7 @@ export class Component extends HTMLElement {
                 this.prototype.render = this.template;
             } else if (!this.noTemplate) {
                 // Only warn if noTemplate is not explicitly set to true
-                if (import.meta.env.DEV) {
+                if (import.meta.env.DEV && import.meta.env.VITE_DEBUG) {
                     console.warn(`[Framework] ⚠️ No template found for ${selector}`);
                 }
             }
@@ -280,7 +280,7 @@ export class Component extends HTMLElement {
      */
     update() {
         if (!this.render) {
-            if (!this.constructor.noTemplate && import.meta.env.DEV) {
+            if (!this.constructor.noTemplate && import.meta.env.DEV && import.meta.env.VITE_DEBUG) {
                 console.warn(`[Framework] ⚠️ No render method found for ${this.tagName}`);
             }
             return;

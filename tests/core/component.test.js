@@ -229,6 +229,9 @@ describe('Component', () => {
         });
 
         it('should warn if no render method is present', () => {
+            // Enable debug mode for this test
+            vi.stubEnv('VITE_DEBUG', 'true');
+            
             const uniqueSelector = 'no-render-component-' + Math.random().toString(36).substr(2, 5);
             const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
             
@@ -243,6 +246,7 @@ describe('Component', () => {
             
             expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('No render method found'));
             warnSpy.mockRestore();
+            vi.unstubAllEnvs();
         });
     });
 
