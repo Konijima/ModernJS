@@ -492,7 +492,7 @@ h3 { font-size: 1.5rem; line-height: 1.4; }
 }
 
 .page-container {
-    max-width: 640px;
+    /* max-width: 640px; */
     margin: 0 auto;
     width: 100%;
 }
