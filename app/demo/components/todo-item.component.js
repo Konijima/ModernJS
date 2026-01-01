@@ -28,6 +28,7 @@ export const TodoItemComponent = Component.create({
             margin-bottom: 0.5rem;
             background: var(--bg-color);
             border: 1px solid transparent;
+            cursor: pointer;
         }
         li:hover {
             background: var(--card-hover);
@@ -45,7 +46,6 @@ export const TodoItemComponent = Component.create({
             font-size: 0.9375rem;
             color: var(--text-color);
             transition: color 0.2s;
-            cursor: pointer;
             user-select: none;
             line-height: 1.4;
         }
@@ -101,14 +101,17 @@ export const TodoItemComponent = Component.create({
             @if (!this.state.todo) {
                 <div>{{ 'LOADING' | translate }}</div>
             } @else {
-                <li class="${todo && todo.completed ? 'completed' : ''}">
+                <li 
+                    class="${todo && todo.completed ? 'completed' : ''}"
+                    onclick="if(event.target.type !== 'checkbox') { this.getRootNode().host.dispatchEvent(new CustomEvent('toggle', { detail: ${todo ? todo.id : 'null'} })) }"
+                >
                     <input 
                         type="checkbox" 
                         class="form-checkbox"
                         ${todo && todo.completed ? 'checked' : ''}
                         onchange="this.getRootNode().host.dispatchEvent(new CustomEvent('toggle', { detail: ${todo ? todo.id : 'null'} }))"
                     >
-                    <span onclick="this.getRootNode().host.dispatchEvent(new CustomEvent('toggle', { detail: ${todo ? todo.id : 'null'} }))">
+                    <span>
                         ${todo ? todo.text : ''}
                     </span>
                     <button 
