@@ -32,8 +32,11 @@
 
 - **Native Web Components**: Built on top of `HTMLElement` and Custom Elements v1.
 - **Reactive State**: Uses `Proxy` for transparent state management and DOM updates.
+- **Reactivity System**: **NEW** RxJS-like Observables, Subjects, and AsyncPipe.
 - **Dependency Injection**: Built-in DI container for managing services and singletons.
-- **Client-Side Routing**: Angular-inspired routing with `Router`, `RouterOutlet`, and lazy loading support.
+- **Client-Side Routing**: Angular-inspired routing with Guards (`canActivate`), `RouterOutlet`, and lazy loading support.
+- **Reactive Forms**: **NEW** Model-driven forms with `FormGroup`, `FormControl`, and Validators.
+- **HTTP Client**: **NEW** Reactive HTTP client with Interceptor support.
 - **Internationalization (i18n)**: Built-in support for multi-language applications.
 - **Animations**: Native Web Animations API integration with `:enter` and `:leave` triggers.
 - **Virtual DOM & Diffing**: Efficient DOM updates with a custom rendering engine.
