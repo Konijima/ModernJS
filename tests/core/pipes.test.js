@@ -41,6 +41,10 @@ describe('Common Pipes', () => {
             expect(typeof pipe.transform(date, 'full')).toBe('string');
         });
 
+        it('should handle time format', () => {
+            expect(typeof pipe.transform(date, 'time')).toBe('string');
+        });
+
         it('should handle invalid dates', () => {
             expect(pipe.transform('invalid')).toBe('invalid');
         });

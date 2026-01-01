@@ -41,6 +41,26 @@ export const PipesDemoComponent = Component.create({
             this.i18nService.setLocale(lang);
         }
     },
+    async showAlert() {
+        await this.modalService.alert('This is a simple alert dialog.', 'Alert');
+    },
+
+    async showConfirm() {
+        const result = await this.modalService.confirm('Do you want to proceed with this action?', 'Confirm Action');
+        if (result) {
+            this.modalService.alert('You clicked OK!', 'Confirmed');
+        } else {
+            this.modalService.alert('You clicked Cancel.', 'Cancelled');
+        }
+    },
+
+    async showPrompt() {
+        const name = await this.modalService.prompt('Please enter your name:', 'Guest', 'Welcome');
+        if (name !== null) {
+            this.modalService.alert(`Hello, ${name}!`, 'Welcome');
+        }
+    },
+
     showModal() {
         const datePipe = this.getPipe('date');
         const formatted = datePipe.transform(new Date(), 'full');
@@ -132,6 +152,11 @@ export const PipesDemoComponent = Component.create({
             color: var(--primary-color);
             font-weight: 500;
         }
+        .btn-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
     `,
     template() {
         return `
@@ -156,15 +181,42 @@ export const PipesDemoComponent = Component.create({
 
         <div class="card">
             <div class="demo-header">
-                <div class="demo-icon accent"><i class="fas fa-calendar"></i></div>
-                <h3>{{ 'features.pipes.date_modal.title' | translate }}</h3>
+                <div class="demo-icon accent"><i class="fas fa-window-maximize"></i></div>
+                <h3>Modal System</h3>
             </div>
-            <p class="text-muted" style="font-size: 0.9375rem;">
-                {{ 'features.pipes.date_modal.current_date' | translate }} <strong style="color: var(--text-color);">{{ this.state.currentDate | date:'full' }}</strong>
+            <p class="text-muted" style="font-size: 0.9375rem; margin-bottom: 1rem;">
+                Demonstration of the new Promise-based modal system with various types.
             </p>
-            <button class="btn btn-accent" style="margin-top: 1rem;" (click)="showModal">
-                <i class="fas fa-external-link-alt"></i> {{ 'features.pipes.date_modal.show_modal' | translate }}
-            </button>
+            <div class="btn-group">
+                <button class="btn btn-primary" (click)="showAlert">Alert</button>
+                <button class="btn btn-secondary" (click)="showConfirm">Confirm</button>
+                <button class="btn btn-secondary" (click)="showPrompt">Prompt</button>
+                <button class="btn btn-accent" (click)="showModal">Custom</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="demo-header">
+                <div class="demo-icon warning"><i class="fas fa-clock"></i></div>
+                <h3>Date & Time</h3>
+            </div>
+            <p class="text-muted" style="font-size: 0.9375rem; margin-bottom: 1rem;">
+                Live updates using the DatePipe with various formats.
+            </p>
+            <div class="code-block">
+                <div class="code-line">
+                    <span class="code-label">Full:</span>
+                    <span class="code-value">{{ this.state.currentDate | date:'full' }}</span>
+                </div>
+                <div class="code-line">
+                    <span class="code-label">Short:</span>
+                    <span class="code-value">{{ this.state.currentDate | date:'short' }}</span>
+                </div>
+                <div class="code-line">
+                    <span class="code-label">Time:</span>
+                    <span class="code-value">{{ this.state.currentDate | date:'time' }}</span>
+                </div>
+            </div>
         </div>
 
         <div class="card">
@@ -191,19 +243,6 @@ export const PipesDemoComponent = Component.create({
                 </div>
             </div>
         </div>
-
-        <div class="card">
-            <div class="demo-header">
-                <div class="demo-icon warning"><i class="fas fa-image"></i></div>
-                <h3>{{ 'features.pipes.static.title' | translate }}</h3>
-            </div>
-            <p class="text-muted" style="font-size: 0.9375rem; margin-bottom: 1rem;">
-                {{ 'features.pipes.static.desc' | translate }}
-            </p>
-            <div style="border-radius: 0.5rem; overflow: hidden; border: 1px solid var(--border-color);">
-                <img src="/images/placeholder.svg" alt="Placeholder" style="width: 100%; display: block;">
-            </div>
-        </div>
     `;
-    }
+    },
 });

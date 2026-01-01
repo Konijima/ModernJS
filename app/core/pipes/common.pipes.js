@@ -26,9 +26,15 @@ export class DatePipe extends Pipe {
             return date.toLocaleDateString();
         } else if (format === 'full') {
             return date.toLocaleString();
+        } else if (format === 'time') {
+            return date.toLocaleTimeString();
         }
         
-        return date.toLocaleDateString(format);
+        try {
+            return date.toLocaleDateString(format);
+        } catch (e) {
+            return date.toLocaleDateString();
+        }
     }
 }
 

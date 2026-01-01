@@ -70,6 +70,7 @@ Components support standard Web Component lifecycle callbacks along with framewo
 | Hook | Description |
 |------|-------------|
 | `onInit()` | Called when the component is connected to the DOM and initialized. |
+| `onUpdate()` | Called after the component has re-rendered and the DOM has been updated. |
 | `onDestroy()` | Called when the component is removed from the DOM. Use this for cleanup. |
 | `connectedCallback()` | Native Web Component hook. Calls `onInit`. |
 | `disconnectedCallback()` | Native Web Component hook. Calls `onDestroy`. |

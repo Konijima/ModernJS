@@ -21,6 +21,22 @@ export const Modal = Component.create({
         this.connect(this.modalService, (state) => state);
     },
 
+    onUpdate() {
+        if (this.state.isOpen && this.state.type === 'prompt') {
+            const input = this.shadowRoot.querySelector('input');
+            if (input) {
+                // Small timeout to ensure DOM is ready and transition is started
+                setTimeout(() => input.focus(), 50);
+            }
+        } else if (this.state.isOpen) {
+            // For other modals, focus the primary button or the first button
+            const primaryBtn = this.shadowRoot.querySelector('.btn-primary');
+            if (primaryBtn) {
+                setTimeout(() => primaryBtn.focus(), 50);
+            }
+        }
+    },
+
     handleInput(e) {
         this.modalService.setInputValue(e.target.value);
     },
@@ -59,7 +75,6 @@ export const Modal = Component.create({
                                 placeholder="{{ this.state.placeholder }}"
                                 (input)="handleInput"
                                 (keydown)="handleKeydown"
-                                autofocus
                             />
                         }
                     </div>

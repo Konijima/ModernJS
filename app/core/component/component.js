@@ -323,5 +323,9 @@ export class Component extends HTMLElement {
             });
 
         render(this.shadowRoot, newDom, this);
+
+        if (this.onUpdate) {
+            this.onUpdate();
+        }
     }
 }

@@ -64,6 +64,8 @@ ModernJS comes with a few common pipes (ensure you register them if they are not
 
 - `uppercase`: Converts text to uppercase.
 - `lowercase`: Converts text to lowercase.
+- `date`: Formats a date object. Supports arguments: `'short'`, `'full'`, `'time'`, or a locale string.
+- `currency`: Formats a number as currency.
 - `json`: Formats an object as a JSON string.
 
 ### Custom Pipes
