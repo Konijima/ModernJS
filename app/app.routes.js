@@ -21,6 +21,16 @@ export const routes = [
         }
     },
     { 
+        path: '/get-started', 
+        component: GetStartedPage,
+        data: {
+            title: 'meta.get_started.title',
+            meta: [
+                { name: 'description', content: 'meta.get_started.desc' }
+            ]
+        }
+    },
+    { 
         path: '/features', 
         component: FeaturesPage,
         data: {
