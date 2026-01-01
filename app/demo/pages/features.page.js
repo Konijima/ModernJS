@@ -93,8 +93,11 @@ export const FeaturesPage = Component.create({
                 <button class="tab ${this.isActive('/features/pipes') ? 'active' : ''}" data-path="/features/pipes" (click)="handleTabClick">
                     <i class="fas fa-filter"></i> {{ 'features.tabs.pipes' | translate }}
                 </button>
+                <button class="tab ${this.isActive('/features/form') ? 'active' : ''}" data-path="/features/form" (click)="handleTabClick">
+                    <i class="fas fa-edit"></i> {{ 'features.tabs.forms' | translate }}
+                </button>
             </div>
-
+        
             <router-outlet></router-outlet>
         </div>
         `;

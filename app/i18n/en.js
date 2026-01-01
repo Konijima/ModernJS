@@ -66,6 +66,7 @@ export const en = {
     'features.tabs.todo': 'Todo List',
     'features.tabs.counter': 'Counter',
     'features.tabs.pipes': 'Pipes & i18n',
+    'features.tabs.forms': 'Reactive Forms',
     'features.counter.title': 'Reactive Counter',
     'features.counter.desc': 'Demonstrates reactive state with sessionStorage persistence.',
     'features.pipes.date_modal.title': 'Date Pipe & Modal',

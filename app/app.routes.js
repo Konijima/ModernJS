@@ -4,6 +4,7 @@ import { FeaturesPage } from './demo/pages/features.page.js';
 import { TodoListComponent } from './demo/components/todo-list.component.js';
 import { CounterComponent } from './demo/components/counter.component.js';
 import { PipesDemoComponent } from './demo/components/pipes-demo.component.js';
+import { FormDemoComponent } from './demo/components/form-demo.component.js';
 
 export const routes = [
     { 
@@ -39,7 +40,8 @@ export const routes = [
             { path: '', redirectTo: 'todo' },
             { path: 'todo', component: TodoListComponent },
             { path: 'counter', component: CounterComponent },
-            { path: 'pipes', component: PipesDemoComponent }
+            { path: 'pipes', component: PipesDemoComponent },
+            { path: 'form', component: FormDemoComponent }
         ]
     },
     { path: '**', component: HomePage }

@@ -60,6 +60,14 @@ export function compileTemplate(template, context) {
     } catch (e) {
         console.error("Template Error:", e);
         console.debug("Generated Code:", code);
+        
+        // In development, throw the error so Vite shows the overlay
+        if (import.meta.env.DEV) {
+            // Enhance error message with generated code context if possible
+            e.message = `Template Error: ${e.message}`;
+            throw e;
+        }
+
         return `<div class="error">Template Error: ${e.message}</div>`;
     }
 }
