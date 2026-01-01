@@ -111,18 +111,18 @@ export const FormDemoComponent = Component.create({
                     <label>Username</label>
                     <input 
                         type="text"
-                        [value]="form.get('username').value"
-                        (input)="form.get('username').setValue($event.target.value)"
-                        (blur)="form.get('username').markAsTouched(); update()"
-                        class="{{ form.get('username').invalid && form.get('username').touched ? 'invalid' : '' }}"
+                        [value]="this.form.get('username').value"
+                        (input)="this.form.get('username').setValue($event.target.value)"
+                        (blur)="this.form.get('username').markAsTouched(); update()"
+                        class="{{ this.form.get('username').invalid && this.form.get('username').touched ? 'invalid' : '' }}"
                         placeholder="Enter username"
                     >
-                    @if(form.get('username').invalid && form.get('username').touched) {
+                    @if(this.form.get('username').invalid && this.form.get('username').touched) {
                         <div class="error-message">
-                            @if(form.get('username').errors.required) {
+                            @if(this.form.get('username').errors.required) {
                                 Username is required
                             }
-                            @else if(form.get('username').errors.minLength) {
+                            @else if(this.form.get('username').errors.minLength) {
                                 Must be at least 3 characters
                             }
                         </div>
@@ -133,14 +133,18 @@ export const FormDemoComponent = Component.create({
                     <label>Email</label>
                     <input 
                         type="email"
-                        [value]="form.get('email').value"
-                        (input)="form.get('email').setValue($event.target.value)"
-                    @if(form.get('email').invalid && form.get('email').touched) {
+                        [value]="this.form.get('email').value"
+                        (input)="this.form.get('email').setValue($event.target.value)"
+                        (blur)="this.form.get('email').markAsTouched(); update()"
+                        class="{{ this.form.get('email').invalid && this.form.get('email').touched ? 'invalid' : '' }}"
+                        placeholder="Enter email"
+                    >
+                    @if(this.form.get('email').invalid && this.form.get('email').touched) {
                         <div class="error-message">
-                            @if(form.get('email').errors.required) {
+                            @if(this.form.get('email').errors.required) {
                                 Email is required
                             }
-                            @else if(form.get('email').errors.email) {
+                            @else if(this.form.get('email').errors.email) {
                                 Invalid email format
                             }
                         </div>
@@ -151,32 +155,32 @@ export const FormDemoComponent = Component.create({
                     <label>Password</label>
                     <input 
                         type="password"
-                        [value]="form.get('password').value"
-                        (input)="form.get('password').setValue($event.target.value)"
-                        (blur)="form.get('password').markAsTouched(); update()"
-                        class="{{ form.get('password').invalid && form.get('password').touched ? 'invalid' : '' }}"
+                        [value]="this.form.get('password').value"
+                        (input)="this.form.get('password').setValue($event.target.value)"
+                        (blur)="this.form.get('password').markAsTouched(); update()"
+                        class="{{ this.form.get('password').invalid && this.form.get('password').touched ? 'invalid' : '' }}"
                         placeholder="Enter password"
                     >
-                    @if(form.get('password').invalid && form.get('password').touched) {
+                    @if(this.form.get('password').invalid && this.form.get('password').touched) {
                         <div class="error-message">
-                            @if(form.get('password').errors.required) {
+                            @if(this.form.get('password').errors.required) {
                                 Password is required
                             }
-                            @else if(form.get('password').errors.minLength) {
+                            @else if(this.form.get('password').errors.minLength) {
                                 Must be at least 6 characters
                             }
                         </div>
                     }
                 </div>
 
-                <button type="submit" [disabled]="!form.valid">Register</button>
+                <button type="submit" [disabled]="!this.form.valid">Register</button>
             </form>
 
             <div class="debug-info">
-                <strong>Form Status:</strong> {{ form.valid ? 'VALID' : 'INVALID' }}
+                <strong>Form Status:</strong> {{ this.form.valid ? 'VALID' : 'INVALID' }}
                 <br>
                 <strong>Form Value:</strong>
-                {{ JSON.stringify(form.value, null, 2) }}
+                {{ JSON.stringify(this.form.value, null, 2) }}
             </div>
         </div>
     `

@@ -71,7 +71,6 @@ describe('Template Engine', () => {
 
     it('should handle template errors gracefully', () => {
         const template = '@if(this.show) {'; // Missing closing brace
-        const result = compileTemplate(template, {});
-        expect(result).toContain('Template Error');
+        expect(() => compileTemplate(template, {})).toThrow(/Template Error/);
     });
 });
