@@ -4,13 +4,17 @@ import { FormControl } from '../../core/forms/form-control.js';
 import { Validators } from '../../core/forms/validators.js';
 import { fadeAnimation } from '../../core/animations/fade.animation.js';
 import { I18nService } from '../../core/services/i18n.service.js';
+import { ModalService } from '../../core/modal/modal.service.js';
 import { TranslatePipe } from '../../core/pipes/translate.pipe.js';
 import { FormControlDirective } from '../../core/forms/form-control.directive.js';
 
 export const FormDemoComponent = Component.create({
     selector: 'form-demo',
     animations: fadeAnimation,
-    inject: { i18nService: I18nService },
+    inject: { 
+        i18nService: I18nService,
+        modalService: ModalService
+    },
     pipes: { translate: TranslatePipe },
     directives: { formControl: FormControlDirective },
     styles: `
@@ -101,7 +105,7 @@ export const FormDemoComponent = Component.create({
         e.preventDefault();
         if (this.form.valid) {
             console.log('Form Submitted:', this.form.value);
-            alert('Form Submitted!\n\n' + JSON.stringify(this.form.value, null, 2));
+            this.modalService.alert('Form Submitted!\n\n' + JSON.stringify(this.form.value, null, 2), 'Success');
             this.form.get('username').setValue('');
             this.form.get('email').setValue('');
             this.form.get('password').setValue('');
