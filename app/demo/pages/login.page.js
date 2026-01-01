@@ -129,9 +129,9 @@ export const LoginPage = Component.create({
                         placeholder="e.g. John Doe"
                     >
                 </div>
-                <button type="submit" [disabled]="!this.form.valid">
-                    <i class="fas fa-sign-in-alt"></i> Login
-                </button>
+                <button type="submit" [disabled]="{{ this.bind(!this.form.valid) }}">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
             </form>
         </div>
     `
