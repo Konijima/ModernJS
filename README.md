@@ -22,6 +22,7 @@
 - [Installation](#-installation)
 - [Development](#-development)
 - [Testing](#-testing)
+- [Documentation](#-documentation)
 - [Project Structure](#-project-structure)
 - [Core Concepts](#-core-concepts)
   - [Components](#components)
@@ -96,6 +97,17 @@ Run with coverage:
 ```bash
 npm test -- --coverage
 ```
+
+## 📚 Documentation
+
+Detailed documentation for the framework core is available in the `docs/` directory:
+
+- [**Components**](docs/components.md): Lifecycle, templates, and styling.
+- [**Templates**](docs/templates.md): Syntax, control flow (`@if`, `@for`), and pipes.
+- [**Dependency Injection**](docs/dependency-injection.md): Services and injection.
+- [**Router**](docs/router.md): Navigation and route configuration.
+- [**Animations**](docs/animations.md): Enter/leave animations.
+- [**Internationalization**](docs/i18n.md): Multi-language support.
 
 ## 📂 Project Structure
 

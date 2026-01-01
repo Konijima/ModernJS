@@ -33,6 +33,14 @@ describe('Common Pipes', () => {
             expect(typeof pipe.transform(date)).toBe('string');
         });
 
+        it('should handle short format', () => {
+            expect(typeof pipe.transform(date, 'short')).toBe('string');
+        });
+
+        it('should handle full format', () => {
+            expect(typeof pipe.transform(date, 'full')).toBe('string');
+        });
+
         it('should handle invalid dates', () => {
             expect(pipe.transform('invalid')).toBe('invalid');
         });

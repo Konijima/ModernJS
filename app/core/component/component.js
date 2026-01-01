@@ -8,9 +8,9 @@ let globalStyleSheet = null;
 const getGlobalStyleSheet = () => {
     if (globalStyleSheet) return globalStyleSheet;
 
-    // Try to find styles.css in loaded stylesheets
+    // Try to find main.css in loaded stylesheets
     const styleSheet = Array.from(document.styleSheets)
-        .find(s => s.href && s.href.includes('styles.css'));
+        .find(s => s.href && s.href.includes('main.css'));
 
     if (styleSheet) {
         try {
@@ -21,7 +21,7 @@ const getGlobalStyleSheet = () => {
             sheet.replaceSync(cssText);
             globalStyleSheet = sheet;
         } catch (e) {
-            console.warn('[Framework] Could not create Constructable Stylesheet from styles.css', e);
+            console.warn('[Framework] Could not create Constructable Stylesheet from main.css', e);
         }
     }
     return globalStyleSheet;

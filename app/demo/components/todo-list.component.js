@@ -1,5 +1,7 @@
-import { Component } from '../core/component/component.js';
+import { Component } from '../../core/component/component.js';
 import { TodoService } from '../services/todo.service.js';
+import { I18nService } from '../../core/services/i18n.service.js';
+import { TranslatePipe } from '../../core/pipes/translate.pipe.js';
 import './todo-item.component.js';
 
 /**
@@ -9,7 +11,11 @@ import './todo-item.component.js';
 export const TodoList = Component.create({
     selector: 'todo-list',
     inject: {
-        todoService: TodoService
+        todoService: TodoService,
+        i18nService: I18nService
+    },
+    pipes: {
+        translate: TranslatePipe
     },
 
     state: {
@@ -18,6 +24,7 @@ export const TodoList = Component.create({
 
     onInit() {
         this.connect(this.todoService, (todos) => ({ todos }));
+        this.connect(this.i18nService, () => ({})); // Re-render on language change
     },
 
     styles: `
@@ -128,20 +135,20 @@ export const TodoList = Component.create({
             <div class="card">
                 <div class="header">
                     <div class="header-icon"><i class="fas fa-check-double"></i></div>
-                    <h2>My Tasks</h2>
+                    <h2>{{ 'todo.title' | translate }}</h2>
                 </div>
                 
                 <div class="input-group">
-                    <input class="form-input" placeholder="What needs to be done?" onkeydown="if(event.key==='Enter') this.getRootNode().host.addTodo()">
+                    <input class="form-input" placeholder="{{ 'todo.placeholder' | translate }}" onkeydown="if(event.key==='Enter') this.getRootNode().host.addTodo()">
                     <button class="btn btn-primary" onclick="this.getRootNode().host.addTodo()">
-                        <i class="fas fa-plus"></i> Add
+                        <i class="fas fa-plus"></i> {{ 'todo.add' | translate }}
                     </button>
                 </div>
 
                 @if (this.state.todos.length === 0) {
                     <div class="empty-state">
                         <i class="fas fa-inbox"></i>
-                        No tasks yet. Add one above to get started!
+                        {{ 'todo.empty' | translate }}
                     </div>
                 } @else {
                     <ul>
@@ -155,9 +162,9 @@ export const TodoList = Component.create({
                     </ul>
 
                     <div class="stats">
-                        <span>{{ this.state.todos.filter(t => t.completed).length }} of {{ this.state.todos.length }} completed</span>
+                        <span>{{ 'todo.stats.completed' | translate:[this.state.todos.filter(t => t.completed).length, this.state.todos.length] }}</span>
                         @if (this.state.todos.every(t => t.completed)) {
-                            <span class="success-badge"><i class="fas fa-check"></i> All done!</span>
+                            <span class="success-badge"><i class="fas fa-check"></i> {{ 'todo.stats.all_done' | translate }}</span>
                         }
                     </div>
                 }

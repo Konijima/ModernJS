@@ -1,4 +1,4 @@
-import { Pipe } from '../core/pipes/pipe.js';
+import { Pipe } from '../../core/pipes/pipe.js';
 
 export class ReversePipe extends Pipe {
     transform(value) {

@@ -40,4 +40,38 @@ describe('Template Engine', () => {
         expect(result).toContain('<span>A</span>');
         expect(result).toContain('<span>B</span>');
     });
+
+    it('should handle pipes', () => {
+        const template = '{{ this.value | uppercase }}';
+        const context = {
+            value: 'hello',
+            _pipes: {
+                uppercase: {
+                    transform: (val) => val.toUpperCase()
+                }
+            }
+        };
+        const result = compileTemplate(template, context);
+        expect(result).toBe('HELLO');
+    });
+
+    it('should handle pipes with arguments', () => {
+        const template = '{{ this.value | slice:0:2 }}';
+        const context = {
+            value: 'hello',
+            _pipes: {
+                slice: {
+                    transform: (val, start, end) => val.slice(start, end)
+                }
+            }
+        };
+        const result = compileTemplate(template, context);
+        expect(result).toBe('he');
+    });
+
+    it('should handle template errors gracefully', () => {
+        const template = '@if(this.show) {'; // Missing closing brace
+        const result = compileTemplate(template, {});
+        expect(result).toContain('Template Error');
+    });
 });

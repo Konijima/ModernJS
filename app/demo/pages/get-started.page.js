@@ -1,11 +1,22 @@
-import { Component } from '../core/component/component.js';
-import { Router } from '../core/router/router.js';
+import { Component } from '../../core/component/component.js';
+import { Router } from '../../core/router/router.js';
+import { I18nService } from '../../core/services/i18n.service.js';
+import { TranslatePipe } from '../../core/pipes/translate.pipe.js';
 
 export const GetStartedPage = Component.create({
     selector: 'get-started-page',
     inject: {
-        router: Router
+        router: Router,
+        i18nService: I18nService
     },
+    pipes: {
+        translate: TranslatePipe
+    },
+    
+    onInit() {
+        this.connect(this.i18nService, () => ({})); // Re-render on language change
+    },
+
     goToFeatures() {
         this.router.navigate('/features');
     },
@@ -86,10 +97,10 @@ export const GetStartedPage = Component.create({
     template: `
         <div class="page-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
             <div class="text-center" style="margin-bottom: 1rem;">
-                <span class="badge" style="margin-bottom: 1rem;"><i class="fas fa-rocket"></i> Quick Start</span>
-                <h2 style="margin-bottom: 0.5rem;">Get Started</h2>
+                <span class="badge" style="margin-bottom: 1rem;"><i class="fas fa-rocket"></i> {{ 'get_started.badge' | translate }}</span>
+                <h2 style="margin-bottom: 0.5rem;">{{ 'get_started.title' | translate }}</h2>
                 <p class="text-muted" style="font-size: 0.9375rem;">
-                    Set up ModernJS in minutes and start building.
+                    {{ 'get_started.subtitle' | translate }}
                 </p>
             </div>
 
@@ -97,8 +108,8 @@ export const GetStartedPage = Component.create({
                 <div class="step">
                     <div class="step-number">1</div>
                     <div class="step-content">
-                        <h3>Clone the Repository</h3>
-                        <p>Get the source code from GitHub to start exploring.</p>
+                        <h3>{{ 'get_started.step1.title' | translate }}</h3>
+                        <p>{{ 'get_started.step1.desc' | translate }}</p>
                         <div class="code-snippet">git clone https://github.com/Konijima/ModernJS.git</div>
                     </div>
                 </div>
@@ -108,8 +119,8 @@ export const GetStartedPage = Component.create({
                 <div class="step">
                     <div class="step-number">2</div>
                     <div class="step-content">
-                        <h3>Install Dependencies</h3>
-                        <p>Install the minimal dev dependencies (just Vite for dev server).</p>
+                        <h3>{{ 'get_started.step2.title' | translate }}</h3>
+                        <p>{{ 'get_started.step2.desc' | translate }}</p>
                         <div class="code-snippet">cd ModernJS && npm install</div>
                     </div>
                 </div>
@@ -119,8 +130,8 @@ export const GetStartedPage = Component.create({
                 <div class="step">
                     <div class="step-number">3</div>
                     <div class="step-content">
-                        <h3>Start Development Server</h3>
-                        <p>Launch the development server with hot reload.</p>
+                        <h3>{{ 'get_started.step3.title' | translate }}</h3>
+                        <p>{{ 'get_started.step3.desc' | translate }}</p>
                         <div class="code-snippet">npm run dev</div>
                     </div>
                 </div>
@@ -130,28 +141,28 @@ export const GetStartedPage = Component.create({
                 <div class="step">
                     <div class="step-number">4</div>
                     <div class="step-content">
-                        <h3>Explore the Features</h3>
-                        <p>Check out the live demos to see what ModernJS can do.</p>
+                        <h3>{{ 'get_started.step4.title' | translate }}</h3>
+                        <p>{{ 'get_started.step4.desc' | translate }}</p>
                         <div class="feature-list">
                             <div class="feature-item">
                                 <i class="fas fa-check-circle"></i>
-                                <span>Web Components with Shadow DOM</span>
+                                <span>{{ 'get_started.features.web_components' | translate }}</span>
                             </div>
                             <div class="feature-item">
                                 <i class="fas fa-check-circle"></i>
-                                <span>Reactive State Management</span>
+                                <span>{{ 'get_started.features.reactive_state' | translate }}</span>
                             </div>
                             <div class="feature-item">
                                 <i class="fas fa-check-circle"></i>
-                                <span>Dependency Injection</span>
+                                <span>{{ 'get_started.features.di' | translate }}</span>
                             </div>
                             <div class="feature-item">
                                 <i class="fas fa-check-circle"></i>
-                                <span>Client-side Routing</span>
+                                <span>{{ 'get_started.features.routing' | translate }}</span>
                             </div>
                             <div class="feature-item">
                                 <i class="fas fa-check-circle"></i>
-                                <span>Pipes & i18n Support</span>
+                                <span>{{ 'get_started.features.pipes' | translate }}</span>
                             </div>
                         </div>
                     </div>
@@ -160,10 +171,10 @@ export const GetStartedPage = Component.create({
 
             <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;">
                 <button class="btn btn-primary btn-lg" (click)="goToFeatures">
-                    <i class="fas fa-flask"></i> View Features
+                    <i class="fas fa-flask"></i> {{ 'get_started.view_features' | translate }}
                 </button>
                 <button class="btn btn-secondary btn-lg" (click)="openGitHub">
-                    <i class="fab fa-github"></i> GitHub
+                    <i class="fab fa-github"></i> {{ 'get_started.github' | translate }}
                 </button>
             </div>
         </div>

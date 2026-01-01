@@ -1,5 +1,7 @@
-import { Component } from '../core/component/component.js';
+import { Component } from '../../core/component/component.js';
 import { CounterService } from '../services/counter.service.js';
+import { I18nService } from '../../core/services/i18n.service.js';
+import { TranslatePipe } from '../../core/pipes/translate.pipe.js';
 
 /**
  * Counter Component.
@@ -8,7 +10,11 @@ import { CounterService } from '../services/counter.service.js';
 export const Counter = Component.create({
     selector: 'my-counter',
     inject: {
-        counterService: CounterService
+        counterService: CounterService,
+        i18nService: I18nService
+    },
+    pipes: {
+        translate: TranslatePipe
     },
     styles: `
         :host {
@@ -46,6 +52,7 @@ export const Counter = Component.create({
 
     onInit() {
         this.connect(this.counterService, (count) => ({ count }));
+        this.connect(this.i18nService, () => ({})); // Re-render on language change
     },
 
     /**
@@ -63,7 +70,7 @@ export const Counter = Component.create({
                 <div class="count">${this.state.count}</div>
                 <div class="btn-group">
                     <button class="btn btn-primary btn-lg" (click)="handleIncrement">
-                        <i class="fas fa-plus"></i> Increment
+                        <i class="fas fa-plus"></i> {{ 'counter.increment' | translate }}
                     </button>
                 </div>
             </div>

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { resolve } from '../../app/core/di/di.js';
+import { resolve, Injectable } from '../../app/core/di/di.js';
 
 class MockServiceA {}
 class MockServiceB {
@@ -27,5 +27,11 @@ describe('Dependency Injection', () => {
         // Verify singleton property across injections
         const serviceA = resolve(MockServiceA);
         expect(serviceB.serviceA).toBe(serviceA);
+    });
+
+    it('should return class when using Injectable helper', () => {
+        class MyService {}
+        const Result = Injectable(MyService);
+        expect(Result).toBe(MyService);
     });
 });

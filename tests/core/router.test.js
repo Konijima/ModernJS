@@ -75,4 +75,32 @@ describe('Router', () => {
         
         expect(updateSpy).toHaveBeenCalledWith({ title: 'SEO Page' });
     });
+
+    it('should warn if route not found', () => {
+        const routes = [{ path: '/', component: {} }];
+        router.register(routes);
+        
+        router.navigate('/unknown');
+        
+        expect(console.warn).toHaveBeenCalledWith(expect.stringContaining('No route found'));
+    });
+
+    it('should handle popstate event', () => {
+        const routes = [
+            { path: '/', component: { name: 'Home' } },
+            { path: '/back', component: { name: 'Back' } }
+        ];
+        router.register(routes);
+        
+        // Simulate navigation to /back
+        Object.defineProperty(window, 'location', {
+            value: { pathname: '/back' },
+            writable: true
+        });
+        
+        const event = new PopStateEvent('popstate');
+        window.dispatchEvent(event);
+        
+        expect(router.currentRoute).toBe(routes[1]);
+    });
 });

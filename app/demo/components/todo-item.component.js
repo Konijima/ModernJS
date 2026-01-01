@@ -1,4 +1,6 @@
-import { Component } from '../core/component/component.js';
+import { Component } from '../../core/component/component.js';
+import { I18nService } from '../../core/services/i18n.service.js';
+import { TranslatePipe } from '../../core/pipes/translate.pipe.js';
 
 /**
  * Todo Item Component.
@@ -6,6 +8,12 @@ import { Component } from '../core/component/component.js';
  */
 export const TodoItem = Component.create({
     selector: 'todo-item',
+    inject: {
+        i18nService: I18nService
+    },
+    pipes: {
+        translate: TranslatePipe
+    },
     styles: `
         :host {
             display: block;
@@ -74,6 +82,10 @@ export const TodoItem = Component.create({
         todo: null
     },
 
+    onInit() {
+        this.connect(this.i18nService, () => ({})); // Re-render on language change
+    },
+
     /**
      * Setter to receive todo data from parent.
      * @param {object} value - The todo object
@@ -87,7 +99,7 @@ export const TodoItem = Component.create({
         
         return `
             @if (!this.state.todo) {
-                <div>Loading...</div>
+                <div>{{ 'LOADING' | translate }}</div>
             } @else {
                 <li class="${todo && todo.completed ? 'completed' : ''}">
                     <input 

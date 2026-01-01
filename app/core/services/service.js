@@ -44,6 +44,31 @@ export class Service {
     }
 
     /**
+     * Subscribe to a specific slice of the state.
+     * Only triggers when the selected value changes (distinctUntilChanged).
+     * 
+     * @param {Function} selector - Function to select part of the state (state) => value
+     * @param {Function} callback - Function called with the new value (value) => void
+     * @returns {Function} Unsubscribe function
+     */
+    select(selector, callback) {
+        let previousValue = selector(this.state);
+        
+        // Emit initial value immediately
+        callback(previousValue);
+
+        // Subscribe to state changes
+        return this.subscribe((state) => {
+            const newValue = selector(state);
+            // Simple strict equality check
+            if (newValue !== previousValue) {
+                previousValue = newValue;
+                callback(newValue);
+            }
+        });
+    }
+
+    /**
      * Notify all listeners of the current state.
      * @protected
      */

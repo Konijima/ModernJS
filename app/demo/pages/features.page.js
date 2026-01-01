@@ -1,9 +1,9 @@
-import { Component } from '../core/component/component.js';
-import { UpperCasePipe, LowerCasePipe, DatePipe, CurrencyPipe } from '../core/pipes/common.pipes.js';
+import { Component } from '../../core/component/component.js';
+import { UpperCasePipe, LowerCasePipe, DatePipe, CurrencyPipe } from '../../core/pipes/common.pipes.js';
 import { ReversePipe } from '../pipes/reverse.pipe.js';
-import { TranslatePipe } from '../core/pipes/translate.pipe.js';
-import { ModalService } from '../core/modal/modal.service.js';
-import { I18nService } from '../core/services/i18n.service.js';
+import { TranslatePipe } from '../../core/pipes/translate.pipe.js';
+import { ModalService } from '../../core/modal/modal.service.js';
+import { I18nService } from '../../core/services/i18n.service.js';
 import '../components/todo-list.component.js';
 import '../components/counter.component.js';
 
@@ -47,27 +47,27 @@ export const FeaturesPage = Component.create({
     setTabPipes() {
         this.state.activeTab = 'pipes';
     },
-    setLangEn() {
-        this.i18nService.setLocale('en');
-    },
-    setLangFr() {
-        this.i18nService.setLocale('fr');
+    handleLangClick(e) {
+        const lang = e.target.closest('.btn-secondary').dataset.lang;
+        if (lang) {
+            this.i18nService.setLocale(lang);
+        }
     },
     showModal() {
         const datePipe = this.getPipe('date');
         const formatted = datePipe.transform(new Date(), 'full');
         
         this.modalService.open({
-            title: 'Modal Demo',
-            content: `This modal was triggered programmatically. Current time: ${formatted}`,
+            title: this.i18nService.translate('features.modal.title'),
+            content: this.i18nService.translate('features.modal.content', [formatted]),
             actions: [
                 { 
-                    label: 'Got it!', 
+                    label: this.i18nService.translate('features.modal.action.got_it'), 
                     type: 'primary', 
                     onClick: () => this.modalService.close()
                 },
                 {
-                    label: 'Cancel',
+                    label: this.i18nService.translate('features.modal.action.cancel'),
                     type: 'secondary',
                     onClick: () => this.modalService.close()
                 }
@@ -195,23 +195,23 @@ export const FeaturesPage = Component.create({
         const { activeTab } = this.state;
         return `
         <div class="page-container">
-            <div class="text-center" style="margin-bottom: 1.5rem;">
-                <span class="badge" style="margin-bottom: 1rem;"><i class="fas fa-flask"></i> Live Demos</span>
-                <h2 style="margin-bottom: 0.5rem;">Feature Showcase</h2>
+            <div class="text-center" style="margin-bottom: 2rem;">
+                <span class="badge" style="margin-bottom: 1rem;"><i class="fas fa-star"></i> {{ 'features.showcase.title' | translate }}</span>
+                <h2 style="margin-bottom: 0.5rem;">{{ 'features.showcase.title' | translate }}</h2>
                 <p class="text-muted" style="font-size: 0.9375rem;">
-                    Interactive examples demonstrating framework capabilities.
+                    {{ 'features.showcase.desc' | translate }}
                 </p>
             </div>
 
             <div class="tabs">
                 <button class="tab ${activeTab === 'todo' ? 'active' : ''}" (click)="setTabTodo">
-                    <i class="fas fa-check-square"></i> Todo List
+                    <i class="fas fa-check-square"></i> {{ 'features.tabs.todo' | translate }}
                 </button>
                 <button class="tab ${activeTab === 'counter' ? 'active' : ''}" (click)="setTabCounter">
-                    <i class="fas fa-calculator"></i> Counter
+                    <i class="fas fa-calculator"></i> {{ 'features.tabs.counter' | translate }}
                 </button>
                 <button class="tab ${activeTab === 'pipes' ? 'active' : ''}" (click)="setTabPipes">
-                    <i class="fas fa-filter"></i> Pipes & i18n
+                    <i class="fas fa-filter"></i> {{ 'features.tabs.pipes' | translate }}
                 </button>
             </div>
 
@@ -225,10 +225,10 @@ export const FeaturesPage = Component.create({
                 <div class="card">
                     <div class="demo-header" style="justify-content: center;">
                         <div class="demo-icon primary"><i class="fas fa-calculator"></i></div>
-                        <h3>Reactive Counter</h3>
+                        <h3>{{ 'features.counter.title' | translate }}</h3>
                     </div>
                     <p class="text-muted text-center" style="font-size: 0.9375rem; margin-bottom: 1.5rem;">
-                        Demonstrates reactive state with sessionStorage persistence.
+                        {{ 'features.counter.desc' | translate }}
                     </p>
                     <div class="counter-wrapper">
                         <my-counter></my-counter>
@@ -246,28 +246,34 @@ export const FeaturesPage = Component.create({
                     <p class="text-muted" style="font-size: 0.9375rem;">{{ 'WELCOME' | translate }}</p>
                     <p class="text-subtle" style="font-size: 0.875rem; margin-top: 0.5rem;">{{ 'CURRENT_LANG' | translate:this.i18nService.state.locale }}</p>
                     <div style="margin-top: 1rem; display: flex; gap: 0.75rem;">
-                        <button class="btn btn-secondary" (click)="setLangEn">English</button>
-                        <button class="btn btn-secondary" (click)="setLangFr">Français</button>
+                        ${this.i18nService.supportedLanguages.map(lang => `
+                            <button 
+                                class="btn btn-secondary" 
+                                data-lang="${lang.code}"
+                                (click)="handleLangClick">
+                                ${lang.label === 'EN' ? 'English' : 'Français'}
+                            </button>
+                        `).join('')}
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="demo-header">
                         <div class="demo-icon accent"><i class="fas fa-calendar"></i></div>
-                        <h3>Date Pipe & Modal</h3>
+                        <h3>{{ 'features.pipes.date_modal.title' | translate }}</h3>
                     </div>
                     <p class="text-muted" style="font-size: 0.9375rem;">
-                        Current Date: <strong style="color: var(--text-color);">{{ this.state.currentDate | date:'full' }}</strong>
+                        {{ 'features.pipes.date_modal.current_date' | translate }} <strong style="color: var(--text-color);">{{ this.state.currentDate | date:'full' }}</strong>
                     </p>
                     <button class="btn btn-accent" style="margin-top: 1rem;" (click)="showModal">
-                        <i class="fas fa-external-link-alt"></i> Show Modal
+                        <i class="fas fa-external-link-alt"></i> {{ 'features.pipes.date_modal.show_modal' | translate }}
                     </button>
                 </div>
 
                 <div class="card">
                     <div class="demo-header">
                         <div class="demo-icon success"><i class="fas fa-filter"></i></div>
-                        <h3>Common Pipes</h3>
+                        <h3>{{ 'features.pipes.common.title' | translate }}</h3>
                     </div>
                     <div class="code-block">
                         <div class="code-line">
@@ -286,6 +292,19 @@ export const FeaturesPage = Component.create({
                             <span class="code-label">Reverse:</span>
                             <span class="code-value">{{ 'epip esrever' | reverse }}</span>
                         </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="demo-header">
+                        <div class="demo-icon warning"><i class="fas fa-image"></i></div>
+                        <h3>{{ 'features.pipes.static.title' | translate }}</h3>
+                    </div>
+                    <p class="text-muted" style="font-size: 0.9375rem; margin-bottom: 1rem;">
+                        {{ 'features.pipes.static.desc' | translate }}
+                    </p>
+                    <div style="border-radius: 0.5rem; overflow: hidden; border: 1px solid var(--border-color);">
+                        <img src="/images/placeholder.svg" alt="Placeholder" style="width: 100%; display: block;">
                     </div>
                 </div>
             </div>

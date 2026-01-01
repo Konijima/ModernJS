@@ -1,23 +1,38 @@
 import { Service } from './service.js';
-import { en } from '../../i18n/en.js';
-import { fr } from '../../i18n/fr.js';
+import { LANGUAGES, DEFAULT_LANGUAGE } from '../../i18n/config.js';
 
 export class I18nService extends Service {
     constructor() {
+        const savedLocale = localStorage.getItem('modernjs_locale') || DEFAULT_LANGUAGE;
+        const initialLocale = LANGUAGES[savedLocale] ? savedLocale : DEFAULT_LANGUAGE;
+
         super({
-            locale: 'en',
-            translations: en
+            locale: initialLocale,
+            translations: LANGUAGES[initialLocale].translations
         });
-        this.dictionaries = { en, fr };
     }
 
     setLocale(locale) {
-        if (this.dictionaries[locale]) {
+        if (LANGUAGES[locale]) {
+            localStorage.setItem('modernjs_locale', locale);
             this.setState({
                 locale,
-                translations: this.dictionaries[locale]
+                translations: LANGUAGES[locale].translations
             });
         }
+    }
+
+    get supportedLanguages() {
+        return Object.values(LANGUAGES).map(l => ({ code: l.code, label: l.label }));
+    }
+
+    /**
+     * Listen specifically for language changes.
+     * @param {Function} callback - Called with the new locale string
+     * @returns {Function} Unsubscribe function
+     */
+    onLangChange(callback) {
+        return this.select(state => state.locale, callback);
     }
 
     translate(key, params = []) {

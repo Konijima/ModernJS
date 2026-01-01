@@ -3,5 +3,88 @@ export const en = {
     'WELCOME': 'Welcome to ModernJS',
     'CHANGE_LANG': 'Change Language',
     'CURRENT_LANG': 'Current Language: {0}',
-    'DEMO_TITLE': 'I18n Demo'
+    'DEMO_TITLE': 'I18n Demo',
+
+    // App
+    'app.title': 'Modern JS',
+    'app.subtitle': 'Native Web Components • Reactive State • Dependency Injection',
+    'app.nav.home': 'Home',
+    'app.nav.get_started': 'Get Started',
+    'app.nav.features': 'Features',
+    'app.footer.view_source': 'View source on',
+
+    // Meta
+    'meta.home.title': 'ModernJS - Home',
+    'meta.home.desc': 'Welcome to ModernJS Framework',
+    'meta.get_started.title': 'ModernJS - Get Started',
+    'meta.get_started.desc': 'Quick start guide for ModernJS',
+    'meta.features.title': 'ModernJS - Features',
+    'meta.features.desc': 'Feature demonstrations and examples',
+
+    // Home
+    'home.hero.badge': 'Open Source Framework',
+    'home.hero.title': 'Build <span class="highlight">Modern</span> Web Apps',
+    'home.hero.description': 'A lightweight, dependency-free JavaScript framework demonstrating modern web capabilities with Web Components, Reactive State, and Dependency Injection.',
+    'home.hero.get_started': 'Get Started',
+    'home.hero.github': 'View on GitHub',
+    'home.features.web_components.title': 'Web Components',
+    'home.features.web_components.desc': 'Built on standard Custom Elements and Shadow DOM for true encapsulation.',
+    'home.features.reactive_state.title': 'Reactive State',
+    'home.features.reactive_state.desc': 'Proxy-based state management with automatic DOM updates and diffing.',
+    'home.features.di.title': 'Dependency Injection',
+    'home.features.di.desc': 'Built-in DI container for managing services and component dependencies.',
+    'home.features.routing.title': 'Routing',
+    'home.features.routing.desc': 'Client-side routing system for Single Page Application experience.',
+    'home.features.pipes.title': 'Pipes',
+    'home.features.pipes.desc': 'Transform data in templates with built-in or custom pipes.',
+    'home.features.i18n.title': 'i18n Support',
+    'home.features.i18n.desc': 'Built-in internationalization service for multi-language support.',
+
+    // Get Started
+    'get_started.badge': 'Quick Start',
+    'get_started.title': 'Get Started',
+    'get_started.subtitle': 'Set up ModernJS in minutes and start building.',
+    'get_started.step1.title': 'Clone the Repository',
+    'get_started.step1.desc': 'Get the source code from GitHub to start exploring.',
+    'get_started.step2.title': 'Install Dependencies',
+    'get_started.step2.desc': 'Install the minimal dev dependencies (just Vite for dev server).',
+    'get_started.step3.title': 'Start Development Server',
+    'get_started.step3.desc': 'Launch the development server with hot reload.',
+    'get_started.step4.title': 'Explore the Features',
+    'get_started.step4.desc': 'Check out the live demos to see what ModernJS can do.',
+    'get_started.features.web_components': 'Web Components with Shadow DOM',
+    'get_started.features.reactive_state': 'Reactive State Management',
+    'get_started.features.di': 'Dependency Injection',
+    'get_started.features.routing': 'Client-side Routing',
+    'get_started.features.pipes': 'Pipes & i18n Support',
+    'get_started.view_features': 'View Features',
+    'get_started.github': 'GitHub',
+
+    // Features
+    'features.showcase.title': 'Feature Showcase',
+    'features.showcase.desc': 'Interactive examples demonstrating framework capabilities.',
+    'features.tabs.todo': 'Todo List',
+    'features.tabs.counter': 'Counter',
+    'features.tabs.pipes': 'Pipes & i18n',
+    'features.counter.title': 'Reactive Counter',
+    'features.counter.desc': 'Demonstrates reactive state with sessionStorage persistence.',
+    'features.pipes.date_modal.title': 'Date Pipe & Modal',
+    'features.pipes.date_modal.current_date': 'Current Date:',
+    'features.pipes.date_modal.show_modal': 'Show Modal',
+    'features.pipes.common.title': 'Common Pipes',
+    'features.pipes.static.title': 'Static Assets',
+    'features.pipes.static.desc': 'Serving static assets from the <code>public/</code> directory.',
+    'features.modal.title': 'Modal Demo',
+    'features.modal.content': 'This modal was triggered programmatically. Current time: {0}',
+    'features.modal.action.got_it': 'Got it!',
+    'features.modal.action.cancel': 'Cancel',
+
+    // Todo
+    'todo.title': 'Todo List',
+    'todo.placeholder': 'Add a new task...',
+    'todo.add': 'Add',
+    'todo.empty': 'No tasks yet. Add one above!',
+
+    // Counter
+    'counter.increment': 'Increment'
 };
