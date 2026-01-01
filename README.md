@@ -98,6 +98,7 @@ Detailed documentation for the framework core is available in the `docs/` direct
 - [**Dependency Injection**](docs/dependency-injection.md): Services and injection.
 - [**Router**](docs/router.md): Navigation and route configuration.
 - [**Animations**](docs/animations.md): Enter/leave animations.
+- [**Modal**](docs/modal.md): Dialogs, alerts, confirms, and prompts.
 - [**Internationalization**](docs/i18n.md): Multi-language support.
 
 ## 📂 Project Structure
