@@ -14,8 +14,8 @@
     "test": "vitest"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Konijima",
+  "license": "MIT",
   "type": "module",
   "devDependencies": {
     "@vitest/coverage-v8": "^4.0.16",
