@@ -96,6 +96,9 @@ export const FeaturesPage = Component.create({
                 <button class="tab ${this.isActive('/features/form') ? 'active' : ''}" data-path="/features/form" (click)="handleTabClick">
                     <i class="fas fa-edit"></i> {{ 'features.tabs.forms' | translate }}
                 </button>
+                <button class="tab ${this.isActive('/features/dashboard') || this.isActive('/features/login') ? 'active' : ''}" data-path="/features/dashboard" (click)="handleTabClick">
+                    <i class="fas fa-lock"></i> {{ 'features.tabs.auth' | translate }}
+                </button>
             </div>
         
             <router-outlet></router-outlet>
