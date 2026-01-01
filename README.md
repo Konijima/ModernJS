@@ -1,8 +1,11 @@
 <div align="center">
 
+<img src="public/favicon.svg" alt="ModernJS Logo" width="120" height="120" />
+
 # ModernJS Framework
 
 **A modern, lightweight JavaScript framework built on native Web Standards.**
+
 *Features a custom component system, dependency injection, and reactive state management—all with zero runtime dependencies.*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
