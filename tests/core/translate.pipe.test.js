@@ -19,8 +19,10 @@ describe('TranslatePipe', () => {
             translate: vi.fn((key) => key === 'HELLO' ? 'Bonjour' : key),
             onLangChange: vi.fn((cb) => {
                 mockService.listeners.push(cb);
-                return () => {
-                    mockService.listeners = mockService.listeners.filter(l => l !== cb);
+                return {
+                    unsubscribe: () => {
+                        mockService.listeners = mockService.listeners.filter(l => l !== cb);
+                    }
                 };
             }),
             triggerChange: (lang) => {

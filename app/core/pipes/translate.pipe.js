@@ -8,7 +8,7 @@ export class TranslatePipe extends Pipe {
         this.i18n = resolve(I18nService);
         
         if (component) {
-            this.unsubscribe = this.i18n.onLangChange(() => {
+            this.subscription = this.i18n.onLangChange(() => {
                 component.update();
             });
         }
@@ -19,8 +19,8 @@ export class TranslatePipe extends Pipe {
     }
 
     destroy() {
-        if (this.unsubscribe) {
-            this.unsubscribe();
+        if (this.subscription) {
+            this.subscription.unsubscribe();
         }
     }
 }
