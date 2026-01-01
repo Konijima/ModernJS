@@ -87,13 +87,14 @@ export class Component extends HTMLElement {
             static connect = config.connect;
             static animations = config.animations;
             static pipes = config.pipes;
+            static directives = config.directives;
             
             static template = typeof config.template === 'string' 
                 ? () => config.template 
                 : config.template;
         }
 
-        const reserved = ['selector', 'styles', 'inject', 'state', 'connect', 'template', 'animations', 'pipes'];
+        const reserved = ['selector', 'styles', 'inject', 'state', 'connect', 'template', 'animations', 'pipes', 'directives'];
         
         const descriptors = Object.getOwnPropertyDescriptors(config);
         Object.keys(descriptors).forEach(key => {
@@ -135,6 +136,7 @@ export class Component extends HTMLElement {
             if (config.inject) this.inject = config.inject;
             if (config.animations) this.animations = config.animations;
             if (config.pipes) this.pipes = config.pipes;
+            if (config.directives) this.directives = config.directives;
             if (config.template) this.prototype.render = config.template;
             
             if (config.selector) {
@@ -267,6 +269,22 @@ export class Component extends HTMLElement {
     }
 
     /**
+     * Retrieve a registered directive class.
+     * @param {string} name - The selector of the directive
+     * @returns {typeof Directive} The directive class
+     */
+    getDirective(name) {
+        if (!this.constructor.directives) return null;
+        // Direct match
+        if (this.constructor.directives[name]) return this.constructor.directives[name];
+        
+        // Case-insensitive match (since HTML attributes are lowercase)
+        const lowerName = name.toLowerCase();
+        const key = Object.keys(this.constructor.directives).find(k => k.toLowerCase() === lowerName);
+        return key ? this.constructor.directives[key] : null;
+    }
+
+    /**
      * Retrieve a registered pipe instance programmatically.
      * @param {string} name - The name of the pipe (e.g., 'date')
      * @returns {Pipe} The pipe instance
@@ -301,6 +319,10 @@ export class Component extends HTMLElement {
         }
 
         log('Render', `Updated ${this.tagName}`);
+        
+        // Clear references from previous render to avoid memory leaks
+        this._refs = {};
+        
         const templateResult = this.render();
         let newDom;
 

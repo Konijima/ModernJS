@@ -169,13 +169,22 @@ function updateAttributes(target, source, component) {
         // Property Binding: [prop]="value"
         if (name.startsWith('[') && name.endsWith(']')) {
             const propName = name.slice(1, -1);
+            // console.log('Found property binding:', propName);
             
+            let resolvedValue = value;
             // Check if value is a reference key
             if (component._refs && value in component._refs) {
-                target[propName] = component._refs[value];
-            } else {
-                target[propName] = value;
+                resolvedValue = component._refs[value];
             }
+
+            // Check for Directives
+            if (component.getDirective && component.getDirective(propName)) {
+                // console.log('Applying directive:', propName);
+                applyDirective(target, propName, resolvedValue, component);
+                return;
+            }
+
+            target[propName] = resolvedValue;
             return; // Don't set the attribute on DOM
         }
 
@@ -188,6 +197,35 @@ function updateAttributes(target, source, component) {
             }
         }
     });
+}
+
+/**
+ * Applies a directive to an element.
+ * 
+ * @param {Element} element - The target element
+ * @param {string} selector - The directive selector
+ * @param {any} value - The bound value
+ * @param {Object} component - The component instance
+ */
+function applyDirective(element, selector, value, component) {
+    if (!element._directives) {
+        element._directives = {};
+    }
+
+    let directive = element._directives[selector];
+    
+    if (!directive) {
+        const DirectiveClass = component.getDirective(selector);
+        if (DirectiveClass) {
+            directive = new DirectiveClass(element, component);
+            element._directives[selector] = directive;
+            if (directive.onInit) directive.onInit();
+        }
+    }
+
+    if (directive && directive.onUpdate) {
+        directive.onUpdate(value);
+    }
 }
 
 /**
@@ -211,6 +249,14 @@ function processBindings(node, component) {
  * Handles node removal with optional animation.
  */
 async function handleRemoval(parent, node, component) {
+    // Cleanup directives
+    if (node._directives) {
+        Object.values(node._directives).forEach(directive => {
+            if (directive.onDestroy) directive.onDestroy();
+        });
+        node._directives = null;
+    }
+
     await checkAnimations(node, component, ':leave');
     if (parent.contains(node)) {
         parent.removeChild(node);

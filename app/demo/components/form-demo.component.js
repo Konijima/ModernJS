@@ -5,12 +5,14 @@ import { Validators } from '../../core/forms/validators.js';
 import { fadeAnimation } from '../../core/animations/fade.animation.js';
 import { I18nService } from '../../core/services/i18n.service.js';
 import { TranslatePipe } from '../../core/pipes/translate.pipe.js';
+import { FormControlDirective } from '../../core/forms/form-control.directive.js';
 
 export const FormDemoComponent = Component.create({
     selector: 'form-demo',
     animations: fadeAnimation,
     inject: { i18nService: I18nService },
     pipes: { translate: TranslatePipe },
+    directives: { formControl: FormControlDirective },
     styles: `
         :host {
             display: block;
@@ -117,9 +119,7 @@ export const FormDemoComponent = Component.create({
                     <input 
                         type="text"
                         autocomplete="username"
-                        [value]="{{ this.form.get('username').value }}"
-                        (input)="this.form.get('username').setValue($event.target.value)"
-                        (blur)="this.form.get('username').markAsTouched(); this.update()"
+                        [formControl]="{{ this.bind(this.form.get('username')) }}"
                         class="{{ this.form.get('username').invalid && this.form.get('username').touched ? 'invalid' : '' }}"
                         placeholder="{{ 'forms.placeholder.username' | translate }}"
                     >
@@ -140,9 +140,7 @@ export const FormDemoComponent = Component.create({
                     <input 
                         type="email"
                         autocomplete="email"
-                        [value]="{{ this.form.get('email').value }}"
-                        (input)="this.form.get('email').setValue($event.target.value)"
-                        (blur)="this.form.get('email').markAsTouched(); this.update()"
+                        [formControl]="{{ this.bind(this.form.get('email')) }}"
                         class="{{ this.form.get('email').invalid && this.form.get('email').touched ? 'invalid' : '' }}"
                         placeholder="{{ 'forms.placeholder.email' | translate }}"
                     >
@@ -162,10 +160,8 @@ export const FormDemoComponent = Component.create({
                     <label>{{ 'forms.password' | translate }}</label>
                     <input 
                         type="password"
-                        autocomplete="new-password"
-                        [value]="{{ this.form.get('password').value }}"
-                        (input)="this.form.get('password').setValue($event.target.value)"
-                        (blur)="this.form.get('password').markAsTouched(); this.update()"
+                        autocomplete="current-password"
+                        [formControl]="{{ this.bind(this.form.get('password')) }}"
                         class="{{ this.form.get('password').invalid && this.form.get('password').touched ? 'invalid' : '' }}"
                         placeholder="{{ 'forms.placeholder.password' | translate }}"
                     >

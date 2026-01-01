@@ -30,16 +30,21 @@ export const LoginParams = Component.create({
 
 ### 2. Bind to Template
 
-Bind the input value to the control's value and update it on input.
+Use the `[formControl]` directive to bind the input to the control. Note that you need to register the `FormControlDirective` in your component.
 
 ```javascript
+import { FormControlDirective } from '../core/forms/form-control.directive.js';
+
+export const LoginParams = Component.create({
+    // ...
+    directives: { formControl: FormControlDirective },
     template: `
         <form>
             <div class="form-group">
                 <label>Username</label>
                 <input 
-                    [value]="form.get('username').value" 
-                    (input)="form.get('username').setValue($event.target.value)"
+                    type="text"
+                    [formControl]="{{ this.bind(this.form.get('username')) }}"
                 >
                 @if(form.get('username').invalid && form.get('username').touched) {
                     <div class="error">Username is required</div>
@@ -49,6 +54,30 @@ Bind the input value to the control's value and update it on input.
             <button [disabled]="!form.valid">Submit</button>
         </form>
     `
+});
+```
+
+### 3. Handling Submission
+
+You can handle form submission by listening to the `submit` event on the form element.
+
+```javascript
+    // ... inside component methods
+    handleSubmit(e) {
+        e.preventDefault();
+        if (this.form.valid) {
+            console.log('Form Data:', this.form.value);
+        }
+    }
+```
+
+And in your template:
+
+```html
+<form (submit)="handleSubmit">
+    <!-- inputs -->
+    <button [disabled]="!form.valid">Submit</button>
+</form>
 ```
 
 ## Validators

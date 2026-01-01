@@ -36,6 +36,7 @@
 - **Dependency Injection**: Built-in DI container for managing services and singletons.
 - **Client-Side Routing**: Angular-inspired routing with Guards (`canActivate`), `RouterOutlet`, and lazy loading support.
 - **Reactive Forms**: **NEW** Model-driven forms with `FormGroup`, `FormControl`, and Validators.
+- **Directives**: **NEW** Angular-style directives for extending DOM behavior (e.g., `[formControl]`).
 - **HTTP Client**: **NEW** Reactive HTTP client with Interceptor support.
 - **Internationalization (i18n)**: Built-in support for multi-language applications.
 - **Animations**: Native Web Animations API integration with `:enter` and `:leave` triggers.
