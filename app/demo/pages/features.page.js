@@ -37,18 +37,30 @@ export const FeaturesPage = Component.create({
         :host {
             display: block;
         }
+        .page-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+        .header {
+            grid-column: 1 / -1;
+            margin-bottom: 1rem;
+        }
         .tabs {
             display: flex;
-            gap: 0.25rem;
+            flex-direction: column;
+            gap: 0.5rem;
             background: var(--card-bg);
-            padding: 0.375rem;
+            padding: 1rem;
             border-radius: var(--radius-xl);
             border: 1px solid var(--border-color);
-            margin-bottom: 1.5rem;
+            position: sticky;
+            top: 2rem;
         }
         .tab {
-            flex: 1;
-            padding: 0.625rem 1rem;
+            width: 100%;
+            padding: 0.75rem 1rem;
             border: none;
             background: transparent;
             color: var(--text-muted);
@@ -59,8 +71,9 @@ export const FeaturesPage = Component.create({
             transition: all 0.2s;
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
+            justify-content: flex-start;
+            gap: 0.75rem;
+            text-align: left;
         }
         .tab:hover {
             background: var(--hover-bg);
@@ -71,11 +84,14 @@ export const FeaturesPage = Component.create({
             color: var(--primary-color);
             box-shadow: var(--shadow-sm);
         }
+        .content-area {
+            min-width: 0; /* Prevent overflow */
+        }
     `,
     template() {
         return `
         <div class="page-container">
-            <div class="text-center" style="margin-bottom: 2rem;">
+            <div class="header text-center">
                 <span class="badge" style="margin-bottom: 1rem;"><i class="fas fa-star"></i> {{ 'features.showcase.title' | translate }}</span>
                 <h2 style="margin-bottom: 0.5rem;">{{ 'features.showcase.title' | translate }}</h2>
                 <p class="text-muted" style="font-size: 0.9375rem;">
@@ -101,7 +117,9 @@ export const FeaturesPage = Component.create({
                 </button>
             </div>
         
-            <router-outlet></router-outlet>
+            <div class="content-area">
+                <router-outlet></router-outlet>
+            </div>
         </div>
         `;
     }
