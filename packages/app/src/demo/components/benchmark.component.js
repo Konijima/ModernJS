@@ -24,12 +24,12 @@ function buildData(count = 1000) {
 // Approximate Angular v17 performance metrics (ms) for comparison
 // Based on js-framework-benchmark results
 const ANGULAR_METRICS = {
-    create1k: 85,
-    create10k: 950,
-    append1k: 95,
-    update10th: 110,
-    clear: 25,
-    swap: 65,
+    create1k: 39.40, // Updated from user benchmark
+    create10k: 1052.30, // Updated from user benchmark
+    append1k: 217.90, // Updated from user benchmark
+    update10th: 25.30, // Updated from user benchmark
+    clear: 19.30, // Updated from user benchmark
+    swap: 20.70, // Updated from user benchmark
     select: 30,
     remove: 35
 };
@@ -43,7 +43,8 @@ export const BenchmarkComponent = Component.create({
         selected: null,
         lastMeasure: 0,
         lastOp: null,
-        comparison: null
+        comparison: null,
+        report: null
     },
     onInit() {
         this.connect(this.i18nService, () => ({}));
@@ -109,6 +110,16 @@ export const BenchmarkComponent = Component.create({
         .btn-secondary:hover {
             border-color: var(--text-muted);
             background: var(--bg-color);
+        }
+
+        .btn-accent {
+            background: var(--electric-violet, #7c3aed);
+            color: white;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+        }
+        .btn-accent:hover {
+            background: var(--french-violet, #6d28d9);
+            transform: translateY(-1px);
         }
 
         .comparison-card {
@@ -202,6 +213,16 @@ export const BenchmarkComponent = Component.create({
             color: var(--danger-color);
             background: rgba(239, 68, 68, 0.1);
         }
+
+        .report-table {
+            width: 100%;
+            margin-top: 1rem;
+        }
+        .report-table th, .report-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-subtle);
+        }
     `,
     template: `
         <div class="container">
@@ -216,9 +237,38 @@ export const BenchmarkComponent = Component.create({
                 <button class="btn btn-secondary" (click)="runUpdate">{{ 'benchmark.update_10th' | translate }}</button>
                 <button class="btn btn-secondary" (click)="clear">{{ 'benchmark.clear' | translate }}</button>
                 <button class="btn btn-secondary" (click)="swapRows">{{ 'benchmark.swap' | translate }}</button>
+                <button class="btn btn-accent" (click)="runAll">Run All Tests</button>
             </div>
 
-            @if(state.lastMeasure > 0) {
+            @if(state.report) {
+                <div class="comparison-card">
+                    <h3 style="margin: 0; font-size: 1.25rem;">Full Report</h3>
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th>Action</th>
+                                <th>Time (ms)</th>
+                                <th>Angular (ms)</th>
+                                <th>Diff</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for(let item of state.report) {
+                                <tr>
+                                    <td>{{ item.opName }}</td>
+                                    <td>{{ item.duration.toFixed(2) }}</td>
+                                    <td>{{ item.comparison ? item.comparison.angular : '-' }}</td>
+                                    <td class="{{ item.comparison && item.comparison.diff < 0 ? 'text-green' : 'text-red' }}">
+                                        {{ item.comparison ? (item.comparison.diff > 0 ? '+' : '') + item.comparison.diff.toFixed(2) + ' ms (' + item.comparison.percent + '%)' : '-' }}
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+            @if(state.lastMeasure > 0 && !state.report) {
                 <div class="comparison-card">
                     <h3 style="margin: 0; font-size: 1.25rem;">{{ 'benchmark.comparison.title' | translate }}</h3>
                     <div class="comparison-grid">
@@ -275,56 +325,90 @@ export const BenchmarkComponent = Component.create({
     `,
     
     measure(opName, fn) {
-        const start = performance.now();
-        fn();
-        // We need to wait for the render to complete.
-        requestAnimationFrame(() => {
-            setTimeout(() => {
-                const end = performance.now();
-                const duration = end - start;
-                this.state.lastMeasure = duration;
-                this.state.lastOp = opName;
-                
-                // Calculate comparison
-                if (ANGULAR_METRICS[opName]) {
-                    const angularTime = ANGULAR_METRICS[opName];
-                    const diff = duration - angularTime;
-                    const percent = Math.abs((diff / angularTime) * 100).toFixed(1);
+        return new Promise(resolve => {
+            const start = performance.now();
+            fn();
+            // We need to wait for the render to complete.
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    const end = performance.now();
+                    const duration = end - start;
+                    this.state.lastMeasure = duration;
+                    this.state.lastOp = opName;
                     
-                    this.state.comparison = {
-                        angular: angularTime,
-                        diff: diff,
-                        percent: percent
-                    };
-                } else {
-                    this.state.comparison = null;
-                }
-            }, 0);
+                    // Calculate comparison
+                    let comparison = null;
+                    if (ANGULAR_METRICS[opName]) {
+                        const angularTime = ANGULAR_METRICS[opName];
+                        const diff = duration - angularTime;
+                        const percent = Math.abs((diff / angularTime) * 100).toFixed(1);
+                        
+                        comparison = {
+                            angular: angularTime,
+                            diff: diff,
+                            percent: percent
+                        };
+                        this.state.comparison = comparison;
+                    } else {
+                        this.state.comparison = null;
+                    }
+                    resolve({ opName, duration, comparison });
+                }, 0);
+            });
         });
     },
 
+    async runAll() {
+        this.state.report = null;
+        const report = [];
+        
+        // 1. Create 1k
+        await this.clear();
+        report.push(await this.run());
+        
+        // 2. Append 1k
+        report.push(await this.add());
+        
+        // 3. Update 10th
+        report.push(await this.runUpdate());
+        
+        // 4. Swap
+        report.push(await this.swapRows());
+        
+        // 5. Clear
+        report.push(await this.clear());
+        
+        // 6. Create 10k
+        report.push(await this.runLots());
+        
+        // 7. Clear
+        await this.clear();
+        
+        this.state.report = report;
+    },
+
     run() {
-        this.measure('create1k', () => {
+        return this.measure('create1k', () => {
             this.state.rows = buildData(1000);
             this.state.selected = null;
         });
     },
 
     runLots() {
-        this.measure('create10k', () => {
+        return this.measure('create10k', () => {
             this.state.rows = buildData(10000);
             this.state.selected = null;
         });
     },
 
     add() {
-        this.measure('append1k', () => {
+        return this.measure('append1k', () => {
             this.state.rows = [...this.state.rows, ...buildData(1000)];
         });
     },
 
     runUpdate() {
-        this.measure('update10th', () => {
+        return this.measure('update10th', () => {
             const newRows = [...this.state.rows];
             for (let i = 0; i < newRows.length; i += 10) {
                 newRows[i] = { ...newRows[i], label: newRows[i].label + ' !!!' };
@@ -334,14 +418,14 @@ export const BenchmarkComponent = Component.create({
     },
 
     clear() {
-        this.measure('clear', () => {
+        return this.measure('clear', () => {
             this.state.rows = [];
             this.state.selected = null;
         });
     },
 
     swapRows() {
-        this.measure('swap', () => {
+        return this.measure('swap', () => {
             if (this.state.rows.length > 998) {
                 const newRows = [...this.state.rows];
                 const temp = newRows[1];
@@ -358,7 +442,7 @@ export const BenchmarkComponent = Component.create({
         }
         if (!row) return;
         
-        this.measure('select', () => {
+        return this.measure('select', () => {
             this.state.selected = row.id;
         });
     },
@@ -369,7 +453,7 @@ export const BenchmarkComponent = Component.create({
         }
         if (!row) return;
 
-        this.measure('remove', () => {
+        return this.measure('remove', () => {
             this.state.rows = this.state.rows.filter(r => r.id !== row.id);
         });
     }
