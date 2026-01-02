@@ -206,8 +206,13 @@ function generate(node) {
 function generateProps(props) {
     let code = '{';
     for (const [key, value] of Object.entries(props)) {
+        // Handle Property Binding [prop]="expr"
+        if (key.startsWith('[') && key.endsWith(']')) {
+            const expr = parsePipes(value);
+            code += `'${key}': ${expr},`;
+        }
         // Check for interpolation in value
-        if (value.includes('{{')) {
+        else if (value.includes('{{')) {
             // "class {{active}}" -> `class ${active}`
             const expr = value.replace(/{{(.*?)}}/g, (m, p1) => `\${${parsePipes(p1)}}`);
             code += `'${key}': \`${expr}\`,`;

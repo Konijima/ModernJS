@@ -165,6 +165,13 @@ function updateAttributesVNode(target, props, component, refs) {
                 continue;
             }
 
+            if (propName === 'innerHTML') {
+                if (target.innerHTML !== resolvedValue) {
+                    target.innerHTML = resolvedValue;
+                }
+                continue;
+            }
+
             target[propName] = resolvedValue;
             continue;
         }

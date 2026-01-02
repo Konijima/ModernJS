@@ -36,9 +36,7 @@ export const HomePage = Component.create({
                 <i class="fas fa-code"></i> {{ 'home.hero.badge' | translate }}
             </span>
             
-            <h2 class="hero-title">
-                {{ 'home.hero.title' | translate }}
-            </h2>
+            <h2 class="hero-title" [innerHTML]="'home.hero.title' | translate"></h2>
             
             <p class="hero-description">
                 {{ 'home.hero.description' | translate }}
