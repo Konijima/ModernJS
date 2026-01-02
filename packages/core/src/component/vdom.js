@@ -22,9 +22,10 @@ export function h(tag, props, children) {
     if (children) {
         if (Array.isArray(children)) {
             // Flatten nested arrays (e.g. from maps/loops)
-            // Use flat() instead of flat(Infinity) for performance. 
-            // Templates usually don't nest deeply.
-            normalizedChildren = children.flat().map(c => normalizeChild(c)).filter(c => c != null);
+            // Custom recursive flatten is faster than flat(Infinity) and handles deep nesting
+            const flattened = [];
+            flatten(children, flattened);
+            normalizedChildren = flattened.map(c => normalizeChild(c)).filter(c => c != null);
         } else {
             const normalized = normalizeChild(children);
             if (normalized != null) {
@@ -40,6 +41,17 @@ export function h(tag, props, children) {
         key,
         flags
     };
+}
+
+function flatten(arr, result) {
+    for (let i = 0; i < arr.length; i++) {
+        const value = arr[i];
+        if (Array.isArray(value)) {
+            flatten(value, result);
+        } else {
+            result.push(value);
+        }
+    }
 }
 
 function normalizeChild(child) {

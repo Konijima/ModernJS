@@ -422,7 +422,8 @@ export class Component extends HTMLElement {
         } else {
             // Flatten the array to handle nested arrays from control flow (e.g. @if, @for)
             // The compiler might return [ [VNode] ] for @if blocks
-            newDom = newDom.flat();
+            // Use flat(Infinity) to ensure all nested arrays are flattened
+            newDom = newDom.flat(Infinity);
         }
 
         // Inject styles into VNode tree
