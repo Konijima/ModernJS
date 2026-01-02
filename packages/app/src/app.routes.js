@@ -1,14 +1,25 @@
-import { HomePage } from './demo/pages/home.page.js';
-import { GetStartedPage } from './demo/pages/get-started.page.js';
+// ============================================================================
+// Pages
+// ============================================================================
+import { BenchmarkPage } from './demo/pages/benchmark.page.js';
+import { DashboardPage } from './demo/pages/dashboard.page.js';
 import { FeaturesPage } from './demo/pages/features.page.js';
-import { TodoListComponent } from './demo/components/todo-list.component.js';
+import { GetStartedPage } from './demo/pages/get-started.page.js';
+import { HomePage } from './demo/pages/home.page.js';
+import { LoginPage } from './demo/pages/login.page.js';
+
+// ============================================================================
+// Components
+// ============================================================================
 import { CounterComponent } from './demo/components/counter.component.js';
-import { PipesDemoComponent } from './demo/components/pipes-demo.component.js';
 import { FormDemoComponent } from './demo/components/form-demo.component.js';
 import { HttpDemoComponent } from './demo/components/http-demo.component.js';
-import { LoginPage } from './demo/pages/login.page.js';
-import { DashboardPage } from './demo/pages/dashboard.page.js';
-import { BenchmarkPage } from './demo/pages/benchmark.page.js';
+import { PipesDemoComponent } from './demo/components/pipes-demo.component.js';
+import { TodoListComponent } from './demo/components/todo-list.component.js';
+
+// ============================================================================
+// Guards
+// ============================================================================
 import { AuthGuard } from './demo/guards/auth.guard.js';
 
 export const routes = [

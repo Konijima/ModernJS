@@ -1,5 +1,12 @@
-import { AuthService } from '../services/auth.service.js';
+// ============================================================================
+// Framework Imports
+// ============================================================================
 import { Router } from '@modernjs/core';
+
+// ============================================================================
+// Services
+// ============================================================================
+import { AuthService } from '../services/auth.service.js';
 
 export class AuthGuard {
     static inject = [AuthService, Router];
