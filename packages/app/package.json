@@ -1,0 +1,14 @@
+{
+  "name": "@modernjs/demo-app",
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "@modernjs/core": "*"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest"
+  }
+}
