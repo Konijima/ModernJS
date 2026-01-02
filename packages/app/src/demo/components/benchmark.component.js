@@ -223,6 +223,10 @@ export const BenchmarkComponent = Component.create({
                     <h3 style="margin: 0; font-size: 1.25rem;">{{ 'benchmark.comparison.title' | translate }}</h3>
                     <div class="comparison-grid">
                         <div class="stat-box">
+                            <div class="stat-label">Action</div>
+                            <div class="stat-value">{{ state.lastOp }}</div>
+                        </div>
+                        <div class="stat-box">
                             <div class="stat-label">{{ 'benchmark.comparison.modernjs' | translate }}</div>
                             <div class="stat-value">{{ state.lastMeasure.toFixed(2) }} ms</div>
                         </div>
