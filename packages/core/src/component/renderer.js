@@ -1,5 +1,7 @@
 import { AnimationManager } from '../animations/animation.js';
 import { VNodeFlags } from './vdom.js';
+import { registerDelegatedHandler, shouldDelegate } from './event-delegation.js';
+import { perfMonitor } from '../utils/performance.js';
 
 /**
  * Robust DOM Diffing and Rendering Engine.
@@ -16,22 +18,28 @@ import { VNodeFlags } from './vdom.js';
  * @param {Object} [refs] - The references map for the current render cycle
  */
 export function render(target, source, component, refs) {
-    // If target is a shadow root, we need to diff its children
-    if (target instanceof ShadowRoot) {
-        if (Array.isArray(source) || source.flags) {
-            // VNode Root (usually an array or a single element)
-            // If source is an array (fragment), diff children directly
-            const vnodes = Array.isArray(source) ? source : [source];
-            diffChildrenVNode(target, vnodes, component, refs);
+    const start = perfMonitor.startMeasure('render');
+
+    try {
+        // If target is a shadow root, we need to diff its children
+        if (target instanceof ShadowRoot) {
+            if (Array.isArray(source) || source.flags) {
+                // VNode Root (usually an array or a single element)
+                // If source is an array (fragment), diff children directly
+                const vnodes = Array.isArray(source) ? source : [source];
+                diffChildrenVNode(target, vnodes, component, refs);
+            } else {
+                diffChildren(target, source, component, refs);
+            }
         } else {
-            diffChildren(target, source, component, refs);
+            if (source.flags) {
+                diffVNode(target, source, component, refs);
+            } else {
+                diff(target, source, component, refs);
+            }
         }
-    } else {
-        if (source.flags) {
-            diffVNode(target, source, component, refs);
-        } else {
-            diff(target, source, component, refs);
-        }
+    } finally {
+        perfMonitor.endMeasure('render', start);
     }
 }
 
@@ -175,33 +183,40 @@ function updateAttributesVNode(target, props, component, refs, isNew = false) {
         if (name.startsWith('(') && name.endsWith(')')) {
             const eventName = name.slice(1, -1);
             const handlerFn = value;
-            
-            if (!target._listeners) target._listeners = {};
-            
-            // If handler changed
-            if (!target._listeners[eventName] || target._listeners[eventName].raw !== handlerFn) {
-                if (target._listeners[eventName]) {
-                    target.removeEventListener(eventName, target._listeners[eventName].handler);
-                }
 
-                const handler = (e) => {
-                    if (typeof handlerFn === 'function') {
-                        handlerFn(e);
-                    } else if (typeof component[handlerFn] === 'function') {
-                        // Legacy string support
-                        component[handlerFn](e);
-                    } else {
-                        // Legacy eval support
-                        try {
-                            new Function('$event', handlerFn).call(component, e);
-                        } catch (err) {
-                            console.warn(`Event handler failed:`, err);
-                        }
+            // Try to use event delegation for better performance
+            if (shouldDelegate(eventName)) {
+                // Use delegation for supported events
+                registerDelegatedHandler(target, eventName, handlerFn);
+            } else {
+                // Fall back to direct listeners for unsupported events
+                if (!target._listeners) target._listeners = {};
+
+                // If handler changed
+                if (!target._listeners[eventName] || target._listeners[eventName].raw !== handlerFn) {
+                    if (target._listeners[eventName]) {
+                        target.removeEventListener(eventName, target._listeners[eventName].handler);
                     }
-                };
 
-                target.addEventListener(eventName, handler);
-                target._listeners[eventName] = { raw: handlerFn, handler };
+                    const handler = (e) => {
+                        if (typeof handlerFn === 'function') {
+                            handlerFn(e);
+                        } else if (typeof component[handlerFn] === 'function') {
+                            // Legacy string support
+                            component[handlerFn](e);
+                        } else {
+                            // Legacy eval support
+                            try {
+                                new Function('$event', handlerFn).call(component, e);
+                            } catch (err) {
+                                console.warn(`Event handler failed:`, err);
+                            }
+                        }
+                    };
+
+                    target.addEventListener(eventName, handler);
+                    target._listeners[eventName] = { raw: handlerFn, handler };
+                }
             }
             continue;
         }
@@ -254,6 +269,25 @@ function isBindingProp(name) {
 /**
  * Diffs children using VNodes.
  */
+/**
+ * Helper to check if a DOM node can be reused for a VNode
+ */
+function canReuseNode(domNode, vnode) {
+    if (!domNode || !vnode) return false;
+
+    // Check node type compatibility
+    if (vnode.flags & VNodeFlags.TEXT) {
+        return domNode.nodeType === Node.TEXT_NODE;
+    }
+
+    if (vnode.flags & VNodeFlags.ELEMENT) {
+        return domNode.nodeType === Node.ELEMENT_NODE &&
+               domNode.tagName.toLowerCase() === vnode.tag.toLowerCase();
+    }
+
+    return false;
+}
+
 function diffChildrenVNode(target, vnodes, component, refs) {
     // Optimization: Fast Clear
     if (vnodes.length === 0 && target.firstChild) {
@@ -268,14 +302,94 @@ function diffChildrenVNode(target, vnodes, component, refs) {
                  }
                  child = child.nextSibling;
              }
-             
+
              if (!hasDirectives) {
                  target.textContent = '';
                  return;
              }
         }
     }
-    
+
+    // Fast path optimizations for common list operations
+    const oldChildren = [];
+    let child = target.firstChild;
+    while (child) {
+        oldChildren.push(child);
+        child = child.nextSibling;
+    }
+    const oldLength = oldChildren.length;
+    const newLength = vnodes.length;
+
+    // Optimization 1: Complete replacement (different lengths, no keys)
+    if (oldLength === 0 && newLength > 0) {
+        // Just append all new nodes
+        for (const vnode of vnodes) {
+            target.appendChild(createNode(vnode, component, refs));
+        }
+        return;
+    }
+
+    // Optimization 2: Append detection (most common in benchmarks)
+    if (oldLength > 0 && newLength > oldLength) {
+        let isAppend = true;
+        // Check if the first oldLength items match
+        for (let i = 0; i < oldLength && isAppend; i++) {
+            if (!canReuseNode(oldChildren[i], vnodes[i])) {
+                isAppend = false;
+            }
+        }
+
+        if (isAppend) {
+            // Update existing nodes
+            for (let i = 0; i < oldLength; i++) {
+                diffVNode(oldChildren[i], vnodes[i], component, refs);
+            }
+            // Append new nodes
+            for (let i = oldLength; i < newLength; i++) {
+                target.appendChild(createNode(vnodes[i], component, refs));
+            }
+            return;
+        }
+    }
+
+    // Optimization 3: Swap detection (common in benchmarks)
+    if (oldLength === newLength && oldLength > 1) {
+        let swapIndices = [];
+        for (let i = 0; i < oldLength; i++) {
+            if (!canReuseNode(oldChildren[i], vnodes[i])) {
+                swapIndices.push(i);
+            }
+        }
+
+        // Check if it's a simple two-element swap
+        if (swapIndices.length === 2) {
+            const [i, j] = swapIndices;
+            if (canReuseNode(oldChildren[i], vnodes[j]) &&
+                canReuseNode(oldChildren[j], vnodes[i])) {
+                // Perform the swap
+                const tempNode = oldChildren[i];
+                const nextSibling = oldChildren[j].nextSibling;
+
+                // Move node i to position j
+                target.insertBefore(oldChildren[i], nextSibling);
+                // Move node j to position i
+                target.insertBefore(oldChildren[j], tempNode.nextSibling);
+
+                // Update the swapped nodes
+                diffVNode(oldChildren[i], vnodes[j], component, refs);
+                diffVNode(oldChildren[j], vnodes[i], component, refs);
+
+                // Update all other nodes
+                for (let k = 0; k < oldLength; k++) {
+                    if (k !== i && k !== j) {
+                        diffVNode(oldChildren[k], vnodes[k], component, refs);
+                    }
+                }
+                return;
+            }
+        }
+    }
+
     // Keyed Diffing Check
     let hasKeys = false;
     let checkNode = target.firstChild;
@@ -286,7 +400,7 @@ function diffChildrenVNode(target, vnodes, component, refs) {
         }
         checkNode = checkNode.nextSibling;
     }
-    
+
     if (hasKeys) {
         const oldChildren = [];
         let child = target.firstChild;

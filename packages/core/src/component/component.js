@@ -4,6 +4,8 @@ import { compileTemplate } from './template.js';
 import { compileToVNode } from './compiler.js';
 import { h, createTextVNode, flatten } from './vdom.js';
 import { FRAMEWORK_VERSION } from '../version.js';
+import { setupEventDelegation, teardownEventDelegation } from './event-delegation.js';
+import { analyzePatch, applyIncrementalUpdates, clearBindings, PatchMode } from './incremental-dom.js';
 
 // Cache for the global stylesheet to prevent FOUC
 let globalStyleSheet = null;
@@ -222,12 +224,20 @@ export class Component extends HTMLElement {
             }
         }
 
+        // Track previous state for incremental updates
+        this._previousState = null;
+
         this.state = new Proxy(initialState, {
             set: (target, prop, value) => {
                 if (target[prop] !== value) {
                     log('State', `Changed ${this.tagName}.${String(prop)}`, value);
+
+                    // Capture old state for comparison
+                    const oldValue = target[prop];
                     target[prop] = value;
-                    this.update();
+
+                    // Try incremental update first
+                    this.update({ [prop]: { old: oldValue, new: value } });
                 }
                 return true;
             }
@@ -247,7 +257,10 @@ export class Component extends HTMLElement {
      */
     connectedCallback() {
         log('Lifecycle', `Connected ${this.tagName}`);
-        
+
+        // Setup event delegation for this component's shadow root
+        setupEventDelegation(this.shadowRoot, this);
+
         // Schedule initial render
         this.update();
 
@@ -255,7 +268,7 @@ export class Component extends HTMLElement {
         if (this.onInit) {
             this.onInit();
         }
-        
+
         // Call static connect if defined (for create() syntax)
         if (this.constructor.connect) {
             this.constructor.connect.call(this);
@@ -273,6 +286,12 @@ export class Component extends HTMLElement {
             this._updatePending = false;
         }
 
+        // Clean up event delegation
+        teardownEventDelegation(this.shadowRoot);
+
+        // Clear incremental DOM bindings
+        clearBindings(this);
+
         this._subscriptions.forEach(unsubscribe => {
             if (typeof unsubscribe === 'function') {
                 unsubscribe();
@@ -280,7 +299,7 @@ export class Component extends HTMLElement {
                 unsubscribe.unsubscribe();
             }
         });
-        
+
         // Clean up pipes
         if (this._pipes) {
             Object.values(this._pipes).forEach(pipe => {
@@ -348,12 +367,16 @@ export class Component extends HTMLElement {
     /**
      * Schedule a re-render of the component.
      * Batches updates using requestAnimationFrame to avoid unnecessary DOM diffs.
+     * @param {Object} changes - Optional object describing what changed
      */
-    update() {
+    update(changes = null) {
         // Prevent updates if not connected to DOM (e.g. during construction)
         if (!this.isConnected) {
             return;
         }
+
+        // Store changes for incremental updates
+        this._pendingChanges = changes;
 
         if (this._updatePending) return;
         this._updatePending = true;
@@ -362,6 +385,7 @@ export class Component extends HTMLElement {
             this._performUpdate();
             this._updatePending = false;
             this._rafId = null;
+            this._pendingChanges = null;
         });
     }
 
@@ -396,7 +420,28 @@ export class Component extends HTMLElement {
             return;
         }
 
-        log('Render', `Updated ${this.tagName}`);
+        // Try incremental update if we have tracked changes
+        if (this._pendingChanges && this._previousState) {
+            const patchAnalysis = analyzePatch(this._previousState, this.state, this);
+
+            if (patchAnalysis.mode === PatchMode.INCREMENTAL) {
+                // Apply incremental updates directly to DOM
+                const updatedCount = applyIncrementalUpdates(this, patchAnalysis.changes);
+
+                if (updatedCount > 0) {
+                    log('Render', `Incremental update ${this.tagName} (${updatedCount} nodes)`);
+                    this._previousState = JSON.parse(JSON.stringify(this.state));
+
+                    // Call onUpdate hook
+                    if (this.onUpdate) {
+                        this.onUpdate();
+                    }
+                    return;
+                }
+            }
+        }
+
+        log('Render', `Full update ${this.tagName}`);
         
         // Clear references from previous render to avoid memory leaks
         this._refs = {};
@@ -446,6 +491,9 @@ export class Component extends HTMLElement {
         // Capture current refs for this render cycle
         const currentRefs = { ...this._refs };
         render(this.shadowRoot, newDom, this, currentRefs);
+
+        // Store current state for next incremental update
+        this._previousState = JSON.parse(JSON.stringify(this.state));
 
         if (this.onUpdate) {
             this.onUpdate();
