@@ -40,18 +40,9 @@ export const routes = [
             meta: [
                 { name: 'description', content: 'meta.features.desc' }
             ]
-        }
-    },
-    {
-        path: '/benchmark',
-        component: BenchmarkPage,
-        data: {
-            title: 'Benchmark'
-        }
-    },
-    { 
-        path: '/todo', 
-        component: TodoListComponent,
+        },
+        children: [
+            { path: '', redirectTo: 'todo' },
             { path: 'todo', component: TodoListComponent },
             { path: 'counter', component: CounterComponent },
             { path: 'pipes', component: PipesDemoComponent },
@@ -69,6 +60,13 @@ export const routes = [
                 data: { title: 'Dashboard' }
             }
         ]
+    },
+    {
+        path: '/benchmark',
+        component: BenchmarkPage,
+        data: {
+            title: 'Benchmark'
+        }
     },
     { path: '**', component: HomePage }
 ];
