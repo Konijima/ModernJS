@@ -288,63 +288,118 @@ function diffChildrenVNode(target, vnodes, component, refs) {
     }
     
     if (hasKeys) {
-        const keyedMap = new Map();
-        const children = [];
+        const oldChildren = [];
         let child = target.firstChild;
-        
         while (child) {
-            children.push(child);
-            if (child.nodeType === Node.ELEMENT_NODE && child._key != null) {
-                keyedMap.set(child._key, child);
-            }
+            oldChildren.push(child);
             child = child.nextSibling;
         }
 
-        let nextSibling = target.firstChild;
+        let oldStartIdx = 0;
+        let oldEndIdx = oldChildren.length - 1;
+        let newStartIdx = 0;
+        let newEndIdx = vnodes.length - 1;
 
-        for (let i = 0; i < vnodes.length; i++) {
-            const vnode = vnodes[i];
-            if (!vnode) continue;
-            
-            const key = vnode.key;
-            let tChild = null;
+        let oldStartVNode = oldChildren[0];
+        let oldEndVNode = oldChildren[oldEndIdx];
+        let newStartVNode = vnodes[0];
+        let newEndVNode = vnodes[newEndIdx];
 
-            if (key && keyedMap.has(key)) {
-                tChild = keyedMap.get(key);
-                keyedMap.delete(key);
+        // Sync Head
+        while (oldStartIdx <= oldEndIdx && newStartIdx <= newEndIdx) {
+            if (oldStartVNode == null) {
+                oldStartVNode = oldChildren[++oldStartIdx];
+            } else if (oldEndVNode == null) {
+                oldEndVNode = oldChildren[--oldEndIdx];
+            } else if (isSameKey(oldStartVNode, newStartVNode)) {
+                diffVNode(oldStartVNode, newStartVNode, component, refs);
+                oldStartVNode = oldChildren[++oldStartIdx];
+                newStartVNode = vnodes[++newStartIdx];
+            } else if (isSameKey(oldEndVNode, newEndVNode)) {
+                diffVNode(oldEndVNode, newEndVNode, component, refs);
+                oldEndVNode = oldChildren[--oldEndIdx];
+                newEndVNode = vnodes[--newEndIdx];
+            } else if (isSameKey(oldStartVNode, newEndVNode)) {
+                // Node moved right
+                target.insertBefore(oldStartVNode, oldEndVNode.nextSibling);
+                diffVNode(oldStartVNode, newEndVNode, component, refs);
+                oldStartVNode = oldChildren[++oldStartIdx];
+                newEndVNode = vnodes[--newEndIdx];
+            } else if (isSameKey(oldEndVNode, newStartVNode)) {
+                // Node moved left
+                target.insertBefore(oldEndVNode, oldStartVNode);
+                diffVNode(oldEndVNode, newStartVNode, component, refs);
+                oldEndVNode = oldChildren[--oldEndIdx];
+                newStartVNode = vnodes[++newStartIdx];
+            } else {
+                // Unknown sequence, map based
+                break;
+            }
+        }
+
+        // If we broke out, we have a middle section to handle
+        if (oldStartIdx <= oldEndIdx && newStartIdx <= newEndIdx) {
+            const keyedMap = new Map();
+            for (let i = oldStartIdx; i <= oldEndIdx; i++) {
+                const child = oldChildren[i];
+                if (child && child._key != null) {
+                    keyedMap.set(child._key, child);
+                }
             }
 
-            if (tChild) {
-                tChild._reused = true;
-                if (tChild !== nextSibling) {
-                    target.insertBefore(tChild, nextSibling);
-                } else {
-                    nextSibling = nextSibling.nextSibling;
-                }
-                diffVNode(tChild, vnode, component, refs);
-            } else {
-                const newNode = createNode(vnode, component, refs);
-                if (nextSibling) {
-                    target.insertBefore(newNode, nextSibling);
-                } else {
-                    target.appendChild(newNode);
-                }
+            while (newStartIdx <= newEndIdx) {
+                const newVNode = vnodes[newStartIdx];
+                const key = newVNode.key;
                 
+                if (key != null && keyedMap.has(key)) {
+                    const oldNode = keyedMap.get(key);
+                    target.insertBefore(oldNode, oldStartVNode);
+                    diffVNode(oldNode, newVNode, component, refs);
+                    keyedMap.delete(key);
+                    // Mark the old node as processed in the array so we don't remove it later
+                    // We can't easily find its index in oldChildren without scanning or storing it
+                    // But we can just remove it from DOM, and later cleanup whatever is left in DOM?
+                    // Actually, we need to mark it as reused.
+                    oldNode._reused = true;
+                } else {
+                    const newNode = createNode(newVNode, component, refs);
+                    target.insertBefore(newNode, oldStartVNode);
+                    if (component.constructor.animations && newNode.nodeType === Node.ELEMENT_NODE && newNode.hasAttribute('animate')) {
+                        checkAnimations(newNode, component, ':enter');
+                    }
+                }
+                newStartIdx++;
+            }
+        }
+
+        // Add remaining new nodes
+        if (oldStartIdx > oldEndIdx) {
+            const referenceNode = newEndIdx + 1 < vnodes.length ? oldChildren[oldStartIdx] : null; // This logic is tricky with mixed DOM/VNodes
+            // Simpler: insert before the current oldStartVNode (which is where we are)
+            const anchor = oldStartVNode; 
+            for (let i = newStartIdx; i <= newEndIdx; i++) {
+                const newNode = createNode(vnodes[i], component, refs);
+                target.insertBefore(newNode, anchor);
                 if (component.constructor.animations && newNode.nodeType === Node.ELEMENT_NODE && newNode.hasAttribute('animate')) {
                     checkAnimations(newNode, component, ':enter');
                 }
             }
         }
 
-        // Remove remaining nodes
-        for (let i = 0; i < children.length; i++) {
-            const node = children[i];
-            if (!node._reused) {
-                handleRemoval(target, node, component);
-            } else {
-                delete node._reused;
+        // Remove remaining old nodes
+        if (newStartIdx > newEndIdx) {
+            for (let i = oldStartIdx; i <= oldEndIdx; i++) {
+                const node = oldChildren[i];
+                if (node && !node._reused) {
+                    handleRemoval(target, node, component);
+                }
+                if (node) delete node._reused;
             }
         }
+        
+        // Cleanup reused flags from map section
+        // (Handled above by only removing if !reused)
+        
         return;
     }
 
@@ -377,6 +432,11 @@ function diffChildrenVNode(target, vnodes, component, refs) {
         handleRemoval(target, tChild, component);
         tChild = next;
     }
+}
+
+function isSameKey(node, vnode) {
+    if (!node || !vnode) return false;
+    return node._key === vnode.key;
 }
 
 /**
