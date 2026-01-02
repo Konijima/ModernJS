@@ -8,6 +8,7 @@ import { FormDemoComponent } from './demo/components/form-demo.component.js';
 import { HttpDemoComponent } from './demo/components/http-demo.component.js';
 import { LoginPage } from './demo/pages/login.page.js';
 import { DashboardPage } from './demo/pages/dashboard.page.js';
+import { BenchmarkPage } from './demo/pages/benchmark.page.js';
 import { AuthGuard } from './demo/guards/auth.guard.js';
 
 export const routes = [
@@ -39,9 +40,18 @@ export const routes = [
             meta: [
                 { name: 'description', content: 'meta.features.desc' }
             ]
-        },
-        children: [
-            { path: '', redirectTo: 'todo' },
+        }
+    },
+    {
+        path: '/benchmark',
+        component: BenchmarkPage,
+        data: {
+            title: 'Benchmark'
+        }
+    },
+    { 
+        path: '/todo', 
+        component: TodoListComponent,
             { path: 'todo', component: TodoListComponent },
             { path: 'counter', component: CounterComponent },
             { path: 'pipes', component: PipesDemoComponent },

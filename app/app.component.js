@@ -67,6 +67,11 @@ export const App = Component.create({
         this.router.navigate('/features');
     },
 
+    navigateToBenchmark(e) {
+        e.preventDefault();
+        this.router.navigate('/benchmark');
+    },
+
     styles: `
         :host {
             display: block;
@@ -196,6 +201,7 @@ export const App = Component.create({
                         <a href="/" class="nav-link ${isActive('/')}" (click)="navigateToHome">{{ 'app.nav.home' | translate }}</a>
                         <a href="/get-started" class="nav-link ${isActive('/get-started')}" (click)="navigateToGetStarted">{{ 'app.nav.get_started' | translate }}</a>
                         <a href="/features" class="nav-link ${isActive('/features')}" (click)="navigateToFeatures">{{ 'app.nav.features' | translate }}</a>
+                        <a href="/benchmark" class="nav-link ${isActive('/benchmark')}" (click)="navigateToBenchmark">Benchmark</a>
                     </nav>
                 </header>
                 
