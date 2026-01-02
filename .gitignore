@@ -6,7 +6,6 @@ dist
 
 # Testing
 coverage
-benchmark
 
 # IDE & System
 .DS_Store

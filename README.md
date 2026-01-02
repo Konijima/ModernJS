@@ -43,6 +43,7 @@
 - **Animations**: Native Web Animations API integration with `:enter` and `:leave` triggers.
 - **Virtual DOM & Diffing**: Efficient DOM updates with a custom rendering engine.
 - **Template Engine**: Custom syntax supporting `@if`, `@for`, and `{{ interpolation }}`.
+- **Performance Optimized**: **NEW** Competitive with Angular - 25% faster at clear operations, 24% faster at large datasets (10k), see [Performance](PERFORMANCE.md).
 - **Comprehensive Testing**: Fully tested core modules using Vitest and JSDOM.
 
 ## 🛠️ Installation

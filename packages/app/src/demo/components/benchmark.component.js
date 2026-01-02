@@ -21,17 +21,32 @@ function buildData(count = 1000) {
     return data;
 }
 
-// Approximate Angular v17 performance metrics (ms) for comparison
-// Based on js-framework-benchmark results
+// Angular v17 performance metrics (ms) for comparison
+// Based on actual benchmark results - average of 4 runs with same sequence
 const ANGULAR_METRICS = {
-    create1k: 39.40, // Updated from user benchmark
-    create10k: 1052.30, // Updated from user benchmark
-    append1k: 217.90, // Updated from user benchmark
-    update10th: 25.30, // Updated from user benchmark
-    clear: 19.30, // Updated from user benchmark
-    swap: 20.70, // Updated from user benchmark
-    select: 30,
-    remove: 35
+    create1k: 71.00,     // Average: (66 + 73 + 73 + 72) / 4
+    create1k_2: 60.00,   // Average: (63 + 56 + 63 + 58) / 4
+    append1k: 52.25,     // Average: (78 + 73 + 30 + 28) / 4
+    update10th: 21.75,   // Average: (4 + 6 + 63 + 14) / 4
+    clear: 32.25,        // Average: (30 + 30 + 21 + 48) / 4
+    clear_2: 12.75,      // Average: (11 + 13 + 12 + 15) / 4
+    swap: 10.25,         // Average: (10 + 10 + 12 + 9) / 4
+    create10k: 764.25,   // Average: (740 + 740 + 801 + 776) / 4
+    select: 30,          // Estimated
+    remove: 35           // Estimated
+};
+
+// ModernJS performance metrics (ms) for reference
+// Based on actual benchmark results - average of 4 runs with same sequence
+const MODERNJS_METRICS = {
+    create1k: 75.75,     // Average: (89 + 80 + 77 + 57) / 4
+    create1k_2: 64.25,   // Average: (58 + 71 + 70 + 58) / 4
+    append1k: 103.00,    // Average: (114 + 113 + 94 + 91) / 4
+    update10th: 60.50,   // Average: (55 + 63 + 63 + 61) / 4
+    clear: 24.25,        // Average: (17 + 29 + 32 + 19) / 4
+    clear_2: 19.25,      // Average: (15 + 19 + 31 + 12) / 4
+    swap: 34.50,         // Average: (34 + 35 + 41 + 28) / 4
+    create10k: 582.25,   // Average: (584 + 592 + 566 + 587) / 4
 };
 
 export const BenchmarkComponent = Component.create({
@@ -361,29 +376,58 @@ export const BenchmarkComponent = Component.create({
     async runAll() {
         this.state.report = null;
         const report = [];
-        
-        // 1. Create 1k
-        await this.clear();
+
+        // Standard benchmark sequence - matches js-framework-benchmark
+        // Start with clean state
+        this.state.rows = [];
+        this.state.selected = null;
+        await new Promise(r => setTimeout(r, 100));
+
+        console.log('Starting benchmark sequence...');
+
+        // 1. Create 1k rows from empty
+        console.log('Test 1: Creating 1k rows from empty...');
         report.push(await this.run());
-        
-        // 2. Append 1k
+        console.log(`Rows after create1k: ${this.state.rows.length}`);
+
+        // 2. Append 1k rows (now have 2k)
+        console.log('Test 2: Appending 1k rows...');
         report.push(await this.add());
-        
-        // 3. Update 10th
+        console.log(`Rows after append: ${this.state.rows.length}`);
+
+        // 3. Update every 10th row (on 2k dataset)
+        console.log('Test 3: Updating every 10th row...');
         report.push(await this.runUpdate());
-        
-        // 4. Swap
-        report.push(await this.swapRows());
-        
-        // 5. Clear
+
+        // 4. Clear all rows (important: clear the 2k rows)
+        console.log('Test 4: Clearing all rows...');
         report.push(await this.clear());
-        
-        // 6. Create 10k
+        console.log(`Rows after clear: ${this.state.rows.length}`);
+
+        // 5. Create 1k rows again from empty
+        console.log('Test 5: Creating 1k rows from empty (2nd time)...');
+        const create1kAgain = await this.run();
+        create1kAgain.opName = 'create1k_2';
+        report.push(create1kAgain);
+        console.log(`Rows after 2nd create1k: ${this.state.rows.length}`);
+
+        // 6. Swap rows 1 and 998 (requires 1k rows)
+        console.log('Test 6: Swapping rows 1 and 998...');
+        report.push(await this.swapRows());
+
+        // 7. Clear again
+        console.log('Test 7: Clearing all rows (2nd time)...');
+        const clearAgain = await this.clear();
+        clearAgain.opName = 'clear_2';
+        report.push(clearAgain);
+
+        // 8. Create 10k rows from empty
+        console.log('Test 8: Creating 10k rows from empty...');
         report.push(await this.runLots());
-        
-        // 7. Clear
-        await this.clear();
-        
+        console.log(`Rows after create10k: ${this.state.rows.length}`);
+
+        console.log('Benchmark sequence complete!');
+
         this.state.report = report;
     },
 
