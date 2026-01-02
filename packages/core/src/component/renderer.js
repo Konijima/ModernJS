@@ -123,6 +123,10 @@ function createNode(vnode, component, refs) {
     }
 
     const el = document.createElement(vnode.tag);
+    // Store key on the element for efficient retrieval during diffing
+    if (vnode.key != null) {
+        el._key = vnode.key;
+    }
     updateAttributesVNode(el, vnode.props, component, refs, true);
     
     if (!vnode.children) {
@@ -141,6 +145,13 @@ function createNode(vnode, component, refs) {
 
 function updateAttributesVNode(target, props, component, refs, isNew = false) {
     if (!props) return;
+
+    // Optimization: Check if props are identical to last render
+    // We store the previous props on the DOM node
+    if (!isNew && target._props && arePropsEqual(target._props, props)) {
+        return;
+    }
+    target._props = props;
 
     // Remove old attributes
     // Note: We don't track old props on the DOM node easily without storing them.
@@ -269,7 +280,7 @@ function diffChildrenVNode(target, vnodes, component, refs) {
     let hasKeys = false;
     let checkNode = target.firstChild;
     while (checkNode) {
-        if (checkNode.nodeType === Node.ELEMENT_NODE && checkNode.hasAttribute('key')) {
+        if (checkNode.nodeType === Node.ELEMENT_NODE && checkNode._key != null) {
             hasKeys = true;
             break;
         }
@@ -283,8 +294,8 @@ function diffChildrenVNode(target, vnodes, component, refs) {
         
         while (child) {
             children.push(child);
-            if (child.nodeType === Node.ELEMENT_NODE && child.hasAttribute('key')) {
-                keyedMap.set(child.getAttribute('key'), child);
+            if (child.nodeType === Node.ELEMENT_NODE && child._key != null) {
+                keyedMap.set(child._key, child);
             }
             child = child.nextSibling;
         }
@@ -497,6 +508,17 @@ function diffChildren(target, source, component, refs) {
 function isDifferent(node1, node2) {
     return node1.nodeType !== node2.nodeType || 
            node1.tagName !== node2.tagName;
+}
+
+function arePropsEqual(oldProps, newProps) {
+    if (oldProps === newProps) return true;
+    const keys1 = Object.keys(oldProps);
+    const keys2 = Object.keys(newProps);
+    if (keys1.length !== keys2.length) return false;
+    for (const key of keys1) {
+        if (oldProps[key] !== newProps[key]) return false;
+    }
+    return true;
 }
 
 /**

@@ -54,6 +54,8 @@ function flatten(arr, result) {
     }
 }
 
+export { flatten };
+
 function normalizeChild(child) {
     if (child === null || child === undefined || child === false) {
         return null;

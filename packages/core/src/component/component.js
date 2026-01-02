@@ -2,7 +2,7 @@ import { resolve } from '../di/di.js';
 import { render } from './renderer.js';
 import { compileTemplate } from './template.js';
 import { compileToVNode } from './compiler.js';
-import { h, createTextVNode } from './vdom.js';
+import { h, createTextVNode, flatten } from './vdom.js';
 import { FRAMEWORK_VERSION } from '../version.js';
 
 // Cache for the global stylesheet to prevent FOUC
@@ -422,8 +422,10 @@ export class Component extends HTMLElement {
         } else {
             // Flatten the array to handle nested arrays from control flow (e.g. @if, @for)
             // The compiler might return [ [VNode] ] for @if blocks
-            // Use flat(Infinity) to ensure all nested arrays are flattened
-            newDom = newDom.flat(Infinity);
+            // Use custom flatten for performance and deep nesting support
+            const flattened = [];
+            flatten(newDom, flattened);
+            newDom = flattened;
         }
 
         // Inject styles into VNode tree
