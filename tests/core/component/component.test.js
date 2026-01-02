@@ -3,6 +3,7 @@ import { Component } from '../../../app/core/component/component.js';
 import * as di from '../../../app/core/di/di.js';
 import * as renderer from '../../../app/core/component/renderer.js';
 import * as template from '../../../app/core/component/template.js';
+import * as compiler from '../../../app/core/component/compiler.js';
 
 // Mock dependencies
 vi.mock('../../../app/core/di/di.js', () => ({
@@ -16,6 +17,11 @@ vi.mock('../../../app/core/component/renderer.js', () => ({
 vi.mock('../../../app/core/component/template.js', () => ({
     compileTemplate: vi.fn((tpl) => tpl)
 }));
+
+vi.mock('../../../app/core/component/compiler.js', () => ({
+    compileToVNode: vi.fn(() => () => [])
+}));
+
 
 describe('Component', () => {
     let TestComponent;
@@ -343,7 +349,7 @@ describe('Component', () => {
             
             await new Promise(resolve => requestAnimationFrame(resolve));
             
-            expect(template.compileTemplate).toHaveBeenCalled();
+            expect(compiler.compileToVNode).toHaveBeenCalled();
             expect(renderer.render).toHaveBeenCalled();
             document.body.removeChild(instance);
         });

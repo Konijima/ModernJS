@@ -1,6 +1,8 @@
 import { resolve } from '../di/di.js';
 import { render } from './renderer.js';
 import { compileTemplate } from './template.js';
+import { compileToVNode } from './compiler.js';
+import { h, createTextVNode } from './vdom.js';
 import { FRAMEWORK_VERSION } from '../version.js';
 
 // Cache for the global stylesheet to prevent FOUC
@@ -376,35 +378,57 @@ export class Component extends HTMLElement {
 
         if (typeof templateResult === 'string') {
             // Handle string template with directives
-            const html = compileTemplate(templateResult, this);
-            const temp = document.createElement('div');
-            temp.innerHTML = html;
-            newDom = temp;
+            if (!this._renderFn) {
+                this._renderFn = compileToVNode(templateResult);
+            }
+            // Returns array of VNodes
+            newDom = this._renderFn(h, createTextVNode, this);
         } else {
-            // Handle direct DOM nodes (from h())
-            newDom = document.createElement('div');
-            newDom.appendChild(templateResult);
+            // Handle direct DOM nodes (legacy or manual)
+            newDom = templateResult;
         }
         
-        if (this.constructor.styles) {
-            const style = document.createElement('style');
-            style.textContent = this.constructor.styles;
-            newDom.insertBefore(style, newDom.firstChild);
+        // Ensure newDom is an array for consistent handling
+        if (!Array.isArray(newDom)) {
+            newDom = [newDom];
         }
 
-        // Inject global styles from document head (excluding styles.css if already adopted)
-        Array.from(document.head.querySelectorAll('link[rel="stylesheet"], style'))
+        // Inject styles into VNode tree
+        if (this.constructor.styles) {
+            const styleVNode = h('style', {}, [createTextVNode(this.constructor.styles)]);
+            newDom.unshift(styleVNode);
+        }
+
+        // Inject global styles (This is tricky with VNodes as we need to clone DOM nodes)
+        // For VNodes, we can't easily mix real DOM nodes unless we wrap them.
+        // But our renderer supports VNodes.
+        // We can create a special VNode type for "Real DOM Node" or just convert them?
+        // Or we can just append them to the shadowRoot manually?
+        // The renderer clears/diffs everything.
+        
+        // Let's skip global style injection for VNodes for now to keep it simple, 
+        // or implement a "Wrapper" VNode.
+        // Actually, we can just create VNodes for the styles if they are simple.
+        // But <link> tags are simple.
+        
+        const globalStyles = Array.from(document.head.querySelectorAll('link[rel="stylesheet"], style'))
             .filter(node => {
-                // Skip styles.css if we successfully adopted it
                 if (globalStyleSheet && node.tagName === 'LINK' && node.getAttribute('href') && node.getAttribute('href').includes('styles.css')) {
                     return false;
                 }
                 return true;
             })
-            .reverse()
-            .forEach(node => {
-                newDom.insertBefore(node.cloneNode(true), newDom.firstChild);
-            });
+            .reverse();
+            
+        globalStyles.forEach(node => {
+            if (node.tagName === 'STYLE') {
+                newDom.unshift(h('style', {}, [createTextVNode(node.textContent)]));
+            } else if (node.tagName === 'LINK') {
+                const props = {};
+                Array.from(node.attributes).forEach(attr => props[attr.name] = attr.value);
+                newDom.unshift(h('link', props, []));
+            }
+        });
 
         // Capture current refs for this render cycle
         const currentRefs = { ...this._refs };

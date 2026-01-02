@@ -49,15 +49,17 @@ export const BenchmarkComponent = Component.create({
                 <button (click)="runUpdate">Update every 10th row</button>
                 <button (click)="clear">Clear</button>
                 <button (click)="swapRows">Swap Rows</button>
-                <span class="metric" @if(this.state.lastMeasure > 0)>Last op: {{ this.state.lastMeasure.toFixed(2) }} ms</span>
+                @if(this.state.lastMeasure > 0) {
+                    <span class="metric">Last op: {{ this.state.lastMeasure.toFixed(2) }} ms</span>
+                }
             </div>
             <table>
                 <tbody>
                     @for(let row of this.state.rows) {
-                        <tr class="{{ row.id === this.state.selected ? 'danger' : '' }}">
+                        <tr key="{{ row.id }}" class="{{ row.id === this.state.selected ? 'danger' : '' }}">
                             <td>{{ row.id }}</td>
-                            <td><a class="select-link" (click)="select('{{ this.bind(row) }}')">{{ row.label }}</a></td>
-                            <td><a class="remove-btn" (click)="remove('{{ this.bind(row) }}')">❌</a></td>
+                            <td><a class="select-link" (click)="this.select('{{ this.bind(row) }}')">{{ row.label }}</a></td>
+                            <td><a class="remove-btn" (click)="this.remove('{{ this.bind(row) }}')">❌</a></td>
                         </tr>
                     }
                 </tbody>

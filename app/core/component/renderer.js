@@ -1,4 +1,5 @@
 import { AnimationManager } from '../animations/animation.js';
+import { VNodeFlags } from './vdom.js';
 
 /**
  * Robust DOM Diffing and Rendering Engine.
@@ -10,16 +11,246 @@ import { AnimationManager } from '../animations/animation.js';
  * This is the main entry point for the diffing algorithm.
  * 
  * @param {Node} target - The current live DOM node
- * @param {Node} source - The new node to match
+ * @param {Node|Object} source - The new node to match (DOM Node or VNode)
  * @param {Object} component - The component instance (for event binding)
  * @param {Object} [refs] - The references map for the current render cycle
  */
 export function render(target, source, component, refs) {
     // If target is a shadow root, we need to diff its children
     if (target instanceof ShadowRoot) {
-        diffChildren(target, source, component, refs);
+        if (source.flags) {
+            // VNode Root (usually an array or a single element)
+            // If source is an array (fragment), diff children directly
+            const vnodes = Array.isArray(source) ? source : [source];
+            diffChildrenVNode(target, vnodes, component, refs);
+        } else {
+            diffChildren(target, source, component, refs);
+        }
     } else {
-        diff(target, source, component, refs);
+        if (source.flags) {
+            diffVNode(target, source, component, refs);
+        } else {
+            diff(target, source, component, refs);
+        }
+    }
+}
+
+/**
+ * Diffs a real DOM node against a VNode.
+ */
+function diffVNode(target, vnode, component, refs) {
+    if (!vnode) {
+        if (target) handleRemoval(target.parentNode, target, component);
+        return;
+    }
+
+    // If target doesn't exist or is different type, replace/create
+    if (!target || isDifferentVNode(target, vnode)) {
+        const newNode = createNode(vnode, component, refs);
+        if (target && target.parentNode) {
+            handleReplacement(target.parentNode, target, newNode, component, refs);
+        }
+        return newNode;
+    }
+
+    // Update Element
+    if (vnode.flags & VNodeFlags.ELEMENT) {
+        updateAttributesVNode(target, vnode.props, component, refs);
+        diffChildrenVNode(target, vnode.children, component, refs);
+    } 
+    // Update Text
+    else if (vnode.flags & VNodeFlags.TEXT) {
+        if (target.nodeValue !== vnode.text) {
+            target.nodeValue = vnode.text;
+        }
+    }
+    
+    return target;
+}
+
+function isDifferentVNode(node, vnode) {
+    if (vnode.flags & VNodeFlags.TEXT) {
+        return node.nodeType !== Node.TEXT_NODE;
+    }
+    return node.nodeType !== Node.ELEMENT_NODE || 
+           node.tagName.toLowerCase() !== vnode.tag.toLowerCase();
+}
+
+function createNode(vnode, component, refs) {
+    if (vnode.flags & VNodeFlags.TEXT) {
+        return document.createTextNode(vnode.text);
+    }
+    
+    const el = document.createElement(vnode.tag);
+    updateAttributesVNode(el, vnode.props, component, refs);
+    
+    vnode.children.forEach(child => {
+        if (child) {
+            el.appendChild(createNode(child, component, refs));
+        }
+    });
+    
+    return el;
+}
+
+function updateAttributesVNode(target, props, component, refs) {
+    // Remove old attributes
+    // Note: We don't track old props on the DOM node easily without storing them.
+    // For now, we iterate over attributes on the DOM and remove those not in props.
+    // This is slightly expensive but correct.
+    Array.from(target.attributes).forEach(attr => {
+        if (!(attr.name in props) && !isEventProp(attr.name) && !isBindingProp(attr.name)) {
+             target.removeAttribute(attr.name);
+        }
+    });
+
+    // Set new attributes
+    for (const [name, value] of Object.entries(props)) {
+        // Event Binding: (event)="method"
+        if (name.startsWith('(') && name.endsWith(')')) {
+            const eventName = name.slice(1, -1);
+            const methodName = value;
+            
+            if (!target._listeners) target._listeners = {};
+            
+            if (!target._listeners[eventName] || target._listeners[eventName].method !== methodName) {
+                if (target._listeners[eventName]) {
+                    target.removeEventListener(eventName, target._listeners[eventName].handler);
+                }
+
+                const handler = (e) => {
+                    if (typeof component[methodName] === 'function') {
+                        component[methodName](e);
+                        return;
+                    }
+                    try {
+                        new Function('$event', methodName).call(component, e);
+                    } catch (err) {
+                        console.warn(`Method ${methodName} failed:`, err);
+                    }
+                };
+
+                target.addEventListener(eventName, handler);
+                target._listeners[eventName] = { method: methodName, handler };
+            }
+            continue;
+        }
+
+        // Property Binding: [prop]="value"
+        if (name.startsWith('[') && name.endsWith(']')) {
+            const propName = name.slice(1, -1);
+            let resolvedValue = value;
+            
+            // Check for Directives
+            if (component.getDirective && component.getDirective(propName)) {
+                applyDirective(target, propName, resolvedValue, component);
+                continue;
+            }
+
+            target[propName] = resolvedValue;
+            continue;
+        }
+
+        // Standard Attribute
+        if (target.getAttribute(name) !== String(value)) {
+            target.setAttribute(name, value);
+            if (target.tagName === 'INPUT' && name === 'checked') {
+                target.checked = true; // Handle boolean attribute quirk
+            }
+        }
+    }
+}
+
+function isEventProp(name) {
+    return name.startsWith('(') && name.endsWith(')');
+}
+
+function isBindingProp(name) {
+    return name.startsWith('[') && name.endsWith(']');
+}
+
+/**
+ * Diffs children using VNodes.
+ */
+function diffChildrenVNode(target, vnodes, component, refs) {
+    const targetChildren = Array.from(target.childNodes);
+    
+    // Keyed Diffing
+    const keyedMap = new Map();
+    let hasKeys = false;
+
+    targetChildren.forEach(child => {
+        if (child.nodeType === Node.ELEMENT_NODE && child.hasAttribute('key')) {
+            keyedMap.set(child.getAttribute('key'), child);
+            hasKeys = true;
+        }
+    });
+
+    // If we have keys in the DOM, we try to match them with keys in VNodes
+    // Note: VNodes store key in `key` property, not props.
+    
+    if (hasKeys) {
+        const targetChildrenSet = new Set(targetChildren);
+        let nextSibling = target.firstChild;
+
+        vnodes.forEach((vnode) => {
+            if (!vnode) return;
+            
+            const key = vnode.key;
+            let tChild = null;
+
+            if (key && keyedMap.has(key)) {
+                tChild = keyedMap.get(key);
+                keyedMap.delete(key);
+            }
+
+            if (tChild) {
+                if (tChild !== nextSibling) {
+                    target.insertBefore(tChild, nextSibling);
+                } else {
+                    nextSibling = nextSibling.nextSibling;
+                }
+                targetChildrenSet.delete(tChild);
+                diffVNode(tChild, vnode, component, refs);
+            } else {
+                const newNode = createNode(vnode, component, refs);
+                if (nextSibling) {
+                    target.insertBefore(newNode, nextSibling);
+                } else {
+                    target.appendChild(newNode);
+                }
+                // processBindings is handled in createNode via updateAttributesVNode
+                checkAnimations(newNode, component, ':enter');
+            }
+        });
+
+        targetChildrenSet.forEach(node => {
+            handleRemoval(target, node, component);
+        });
+        return;
+    }
+
+    // Index-based Diffing
+    const maxLength = Math.max(targetChildren.length, vnodes.length);
+
+    for (let i = 0; i < maxLength; i++) {
+        const tChild = targetChildren[i];
+        const vChild = vnodes[i];
+
+        if (!tChild) {
+            if (vChild) {
+                const newNode = createNode(vChild, component, refs);
+                target.appendChild(newNode);
+                checkAnimations(newNode, component, ':enter');
+            }
+        } else if (!vChild) {
+            handleRemoval(target, tChild, component);
+        } else {
+            const newNode = diffVNode(tChild, vChild, component, refs);
+            // If diffVNode returned a new node (replacement), it's already handled in diffVNode via handleReplacement
+            // But wait, diffVNode returns the node. If it replaced it, we need to know?
+            // My diffVNode implementation handles replacement internally if needed.
+        }
     }
 }
 
@@ -52,6 +283,67 @@ export function diff(target, source, component, refs) {
 function diffChildren(target, source, component, refs) {
     const targetChildren = Array.from(target.childNodes);
     const sourceChildren = Array.from(source.childNodes);
+
+    // 1. Keyed Diffing Check
+    const keyedMap = new Map();
+    let hasKeys = false;
+
+    targetChildren.forEach(child => {
+        if (child.nodeType === Node.ELEMENT_NODE && child.hasAttribute('key')) {
+            keyedMap.set(child.getAttribute('key'), child);
+            hasKeys = true;
+        }
+    });
+
+    if (hasKeys) {
+        const targetChildrenSet = new Set(targetChildren);
+        let nextSibling = target.firstChild;
+
+        sourceChildren.forEach((sChild) => {
+            const key = sChild.nodeType === Node.ELEMENT_NODE ? sChild.getAttribute('key') : null;
+            let tChild = null;
+
+            if (key && keyedMap.has(key)) {
+                tChild = keyedMap.get(key);
+                keyedMap.delete(key); // Mark as claimed
+            }
+
+            if (tChild) {
+                // We found a matching node.
+                if (tChild !== nextSibling) {
+                    // Move it to the current position
+                    target.insertBefore(tChild, nextSibling);
+                } else {
+                    // It's already in place, just advance the cursor
+                    nextSibling = nextSibling.nextSibling;
+                }
+                
+                // Mark as reused so we don't delete it
+                targetChildrenSet.delete(tChild);
+                
+                // Diff it
+                diff(tChild, sChild, component, refs);
+            } else {
+                // New node (or non-keyed). Insert it.
+                if (nextSibling) {
+                    target.insertBefore(sChild, nextSibling);
+                } else {
+                    target.appendChild(sChild);
+                }
+                processBindings(sChild, component, refs);
+                checkAnimations(sChild, component, ':enter');
+            }
+        });
+
+        // Remove remaining nodes
+        targetChildrenSet.forEach(node => {
+            handleRemoval(target, node, component);
+        });
+        
+        return;
+    }
+
+    // 2. Fallback to Index-based Diffing
     const maxLength = Math.max(targetChildren.length, sourceChildren.length);
 
     for (let i = 0; i < maxLength; i++) {
