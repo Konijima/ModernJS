@@ -56,8 +56,8 @@ export const BenchmarkComponent = Component.create({
                     @for(let row of this.state.rows) {
                         <tr class="{{ row.id === this.state.selected ? 'danger' : '' }}">
                             <td>{{ row.id }}</td>
-                            <td><a class="select-link" (click)="select(row)">{{ row.label }}</a></td>
-                            <td><a class="remove-btn" (click)="remove(row)">❌</a></td>
+                            <td><a class="select-link" (click)="select('{{ this.bind(row) }}')">{{ row.label }}</a></td>
+                            <td><a class="remove-btn" (click)="remove('{{ this.bind(row) }}')">❌</a></td>
                         </tr>
                     }
                 </tbody>
@@ -129,12 +129,22 @@ export const BenchmarkComponent = Component.create({
     },
 
     select(row) {
+        if (typeof row === 'string' && row.startsWith('__ref_')) {
+            row = this._refs[row];
+        }
+        if (!row) return;
+        
         this.measure(() => {
             this.state.selected = row.id;
         });
     },
 
     remove(row) {
+        if (typeof row === 'string' && row.startsWith('__ref_')) {
+            row = this._refs[row];
+        }
+        if (!row) return;
+
         this.measure(() => {
             this.state.rows = this.state.rows.filter(r => r.id !== row.id);
         });
