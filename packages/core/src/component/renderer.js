@@ -67,7 +67,14 @@ function diffVNode(target, vnode, component, refs) {
     // Update Element
     if (vnode.flags & VNodeFlags.ELEMENT) {
         updateAttributesVNode(target, vnode.props, component, refs);
-        diffChildrenVNode(target, vnode.children || [], component, refs);
+        
+        // Skip children diffing if innerHTML is managed by props
+        // This prevents diffChildrenVNode from clearing the content set by innerHTML
+        const hasInnerHTML = vnode.props && vnode.props['[innerHTML]'] !== undefined;
+        
+        if (!hasInnerHTML) {
+            diffChildrenVNode(target, vnode.children || [], component, refs);
+        }
     } 
     // Update Text
     else if (vnode.flags & VNodeFlags.TEXT) {

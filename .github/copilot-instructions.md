@@ -120,6 +120,10 @@ package.json  # Root workspace config
 4.  **Verification**:
     -   Check if existing tests pass.
     -   Create new tests in `packages/*/tests/` if adding new functionality.
+5.  **Versioning (Pre-Commit)**:
+    -   If you modified `packages/core`, check `packages/core/src/version.js`.
+    -   Increment `FRAMEWORK_VERSION` appropriately (SemVer).
+    -   Update `FRAMEWORK_CODENAME` to something creative and relevant to the changes.
 
 ## Common Pitfalls
 
