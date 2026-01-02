@@ -6,6 +6,7 @@
   ],
   "scripts": {
     "dev": "npm run dev --workspace=@modernjs/demo-app",
+    "build": "npm run build --workspace=@modernjs/demo-app",
     "test": "npm run test --workspaces"
   },
   "devDependencies": {

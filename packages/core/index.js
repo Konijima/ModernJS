@@ -13,6 +13,7 @@ export { Pipe } from './src/pipes/pipe.js';
 export { Validators } from './src/forms/validators.js';
 export { FormControl } from './src/forms/form-control.js';
 export { FormGroup } from './src/forms/form-group.js';
+export { FormControlDirective } from './src/forms/form-control.directive.js';
 export { Observable } from './src/reactivity/observable.js';
 
 // Services
@@ -28,8 +29,8 @@ export { TranslatePipe } from './src/pipes/translate.pipe.js';
 export { DatePipe, UpperCasePipe, LowerCasePipe, CurrencyPipe } from './src/pipes/common.pipes.js';
 
 // Animations
-export { Animation } from './src/animations/animation.js';
-export { FadeAnimation } from './src/animations/fade.animation.js';
+export { AnimationManager } from './src/animations/animation.js';
+export { fadeAnimation } from './src/animations/fade.animation.js';
 
 // DI
 export { inject } from './src/di/di.js';

@@ -4,7 +4,7 @@ Pipes are a powerful feature in ModernJS used to transform data in templates. Th
 
 ## Built-in Pipes
 
-ModernJS comes with a set of common pipes available in `app/core/pipes/common.pipes.js`.
+ModernJS comes with a set of common pipes available in `packages/core/src/pipes/common.pipes.js`.
 
 ### Text Transformation
 

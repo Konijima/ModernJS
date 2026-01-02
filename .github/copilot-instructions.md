@@ -12,16 +12,16 @@ This document provides guidelines for AI agents working on the ModernJS project.
 
 ## Architecture
 
-The project is divided into two main parts:
+The project is a **Monorepo** divided into two main packages:
 
-1.  **Core (`app/core/`)**: The framework implementation.
+1.  **Core (`packages/core/`)**: The framework implementation.
     -   **Component**: Base `Component` class extending `HTMLElement`.
     -   **DI**: Dependency Injection system.
     -   **Router**: Client-side routing.
     -   **Services**: Core services (e.g., `I18nService`, `MetaService`).
     -   **Pipes**: Data transformation pipes.
 
-2.  **Application**: The user's application logic.
+2.  **Application (`packages/app/`)**: The user's application logic.
     -   Built using the framework's components, services, and routing.
 
 ## Coding Standards & Conventions
@@ -43,7 +43,7 @@ The project is divided into two main parts:
 
 **Example:**
 ```javascript
-import { Component } from '../../core/component/component.js';
+import { Component } from '@modernjs/core';
 import { MyService } from '../services/my.service.js';
 
 export const MyComponent = Component.create({
@@ -66,12 +66,13 @@ export const MyComponent = Component.create({
 ### Imports
 
 -   **Always include the `.js` extension** in import paths.
--   Use relative paths (e.g., `../../core/component/component.js`).
+-   **Use `@modernjs/core`** for framework imports.
+-   Use relative paths for local app files.
 
 ## Testing
 
 -   **Framework**: Vitest
--   **Location**: `tests/` directory, mirroring the `app/` structure.
+-   **Location**: `packages/*/tests/` directory.
 -   **Mocking**: Use `vi.mock()` for dependencies.
 -   **Environment**: JSDOM (implied by Web Components usage).
 
@@ -86,21 +87,19 @@ npx vitest run
 ## File Structure
 
 ```
-app/
+packages/
   core/       # Framework internals
-  i18n/       # Localization files
-  styles/     # Global styles
+  app/        # Demo Application
 docs/         # Framework documentation
-tests/        # Unit tests
-index.html    # Entry point
-package.json  # Dependencies and scripts
+docker/       # Docker configuration
+package.json  # Root workspace config
 ```
 
 ## Agent Workflow
 
 1.  **Analyze**: Determine if the task involves Core framework logic or Application logic.
 2.  **Context**:
-    -   Read relevant files in `app/core` for framework changes or the application directory for features.
+    -   Read relevant files in `packages/core` for framework changes or `packages/app` for features.
     -   **Consult Documentation**: Read files in `docs/` for in-depth explanations of framework features (e.g., `docs/router.md`, `docs/dependency-injection.md`) if you need to understand how a specific system works.
 3.  **Implementation**:
     -   Follow the `Component.create` pattern.
@@ -108,7 +107,7 @@ package.json  # Dependencies and scripts
     -   Respect the Dependency Injection pattern.
 4.  **Verification**:
     -   Check if existing tests pass.
-    -   Create new tests in `tests/` if adding new functionality.
+    -   Create new tests in `packages/*/tests/` if adding new functionality.
 
 ## Common Pitfalls
 

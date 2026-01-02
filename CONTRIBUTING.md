@@ -33,6 +33,8 @@ We love hearing ideas for new features! Please open an issue to discuss your ide
 
 ## Development Setup
 
+The project uses **NPM Workspaces** to manage the Framework and the Application in a single repository.
+
 1. Clone the repository:
 
     ```bash
@@ -40,13 +42,30 @@ We love hearing ideas for new features! Please open an issue to discuss your ide
     cd ModernJS
     ```
 
-2. Install dependencies:
+2. Install dependencies (installs for all workspaces):
 
     ```bash
     npm install
     ```
 
-3. Start the development server:
+3. Start the development server (runs the App):
+
+    ```bash
+    npm run dev
+    ```
+
+### Working with Workspaces
+
+- **Core Framework**: Located in `packages/core`. Changes here are immediately reflected in the App thanks to symlinking.
+- **Demo App**: Located in `packages/app`.
+
+To run tests for a specific workspace:
+
+```bash
+npm test --workspace=@modernjs/core
+# OR
+npm test --workspace=@modernjs/demo-app
+```
 
     ```bash
     npm run dev

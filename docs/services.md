@@ -6,7 +6,7 @@ ModernJS provides a set of core services to handle common application requiremen
 
 The `StorageService` provides a wrapper around IndexedDB, allowing for persistent data storage in the browser. It supports multiple database connections and provides a promise-based API.
 
-**Location:** `app/core/services/storage.service.js`
+**Location:** `packages/core/src/services/storage.service.js`
 
 ### Usage
 
@@ -49,7 +49,7 @@ export class MyService {
 
 The `DeviceService` detects the current device capabilities, such as whether the user is on a mobile device or using a touch interface. It uses `ResizeObserver` and `matchMedia` to react to changes.
 
-**Location:** `app/core/services/device.service.js`
+**Location:** `packages/core/src/services/device.service.js`
 
 ### Usage
 
@@ -79,7 +79,7 @@ export const MyComponent = Component.create({
 
 The `MetaService` manages the document's title and meta tags. It integrates with the `I18nService` to automatically update metadata when the language changes.
 
-**Location:** `app/core/services/meta.service.js`
+**Location:** `packages/core/src/services/meta.service.js`
 
 ### Usage
 

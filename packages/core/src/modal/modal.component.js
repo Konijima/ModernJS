@@ -1,7 +1,7 @@
 import { Component } from '../component/component.js';
 import { ModalService } from './modal.service.js';
 
-export const Modal = Component.create({
+export const ModalComponent = Component.create({
     selector: 'app-modal',
     inject: {
         modalService: ModalService

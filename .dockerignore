@@ -1,7 +1,8 @@
-node_modules
-dist
-coverage
+**/node_modules
+**/dist
+**/coverage
 .git
 .github
-tests
-docs
+**/tests
+**/docs
+

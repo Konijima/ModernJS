@@ -4,7 +4,7 @@ ModernJS includes a Docker setup for serving the production build using Nginx. T
 
 ## Docker Compose Workflow
 
-The `docker-compose.yml` is configured to serve the locally built `dist/` folder using an Nginx container. This is useful for testing the production build locally or for simple deployments where the build artifacts are generated outside the container.
+The `docker/docker-compose.yml` is configured to serve the locally built `packages/app/dist/` folder using an Nginx container.
 
 ### Prerequisites
 
@@ -14,14 +14,15 @@ The `docker-compose.yml` is configured to serve the locally built `dist/` folder
 ### Running the Application
 
 1.  **Build the project**:
-    Generate the production files in the `dist/` directory.
+    Generate the production files.
     ```bash
     npm run build
     ```
 
 2.  **Start the container**:
-    Run Nginx in a container, mounting the `dist/` folder.
+    Navigate to the docker directory and start Nginx.
     ```bash
+    cd docker
     docker-compose up -d
     ```
 
@@ -30,10 +31,10 @@ The `docker-compose.yml` is configured to serve the locally built `dist/` folder
 
 ### Configuration
 
-- **`docker-compose.yml`**:
+- **`docker/docker-compose.yml`**:
     - Uses the official `nginx:alpine` image.
     - Maps port `8080` on the host to port `80` in the container.
-    - Mounts `./dist` to `/usr/share/nginx/html` (web root).
+    - Mounts `../packages/app/dist` to `/usr/share/nginx/html` (web root).
     - Mounts `./nginx.conf` to `/etc/nginx/conf.d/default.conf` (configuration).
 
 - **`nginx.conf`**:
@@ -47,13 +48,15 @@ A `Dockerfile` is also provided for creating a self-contained image that include
 
 ### Building the Image
 
+Run this command from the **root** of the repository:
+
 ```bash
-docker build -t modernjs-app .
+docker build -f docker/Dockerfile -t modernjs-app .
 ```
 
 This performs a multi-stage build:
 1.  **Build Stage**: Installs dependencies and runs `npm run build`.
-2.  **Production Stage**: Copies the `dist/` folder to an Nginx image.
+2.  **Production Stage**: Copies the `packages/app/dist/` folder to an Nginx image.
 
 ### Running the Image
 
