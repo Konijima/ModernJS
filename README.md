@@ -102,9 +102,13 @@ Detailed documentation for the framework core is available in the `docs/` direct
 
 - [**Components**](docs/components.md): Lifecycle, templates, and styling.
 - [**Templates**](docs/templates.md): Syntax, control flow (`@if`, `@for`), and pipes.
+- [**Reactivity**](docs/reactivity.md): Observables, Subjects, and AsyncPipe.
+- [**Forms**](docs/forms.md): Reactive forms, validation, and controls.
+- [**HTTP Client**](docs/http.md): HTTP requests and interceptors.
 - [**Dependency Injection**](docs/dependency-injection.md): Services and injection.
 - [**Core Services**](docs/services.md): Built-in services (Storage, Device, Meta).
 - [**Pipes**](docs/pipes.md): Data transformation pipes.
+- [**Directives**](docs/directives.md): Custom directives.
 - [**Router**](docs/router.md): Navigation and route configuration.
 - [**Animations**](docs/animations.md): Enter/leave animations.
 - [**Modal**](docs/modal.md): Dialogs, alerts, confirms, and prompts.
@@ -120,8 +124,12 @@ app/
 │   ├── animations/ # Animation Manager
 │   ├── component/  # Component Factory, Renderer & Template Engine
 │   ├── di/         # Dependency Injection Container
+│   ├── directive/  # Directives System
+│   ├── forms/      # Reactive Forms
+│   ├── http/       # HTTP Client
 │   ├── modal/      # Modal Service & Component
 │   ├── pipes/      # Pipe System & Built-in Pipes
+│   ├── reactivity/ # Observables & Signals
 │   ├── router/     # Routing System
 │   └── services/   # Base Service Class
 ├── i18n/           # Translation Files
