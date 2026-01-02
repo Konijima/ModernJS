@@ -18,7 +18,7 @@ import { VNodeFlags } from './vdom.js';
 export function render(target, source, component, refs) {
     // If target is a shadow root, we need to diff its children
     if (target instanceof ShadowRoot) {
-        if (source.flags) {
+        if (Array.isArray(source) || source.flags) {
             // VNode Root (usually an array or a single element)
             // If source is an array (fragment), diff children directly
             const vnodes = Array.isArray(source) ? source : [source];
@@ -42,6 +42,17 @@ function diffVNode(target, vnode, component, refs) {
     if (!vnode) {
         if (target) handleRemoval(target.parentNode, target, component);
         return;
+    }
+
+    // Legacy Support: Handle real DOM nodes
+    if (vnode.nodeType) {
+        if (target !== vnode) {
+            if (target && target.parentNode) {
+                target.parentNode.replaceChild(vnode, target);
+            }
+            return vnode;
+        }
+        return target;
     }
 
     // If target doesn't exist or is different type, replace/create
@@ -69,6 +80,9 @@ function diffVNode(target, vnode, component, refs) {
 }
 
 function isDifferentVNode(node, vnode) {
+    if (vnode.nodeType) {
+        return node !== vnode;
+    }
     if (vnode.flags & VNodeFlags.TEXT) {
         return node.nodeType !== Node.TEXT_NODE;
     }
@@ -77,6 +91,10 @@ function isDifferentVNode(node, vnode) {
 }
 
 function createNode(vnode, component, refs) {
+    if (vnode.nodeType) {
+        return vnode;
+    }
+
     if (vnode.flags & VNodeFlags.TEXT) {
         return document.createTextNode(vnode.text);
     }
