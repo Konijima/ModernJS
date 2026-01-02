@@ -100,8 +100,7 @@ export class AuthGuard {
 Inject the `Router` service into your component to navigate programmatically.
 
 ```javascript
-import { Component } from '../core/component/component.js';
-import { Router } from '../core/router/router.js';
+import { Component, Router } from '@modernjs/core';
 
 export class MenuComponent extends Component {
     static inject = { router: Router };

@@ -11,7 +11,7 @@ There are two ways to create components: using the class-based approach or the f
 Extend the `Component` class and define your component's behavior and structure.
 
 ```javascript
-import { Component } from '../core/component/component.js';
+import { Component } from '@modernjs/core';
 
 export class CounterComponent extends Component {
     static selector = 'app-counter';
@@ -50,7 +50,7 @@ CounterComponent.define();
 Use `Component.create()` for a more functional configuration style.
 
 ```javascript
-import { Component } from '../core/component/component.js';
+import { Component } from '@modernjs/core';
 
 const UserCard = Component.create({
     selector: 'user-card',

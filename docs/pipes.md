@@ -4,7 +4,7 @@ Pipes are a powerful feature in ModernJS used to transform data in templates. Th
 
 ## Built-in Pipes
 
-ModernJS comes with a set of common pipes available in `app/core/pipes/common.pipes.js`.
+ModernJS comes with a set of common pipes available in `packages/core/src/pipes/common.pipes.js`.
 
 ### Text Transformation
 
@@ -74,7 +74,7 @@ this.data$ = this.myService.getData(); // Returns an Observable
 You can create your own pipes by extending the `Pipe` class.
 
 ```javascript
-import { Pipe } from '../../core/pipes/pipe.js';
+import { Pipe } from '@modernjs/core';
 
 export class MyCustomPipe extends Pipe {
     transform(value, ...args) {

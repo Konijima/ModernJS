@@ -1,22 +1,14 @@
 {
-  "name": "modernjs",
-  "version": "1.0.0",
-  "description": "A lightweight, zero-dependency JavaScript framework built on Web Components and native Web APIs.",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Konijima/ModernJS"
-  },
-  "main": "index.js",
+  "name": "modernjs-monorepo",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "test": "vitest"
+    "dev": "npm run dev --workspace=@modernjs/demo-app",
+    "build": "npm run build --workspace=@modernjs/demo-app",
+    "test": "npm run test --workspaces"
   },
-  "keywords": [],
-  "author": "Konijima",
-  "license": "MIT",
-  "type": "module",
   "devDependencies": {
     "@vitest/coverage-v8": "^4.0.16",
     "fake-indexeddb": "^6.2.5",

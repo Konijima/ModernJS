@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="public/favicon.svg" alt="ModernJS Logo" width="120" height="120" />
+<img src="packages/app/public/favicon.svg" alt="ModernJS Logo" width="120" height="120" />
 
 # ModernJS Framework
 
@@ -30,6 +30,7 @@
 
 ## 🚀 Features
 
+- **Monorepo Architecture**: **NEW** Strict separation between Framework (`@modernjs/core`) and Application (`@modernjs/demo-app`).
 - **Native Web Components**: Built on top of `HTMLElement` and Custom Elements v1.
 - **Reactive State**: Uses `Proxy` for transparent state management and DOM updates.
 - **Reactivity System**: **NEW** RxJS-like Observables, Subjects, and AsyncPipe.
@@ -117,24 +118,24 @@ Detailed documentation for the framework core is available in the `docs/` direct
 
 ## 📂 Project Structure
 
+The project is organized as a **Monorepo** using NPM Workspaces:
+
 ```
-app/
-├── demo/           # Demo Application
-├── core/           # Framework Internals
-│   ├── animations/ # Animation Manager
-│   ├── component/  # Component Factory, Renderer & Template Engine
-│   ├── di/         # Dependency Injection Container
-│   ├── directive/  # Directives System
-│   ├── forms/      # Reactive Forms
-│   ├── http/       # HTTP Client
-│   ├── modal/      # Modal Service & Component
-│   ├── pipes/      # Pipe System & Built-in Pipes
-│   ├── reactivity/ # Observables & Signals
-│   ├── router/     # Routing System
-│   └── services/   # Base Service Class
-├── i18n/           # Translation Files
+packages/
+├── core/           # @modernjs/core (The Framework)
+│   ├── index.js    # Public API
+│   └── src/        # Framework Internals
+│       ├── component/
+│       ├── di/
+│       ├── router/
+│       └── ...
+└── app/            # @modernjs/demo-app (The Application)
+    ├── index.html  # Entry Point
+    └── src/        # App Logic
+        ├── demo/
+        └── ...
+docker/             # Docker Configuration
 docs/               # Documentation
-tests/              # Unit Tests
 ```
 
 ---

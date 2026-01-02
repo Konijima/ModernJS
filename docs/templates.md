@@ -73,7 +73,7 @@ ModernJS comes with a few common pipes (ensure you register them if they are not
 You can create custom pipes by extending the `Pipe` class.
 
 ```javascript
-import { Pipe } from '../core/pipes/pipe.js';
+import { Pipe } from '@modernjs/core';
 
 export class ReversePipe extends Pipe {
     static name = 'reverse';

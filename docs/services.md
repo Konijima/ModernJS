@@ -6,7 +6,7 @@ ModernJS provides a set of core services to handle common application requiremen
 
 The `StorageService` provides a wrapper around IndexedDB, allowing for persistent data storage in the browser. It supports multiple database connections and provides a promise-based API.
 
-**Location:** `app/core/services/storage.service.js`
+**Location:** `packages/core/src/services/storage.service.js`
 
 ### Usage
 
@@ -15,7 +15,7 @@ The `StorageService` provides a wrapper around IndexedDB, allowing for persisten
 3. **Perform operations** (getAll, add, put, delete, clear).
 
 ```javascript
-import { StorageService } from '../../core/services/storage.service.js';
+import { StorageService } from '@modernjs/core';
 
 export class MyService {
     static inject = [StorageService];
@@ -49,14 +49,14 @@ export class MyService {
 
 The `DeviceService` detects the current device capabilities, such as whether the user is on a mobile device or using a touch interface. It uses `ResizeObserver` and `matchMedia` to react to changes.
 
-**Location:** `app/core/services/device.service.js`
+**Location:** `packages/core/src/services/device.service.js`
 
 ### Usage
 
 The service exposes a reactive state that you can subscribe to.
 
 ```javascript
-import { DeviceService } from '../../core/services/device.service.js';
+import { DeviceService } from '@modernjs/core';
 
 export const MyComponent = Component.create({
     inject: { device: DeviceService },
@@ -79,12 +79,12 @@ export const MyComponent = Component.create({
 
 The `MetaService` manages the document's title and meta tags. It integrates with the `I18nService` to automatically update metadata when the language changes.
 
-**Location:** `app/core/services/meta.service.js`
+**Location:** `packages/core/src/services/meta.service.js`
 
 ### Usage
 
 ```javascript
-import { MetaService } from '../../core/services/meta.service.js';
+import { MetaService } from '@modernjs/core';
 
 export const MyPage = Component.create({
     inject: { meta: MetaService },

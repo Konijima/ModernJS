@@ -27,7 +27,7 @@ export const App = Component.create({
 Inject `ModalService` into your component to use it.
 
 ```javascript
-import { ModalService } from '../core/modal/modal.service.js';
+import { ModalService } from '@modernjs/core';
 
 export class MyComponent extends Component {
     static inject = { modalService: ModalService };

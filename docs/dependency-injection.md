@@ -24,7 +24,7 @@ You can inject services into components using the static `inject` property. Depe
 Maps the service to a specific property name.
 
 ```javascript
-import { Component } from '../core/component/component.js';
+import { Component } from '@modernjs/core';
 import { ApiService } from '../services/api.service.js';
 
 export class UserComponent extends Component {
@@ -75,7 +75,7 @@ export class UserService {
 Services in ModernJS extend `BehaviorSubject`, making them reactive by default.
 
 ```javascript
-import { Service } from '../core/services/service.js';
+import { Service } from '@modernjs/core';
 
 export class CounterService extends Service {
     constructor() {
@@ -106,9 +106,9 @@ onInit() {
 You can manually resolve a service instance using the `resolve` function. This is useful outside of the component/service context.
 
 ```javascript
-import { resolve } from '../core/di/di.js';
+import { inject } from '@modernjs/core';
 import { AuthService } from '../services/auth.service.js';
 
-const auth = resolve(AuthService);
+const auth = inject(AuthService);
 auth.login();
 ```

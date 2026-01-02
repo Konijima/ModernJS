@@ -25,4 +25,4 @@ To create a new component:
 2. Create a template string or file.
 3. Register it in your router or use it in another component's template.
 
-See the [Demo Application](../app/demo/) for real-world examples.
+See the [Demo Application](../packages/app/src/demo/) for real-world examples.
