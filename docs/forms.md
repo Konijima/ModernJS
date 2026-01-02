@@ -13,8 +13,7 @@ ModernJS provides a model-driven approach to handling form inputs, inspired by A
 ### 1. Create the Form Model
 
 ```javascript
-import { Component } from '../core/component/component.js';
-import { FormGroup, FormControl, Validators } from '../core/forms/index.js';
+import { Component, FormGroup, FormControl, Validators } from '@modernjs/core';
 
 export const LoginParams = Component.create({
     selector: 'login-form',
@@ -33,7 +32,7 @@ export const LoginParams = Component.create({
 Use the `[formControl]` directive to bind the input to the control. Note that you need to register the `FormControlDirective` in your component.
 
 ```javascript
-import { FormControlDirective } from '../core/forms/form-control.directive.js';
+import { FormControlDirective } from '@modernjs/core';
 
 export const LoginParams = Component.create({
     // ...

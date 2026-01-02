@@ -7,7 +7,7 @@ ModernJS provides a built-in animation system based on the Web Animations API. I
 Define animations in your component configuration using the `animations` property.
 
 ```javascript
-import { Component } from '../core/component/component.js';
+import { Component } from '@modernjs/core';
 
 export class NotificationComponent extends Component {
     static animations = {

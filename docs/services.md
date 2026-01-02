@@ -15,7 +15,7 @@ The `StorageService` provides a wrapper around IndexedDB, allowing for persisten
 3. **Perform operations** (getAll, add, put, delete, clear).
 
 ```javascript
-import { StorageService } from '../../core/services/storage.service.js';
+import { StorageService } from '@modernjs/core';
 
 export class MyService {
     static inject = [StorageService];
@@ -56,7 +56,7 @@ The `DeviceService` detects the current device capabilities, such as whether the
 The service exposes a reactive state that you can subscribe to.
 
 ```javascript
-import { DeviceService } from '../../core/services/device.service.js';
+import { DeviceService } from '@modernjs/core';
 
 export const MyComponent = Component.create({
     inject: { device: DeviceService },
@@ -84,7 +84,7 @@ The `MetaService` manages the document's title and meta tags. It integrates with
 ### Usage
 
 ```javascript
-import { MetaService } from '../../core/services/meta.service.js';
+import { MetaService } from '@modernjs/core';
 
 export const MyPage = Component.create({
     inject: { meta: MetaService },

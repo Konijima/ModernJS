@@ -8,13 +8,14 @@ This document provides guidelines for AI agents working on the ModernJS project.
 - **Build Tool:** Vite
 - **Test Runner:** Vitest
 - **Language:** JavaScript (ES Modules)
-- **Entry Point:** `index.html`
+- **Entry Point:** `packages/app/index.html`
 
 ## Architecture
 
-The project is a **Monorepo** divided into two main packages:
+The project is a **Monorepo** (NPM Workspaces) divided into two main packages:
 
 1.  **Core (`packages/core/`)**: The framework implementation.
+    -   **Public API**: All public symbols are exported via `packages/core/index.js`.
     -   **Component**: Base `Component` class extending `HTMLElement`.
     -   **DI**: Dependency Injection system.
     -   **Router**: Client-side routing.
@@ -23,6 +24,7 @@ The project is a **Monorepo** divided into two main packages:
 
 2.  **Application (`packages/app/`)**: The user's application logic.
     -   Built using the framework's components, services, and routing.
+    -   Depends on `@modernjs/core`.
 
 ## Coding Standards & Conventions
 
@@ -66,7 +68,8 @@ export const MyComponent = Component.create({
 ### Imports
 
 -   **Always include the `.js` extension** in import paths.
--   **Use `@modernjs/core`** for framework imports.
+-   **In `packages/app`**: Use `@modernjs/core` for framework imports.
+-   **In `packages/core`**: Use relative imports (e.g., `../services/service.js`).
 -   Use relative paths for local app files.
 
 ## Testing
@@ -79,17 +82,25 @@ export const MyComponent = Component.create({
 **Running Tests:**
 When running tests as an agent, **always disable watch mode** to prevent the process from hanging.
 ```bash
+# Run all tests
 npm test -- run
-# OR
-npx vitest run
+
+# Run core tests only
+npm test -w @modernjs/core -- run
+
+# Run app tests only
+npm test -w @modernjs/demo-app -- run
 ```
 
 ## File Structure
 
 ```
 packages/
-  core/       # Framework internals
-  app/        # Demo Application
+  core/
+    index.js  # Public API exports
+    src/      # Framework internals
+  app/
+    src/      # Demo Application source
 docs/         # Framework documentation
 docker/       # Docker configuration
 package.json  # Root workspace config
@@ -105,6 +116,7 @@ package.json  # Root workspace config
     -   Follow the `Component.create` pattern.
     -   Ensure all imports have `.js` extensions.
     -   Respect the Dependency Injection pattern.
+    -   **Core Changes**: If adding a new public feature to `packages/core`, ensure it is exported in `packages/core/index.js`.
 4.  **Verification**:
     -   Check if existing tests pass.
     -   Create new tests in `packages/*/tests/` if adding new functionality.

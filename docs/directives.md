@@ -7,7 +7,7 @@ Directives are classes that add behavior to existing DOM elements. They allow yo
 To create a directive, extend the `Directive` class and implement the lifecycle hooks.
 
 ```javascript
-import { Directive } from '../core/directive/directive.js';
+import { Directive } from '@modernjs/core';
 
 export class HighlightDirective extends Directive {
     onInit() {
@@ -29,7 +29,7 @@ export class HighlightDirective extends Directive {
 Directives must be registered in the component that uses them, similar to pipes and services.
 
 ```javascript
-import { Component } from '../core/component/component.js';
+import { Component } from '@modernjs/core';
 import { HighlightDirective } from './highlight.directive.js';
 
 export const MyComponent = Component.create({

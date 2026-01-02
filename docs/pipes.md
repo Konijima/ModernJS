@@ -74,7 +74,7 @@ this.data$ = this.myService.getData(); // Returns an Observable
 You can create your own pipes by extending the `Pipe` class.
 
 ```javascript
-import { Pipe } from '../../core/pipes/pipe.js';
+import { Pipe } from '@modernjs/core';
 
 export class MyCustomPipe extends Pipe {
     transform(value, ...args) {

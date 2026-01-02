@@ -9,7 +9,7 @@ ModernJS 1.1.0 introduces a robust reactivity system based on the Observable pat
 An `Observable` represents a stream of values over time. You can subscribe to it to receive updates.
 
 ```javascript
-import { Observable } from '../core/reactivity/observable.js';
+import { Observable } from '@modernjs/core';
 
 const stream$ = new Observable(observer => {
     observer.next(1);
@@ -28,7 +28,7 @@ stream$.subscribe({
 A `Subject` is a special type of Observable that allows values to be multicasted to many Observers. It is both an Observable and an Observer.
 
 ```javascript
-import { Subject } from '../core/reactivity/observable.js';
+import { Subject } from '@modernjs/core';
 
 const subject = new Subject();
 
@@ -43,7 +43,7 @@ subject.next('Hello'); // Both subscribers receive 'Hello'
 A `BehaviorSubject` is a Subject that requires an initial value and emits its current value to new subscribers. This is the foundation of State Management in ModernJS Services.
 
 ```javascript
-import { BehaviorSubject } from '../core/reactivity/observable.js';
+import { BehaviorSubject } from '@modernjs/core';
 
 const state$ = new BehaviorSubject({ count: 0 });
 
@@ -59,8 +59,7 @@ state$.next({ count: 1 });
 The `AsyncPipe` allows you to subscribe to Observables directly in your templates. It handles subscription and unsubscription automatically.
 
 ```javascript
-import { Component } from '../core/component/component.js';
-import { AsyncPipe } from '../core/pipes/async.pipe.js';
+import { Component, AsyncPipe } from '@modernjs/core';
 
 export const MyComponent = Component.create({
     selector: 'my-comp',

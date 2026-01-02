@@ -14,7 +14,7 @@ export { Validators } from './src/forms/validators.js';
 export { FormControl } from './src/forms/form-control.js';
 export { FormGroup } from './src/forms/form-group.js';
 export { FormControlDirective } from './src/forms/form-control.directive.js';
-export { Observable } from './src/reactivity/observable.js';
+export { Observable, Subject, BehaviorSubject } from './src/reactivity/observable.js';
 
 // Services
 export { I18nService } from './src/services/i18n.service.js';

@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="public/favicon.svg" alt="ModernJS Logo" width="120" height="120" />
+<img src="packages/app/public/favicon.svg" alt="ModernJS Logo" width="120" height="120" />
 
 # ModernJS Framework
 

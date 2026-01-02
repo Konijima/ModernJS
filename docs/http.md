@@ -7,8 +7,7 @@ The `HttpClient` provides a simplified API for making HTTP requests, returning `
 Inject `HttpClient` into your components or services.
 
 ```javascript
-import { HttpClient } from '../core/http/http.client.js';
-import { Component } from '../core/component/component.js';
+import { HttpClient, Component } from '@modernjs/core';
 
 export const UserList = Component.create({
     selector: 'user-list',
@@ -45,10 +44,9 @@ You can add interceptors to modify requests or responses globally (e.g., adding 
 You can add interceptors dynamically at runtime:
 
 ```javascript
-import { resolve } from '../core/di/di.js';
-import { HttpClient } from '../core/http/http.client.js';
+import { inject, HttpClient } from '@modernjs/core';
 
-const http = resolve(HttpClient);
+const http = inject(HttpClient);
 
 http.addInterceptor({
     name: 'auth-interceptor',
