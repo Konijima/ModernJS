@@ -123,7 +123,7 @@ export const FormDemoComponent = Component.create({
                     <input 
                         type="text"
                         autocomplete="username"
-                        [formControl]="{{ this.bind(this.form.get('username')) }}"
+                        [formControl]="this.bind(this.form.get('username'))"
                         class="{{ this.form.get('username').invalid && this.form.get('username').touched ? 'invalid' : '' }}"
                         placeholder="{{ 'forms.placeholder.username' | translate }}"
                     >
@@ -144,7 +144,7 @@ export const FormDemoComponent = Component.create({
                     <input 
                         type="email"
                         autocomplete="email"
-                        [formControl]="{{ this.bind(this.form.get('email')) }}"
+                        [formControl]="this.bind(this.form.get('email'))"
                         class="{{ this.form.get('email').invalid && this.form.get('email').touched ? 'invalid' : '' }}"
                         placeholder="{{ 'forms.placeholder.email' | translate }}"
                     >
@@ -165,7 +165,7 @@ export const FormDemoComponent = Component.create({
                     <input 
                         type="password"
                         autocomplete="current-password"
-                        [formControl]="{{ this.bind(this.form.get('password')) }}"
+                        [formControl]="this.bind(this.form.get('password'))"
                         class="{{ this.form.get('password').invalid && this.form.get('password').touched ? 'invalid' : '' }}"
                         placeholder="{{ 'forms.placeholder.password' | translate }}"
                     >
