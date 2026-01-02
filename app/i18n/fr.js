@@ -11,7 +11,7 @@ export const fr = {
     'app.nav.home': 'Accueil',
     'app.nav.get_started': 'Démarrer',
     'app.nav.features': 'Fonctionnalités',
-    'app.footer.view_source': 'Voir le code sur',
+    'app.footer.view_source': 'Voir le code sur ',
 
     // Meta
     'meta.home.title': 'ModernJS - Accueil',
@@ -48,6 +48,22 @@ export const fr = {
     'home.features.i18n.desc': 'Service d\'internationalisation intégré pour le support multilingue.',
     'home.features.directives.title': 'Directives',
     'home.features.directives.desc': 'Étendez les capacités HTML avec des attributs et comportements personnalisés.',
+
+    // Benchmark
+    'benchmark.title': 'Test de Performance',
+    'benchmark.create_1k': 'Créer 1 000 lignes',
+    'benchmark.create_10k': 'Créer 10 000 lignes',
+    'benchmark.append_1k': 'Ajouter 1 000 lignes',
+    'benchmark.update_10th': 'Mettre à jour chaque 10e ligne',
+    'benchmark.clear': 'Effacer',
+    'benchmark.swap': 'Échanger des lignes',
+    'benchmark.last_op': 'Dernière op: {0} ms',
+    'benchmark.comparison.title': 'Comparaison vs Angular',
+    'benchmark.comparison.modernjs': 'ModernJS',
+    'benchmark.comparison.angular': 'Angular (v17)',
+    'benchmark.comparison.diff': 'Diff',
+    'benchmark.comparison.faster': 'plus rapide',
+    'benchmark.comparison.slower': 'plus lent',
     'home.features.forms.title': 'Gestion de Formulaires',
     'home.features.forms.desc': 'Gestion robuste des formulaires avec validation, groupes et contrôles.',
     'home.features.http.title': 'Client HTTP',

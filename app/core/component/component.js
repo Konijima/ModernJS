@@ -382,7 +382,7 @@ export class Component extends HTMLElement {
                 this._renderFn = compileToVNode(templateResult);
             }
             // Returns array of VNodes
-            newDom = this._renderFn(h, createTextVNode, this);
+            newDom = this._renderFn.call(this, h, createTextVNode, this);
         } else {
             // Handle direct DOM nodes (legacy or manual)
             newDom = templateResult;
@@ -391,6 +391,10 @@ export class Component extends HTMLElement {
         // Ensure newDom is an array for consistent handling
         if (!Array.isArray(newDom)) {
             newDom = [newDom];
+        } else {
+            // Flatten the array to handle nested arrays from control flow (e.g. @if, @for)
+            // The compiler might return [ [VNode] ] for @if blocks
+            newDom = newDom.flat(Infinity);
         }
 
         // Inject styles into VNode tree

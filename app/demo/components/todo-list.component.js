@@ -132,8 +132,7 @@ export const TodoListComponent = Component.create({
         }
     `,
 
-    template() {
-        return `
+    template: `
             <div class="card">
                 <div class="header">
                     <div class="header-icon"><i class="fas fa-check-double"></i></div>
@@ -141,8 +140,8 @@ export const TodoListComponent = Component.create({
                 </div>
                 
                 <div class="input-group">
-                    <input class="form-input" placeholder="{{ 'todo.placeholder' | translate }}" onkeydown="if(event.key==='Enter') this.getRootNode().host.addTodo()">
-                    <button class="btn btn-primary" onclick="this.getRootNode().host.addTodo()">
+                    <input class="form-input" placeholder="{{ 'todo.placeholder' | translate }}" (keydown)="handleKeydown">
+                    <button class="btn btn-primary" (click)="addTodo">
                         <i class="fas fa-plus"></i> {{ 'todo.add' | translate }}
                     </button>
                 </div>
@@ -156,7 +155,7 @@ export const TodoListComponent = Component.create({
                     <ul>
                         @for (let todo of this.state.todos) {
                             <todo-item 
-                                [todo]="{{ this.bind(todo) }}"
+                                [todo]="todo"
                                 (toggle)="handleToggle"
                                 (remove)="handleRemove"
                             ></todo-item>
@@ -171,7 +170,12 @@ export const TodoListComponent = Component.create({
                     </div>
                 }
             </div>
-        `;
+    `,
+
+    handleKeydown(e) {
+        if (e.key === 'Enter') {
+            this.addTodo();
+        }
     },
 
     /**

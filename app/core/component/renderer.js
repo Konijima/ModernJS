@@ -67,7 +67,7 @@ function diffVNode(target, vnode, component, refs) {
     // Update Element
     if (vnode.flags & VNodeFlags.ELEMENT) {
         updateAttributesVNode(target, vnode.props, component, refs);
-        diffChildrenVNode(target, vnode.children, component, refs);
+        diffChildrenVNode(target, vnode.children || [], component, refs);
     } 
     // Update Text
     else if (vnode.flags & VNodeFlags.TEXT) {
@@ -86,6 +86,12 @@ function isDifferentVNode(node, vnode) {
     if (vnode.flags & VNodeFlags.TEXT) {
         return node.nodeType !== Node.TEXT_NODE;
     }
+    
+    // Safety check for malformed VNodes
+    if (!vnode.tag) {
+        return true;
+    }
+
     return node.nodeType !== Node.ELEMENT_NODE || 
            node.tagName.toLowerCase() !== vnode.tag.toLowerCase();
 }
@@ -99,9 +105,24 @@ function createNode(vnode, component, refs) {
         return document.createTextNode(vnode.text);
     }
     
+    // Safety check for malformed VNodes
+    if (!vnode.tag) {
+        console.warn('Render Error: Malformed VNode (missing tag)', {
+            vnode,
+            component: component ? component.tagName : 'unknown',
+            json: JSON.stringify(vnode)
+        });
+        return document.createComment('error: malformed vnode');
+    }
+
     const el = document.createElement(vnode.tag);
     updateAttributesVNode(el, vnode.props, component, refs);
     
+    if (!vnode.children) {
+        // This can happen if a VNode is manually created without children or malformed
+        vnode.children = [];
+    }
+
     vnode.children.forEach(child => {
         if (child) {
             el.appendChild(createNode(child, component, refs));
@@ -112,6 +133,8 @@ function createNode(vnode, component, refs) {
 }
 
 function updateAttributesVNode(target, props, component, refs) {
+    if (!props) return;
+
     // Remove old attributes
     // Note: We don't track old props on the DOM node easily without storing them.
     // For now, we iterate over attributes on the DOM and remove those not in props.
@@ -127,29 +150,34 @@ function updateAttributesVNode(target, props, component, refs) {
         // Event Binding: (event)="method"
         if (name.startsWith('(') && name.endsWith(')')) {
             const eventName = name.slice(1, -1);
-            const methodName = value;
+            const handlerFn = value;
             
             if (!target._listeners) target._listeners = {};
             
-            if (!target._listeners[eventName] || target._listeners[eventName].method !== methodName) {
+            // If handler changed
+            if (!target._listeners[eventName] || target._listeners[eventName].raw !== handlerFn) {
                 if (target._listeners[eventName]) {
                     target.removeEventListener(eventName, target._listeners[eventName].handler);
                 }
 
                 const handler = (e) => {
-                    if (typeof component[methodName] === 'function') {
-                        component[methodName](e);
-                        return;
-                    }
-                    try {
-                        new Function('$event', methodName).call(component, e);
-                    } catch (err) {
-                        console.warn(`Method ${methodName} failed:`, err);
+                    if (typeof handlerFn === 'function') {
+                        handlerFn(e);
+                    } else if (typeof component[handlerFn] === 'function') {
+                        // Legacy string support
+                        component[handlerFn](e);
+                    } else {
+                        // Legacy eval support
+                        try {
+                            new Function('$event', handlerFn).call(component, e);
+                        } catch (err) {
+                            console.warn(`Event handler failed:`, err);
+                        }
                     }
                 };
 
                 target.addEventListener(eventName, handler);
-                target._listeners[eventName] = { method: methodName, handler };
+                target._listeners[eventName] = { raw: handlerFn, handler };
             }
             continue;
         }
@@ -177,6 +205,11 @@ function updateAttributesVNode(target, props, component, refs) {
         }
 
         // Standard Attribute
+        if (name.startsWith('@')) {
+            // Skip framework specific attributes that leaked through
+            return;
+        }
+
         if (target.getAttribute(name) !== String(value)) {
             target.setAttribute(name, value);
             if (target.tagName === 'INPUT' && name === 'checked') {

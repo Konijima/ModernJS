@@ -11,7 +11,7 @@ export const en = {
     'app.nav.home': 'Home',
     'app.nav.get_started': 'Get Started',
     'app.nav.features': 'Features',
-    'app.footer.view_source': 'View source on',
+    'app.footer.view_source': 'View source on ',
 
     // Meta
     'meta.home.title': 'ModernJS - Home',
@@ -48,6 +48,22 @@ export const en = {
     'home.features.i18n.desc': 'Built-in internationalization service for multi-language support.',
     'home.features.directives.title': 'Directives',
     'home.features.directives.desc': 'Extend HTML capabilities with custom attributes and behaviors.',
+
+    // Benchmark
+    'benchmark.title': 'Performance Benchmark',
+    'benchmark.create_1k': 'Create 1,000 rows',
+    'benchmark.create_10k': 'Create 10,000 rows',
+    'benchmark.append_1k': 'Append 1,000 rows',
+    'benchmark.update_10th': 'Update every 10th row',
+    'benchmark.clear': 'Clear',
+    'benchmark.swap': 'Swap Rows',
+    'benchmark.last_op': 'Last op: {0} ms',
+    'benchmark.comparison.title': 'Comparison vs Angular',
+    'benchmark.comparison.modernjs': 'ModernJS',
+    'benchmark.comparison.angular': 'Angular (v17)',
+    'benchmark.comparison.diff': 'Diff',
+    'benchmark.comparison.faster': 'faster',
+    'benchmark.comparison.slower': 'slower',
     'home.features.forms.title': 'Forms Handling',
     'home.features.forms.desc': 'Robust form handling with validation, groups, and controls.',
     'home.features.http.title': 'HTTP Client',

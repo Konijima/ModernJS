@@ -126,11 +126,11 @@ export const LoginPage = Component.create({
                     <label>{{ 'login.username' | translate }}</label>
                     <input 
                         type="text" 
-                        [formControl]="{{ this.bind(this.form.get('username')) }}"
+                        [formControl]="this.form.get('username')"
                         placeholder="{{ 'login.placeholder' | translate }}"
                     >
                 </div>
-                <button type="submit" [disabled]="{{ this.bind(!this.form.valid) }}">
+                <button type="submit" [disabled]="!this.form.valid">
                 <i class="fas fa-sign-in-alt"></i> {{ 'login.button' | translate }}
             </button>
             </form>

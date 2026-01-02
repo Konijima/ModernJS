@@ -12,7 +12,7 @@ export function compileToVNode(template) {
     
     // 3. Create Function
     try {
-        return new Function('h', 'createTextVNode', 'context', code);
+        return new Function('h', 'createTextVNode', 'context', `with(context) { ${code} }`);
     } catch (e) {
         console.error('Compiler Error:', e);
         console.log('Generated Code:', code);
@@ -53,24 +53,44 @@ function parse(template) {
         const token = match[0];
         
         if (match[1]) { // Control Flow Start
-            const type = token.startsWith('@if') ? 'if' : 
-                         token.startsWith('@for') ? 'for' : 
-                         token.startsWith('@else') ? 'else' : 'unknown';
+            let type = 'unknown';
+            if (token.startsWith('@if')) type = 'if';
+            else if (token.startsWith('@for')) type = 'for';
+            else if (token.startsWith('@else if')) type = 'elseif';
+            else if (token.startsWith('@else')) type = 'else';
             
             const node = { type, content: token, children: [] };
             
             // Extract condition/expression
-            if (type === 'if' || type === 'for') {
+            if (type === 'if' || type === 'for' || type === 'elseif') {
                 const exprMatch = token.match(/\((.*)\)/);
                 node.expression = exprMatch ? exprMatch[1] : '';
             }
             
-            current(stack).children.push(node);
-            stack.push(node);
+            // Handle else/elseif attachment
+            if (type === 'else' || type === 'elseif') {
+                const siblings = current(stack).children;
+                const lastSibling = siblings[siblings.length - 1];
+                
+                if (lastSibling && (lastSibling.type === 'if' || lastSibling.type === 'elseif')) {
+                    let target = lastSibling;
+                    while (target.elseBranch) {
+                        target = target.elseBranch;
+                    }
+                    target.elseBranch = node;
+                    stack.push(node);
+                } else {
+                    current(stack).children.push(node);
+                    stack.push(node);
+                }
+            } else {
+                current(stack).children.push(node);
+                stack.push(node);
+            }
             
         } else if (match[2]) { // Control Flow End '}'
             // Only pop if we are in a control block
-            if (stack.length > 1 && ['if', 'for', 'else'].includes(current(stack).type)) {
+            if (stack.length > 1 && ['if', 'for', 'else', 'elseif'].includes(current(stack).type)) {
                 stack.pop();
             } else {
                 // Treat as text if not matching a control block
@@ -181,9 +201,15 @@ function generate(node) {
         return `h('${node.tag}', ${propsCode}, [${childrenCode}])`;
     }
     
-    if (node.type === 'if') {
+    if (node.type === 'if' || node.type === 'elseif') {
         const childrenCode = node.children.map(generate).join(',');
-        return `(${node.expression} ? [${childrenCode}] : null)`;
+        const elseCode = node.elseBranch ? generate(node.elseBranch) : 'null';
+        return `(${node.expression} ? [${childrenCode}] : ${elseCode})`;
+    }
+
+    if (node.type === 'else') {
+        const childrenCode = node.children.map(generate).join(',');
+        return `[${childrenCode}]`;
     }
     
     if (node.type === 'for') {
@@ -206,8 +232,17 @@ function generate(node) {
 function generateProps(props) {
     let code = '{';
     for (const [key, value] of Object.entries(props)) {
+        // Handle Event Binding (event)="expr"
+        if (key.startsWith('(') && key.endsWith(')')) {
+            // Check if it's a simple method call (identifier)
+            if (/^[a-zA-Z0-9_$]+$/.test(value.trim())) {
+                code += `'${key}': ($event) => ${value.trim()}($event),`;
+            } else {
+                code += `'${key}': ($event) => { ${value} },`;
+            }
+        }
         // Handle Property Binding [prop]="expr"
-        if (key.startsWith('[') && key.endsWith(']')) {
+        else if (key.startsWith('[') && key.endsWith(']')) {
             const expr = parsePipes(value);
             code += `'${key}': ${expr},`;
         }

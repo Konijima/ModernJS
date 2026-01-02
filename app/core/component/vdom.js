@@ -22,9 +22,13 @@ export function h(tag, props, children) {
     if (children) {
         if (Array.isArray(children)) {
             // Flatten nested arrays (e.g. from maps/loops)
-            normalizedChildren = children.flat().map(c => normalizeChild(c));
+            // Use Infinity to handle deeply nested arrays from loops/conditionals
+            normalizedChildren = children.flat(Infinity).map(c => normalizeChild(c)).filter(c => c != null);
         } else {
-            normalizedChildren = [normalizeChild(children)];
+            const normalized = normalizeChild(children);
+            if (normalized != null) {
+                normalizedChildren = [normalized];
+            }
         }
     }
 

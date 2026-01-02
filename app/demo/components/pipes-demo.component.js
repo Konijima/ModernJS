@@ -160,30 +160,32 @@ export const PipesDemoComponent = Component.create({
             flex-wrap: wrap;
         }
     `,
-    template() {
-        return `
+    getLangLabel(lang) {
+        const labels = {
+            'en': 'English',
+            'fr': 'Français',
+            'es': 'Español'
+        };
+        return labels[lang.code] || lang.label;
+    },
+
+    template: `
         <div class="card">
             <div class="demo-header">
                 <div class="demo-icon primary"><i class="fas fa-globe"></i></div>
                 <h3>{{ 'DEMO_TITLE' | translate }}</h3>
             </div>
             <p class="text-muted" style="font-size: 0.9375rem;">{{ 'WELCOME' | translate }}</p>
-            <p class="text-subtle" style="font-size: 0.875rem; margin-top: 0.5rem;">{{ 'CURRENT_LANG' | translate:this.i18nService.state.locale }}</p>
+            <p class="text-subtle" style="font-size: 0.875rem; margin-top: 0.5rem;">{{ 'CURRENT_LANG' | translate:i18nService.state.locale }}</p>
             <div style="margin-top: 1rem; display: flex; gap: 0.75rem;">
-                ${this.i18nService.supportedLanguages.map(lang => {
-                    const labels = {
-                        'en': 'English',
-                        'fr': 'Français',
-                        'es': 'Español'
-                    };
-                    return `
+                @for (let lang of i18nService.supportedLanguages) {
                     <button 
                         class="btn btn-secondary" 
-                        data-lang="${lang.code}"
+                        data-lang="{{ lang.code }}"
                         (click)="handleLangClick">
-                        ${labels[lang.code] || lang.label}
+                        {{ getLangLabel(lang) }}
                     </button>
-                `}).join('')}
+                }
             </div>
         </div>
 
@@ -214,15 +216,15 @@ export const PipesDemoComponent = Component.create({
             <div class="code-block">
                 <div class="code-line">
                     <span class="code-label">Full:</span>
-                    <span class="code-value">{{ this.state.currentDate | date:'full' }}</span>
+                    <span class="code-value">{{ state.currentDate | date:'full' }}</span>
                 </div>
                 <div class="code-line">
                     <span class="code-label">Short:</span>
-                    <span class="code-value">{{ this.state.currentDate | date:'short' }}</span>
+                    <span class="code-value">{{ state.currentDate | date:'short' }}</span>
                 </div>
                 <div class="code-line">
                     <span class="code-label">Time:</span>
-                    <span class="code-value">{{ this.state.currentDate | date:'time' }}</span>
+                    <span class="code-value">{{ state.currentDate | date:'time' }}</span>
                 </div>
             </div>
         </div>
@@ -251,6 +253,5 @@ export const PipesDemoComponent = Component.create({
                 </div>
             </div>
         </div>
-    `;
-    },
+    `,
 });

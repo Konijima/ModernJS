@@ -72,6 +72,14 @@ export const App = Component.create({
         this.router.navigate('/benchmark');
     },
 
+    isActive(route) {
+        const path = window.location.pathname;
+        if (route === '/') {
+            return path === '/' ? 'active' : '';
+        }
+        return path === route || path.startsWith(route + '/') ? 'active' : '';
+    },
+
     styles: `
         :host {
             display: block;
@@ -167,15 +175,7 @@ export const App = Component.create({
         }
     `,
 
-    template() {
-        const path = window.location.pathname;
-        const isActive = (route) => {
-            if (route === '/') {
-                return path === '/' ? 'active' : '';
-            }
-            return path === route || path.startsWith(route + '/') ? 'active' : '';
-        };
-        return `
+    template: `
             <div class="app-container">
                 <cursor-overlay></cursor-overlay>
                 <header class="app-header">
@@ -185,23 +185,22 @@ export const App = Component.create({
                             <p class="app-subtitle">{{ 'app.subtitle' | translate }}</p>
                         </div>
                         <div class="lang-switcher">
-                            ${this.i18nService.supportedLanguages.map((lang, index, arr) => `
+                            @for(let lang of this.i18nService.supportedLanguages) {
                                 <button 
-                                    class="btn-lang ${this.i18nService.state.locale === lang.code ? 'active' : ''}" 
-                                    data-lang="${lang.code}"
+                                    class="btn-lang {{ this.i18nService.state.locale === lang.code ? 'active' : '' }}" 
+                                    data-lang="{{ lang.code }}"
                                     (click)="handleLangClick">
-                                    ${lang.label}
+                                    {{ lang.label }}
                                 </button>
-                                ${index < arr.length - 1 ? '<span class="divider">|</span>' : ''}
-                            `).join('')}
+                            }
                         </div>
                     </div>
                     
                     <nav class="nav-links">
-                        <a href="/" class="nav-link ${isActive('/')}" (click)="navigateToHome">{{ 'app.nav.home' | translate }}</a>
-                        <a href="/get-started" class="nav-link ${isActive('/get-started')}" (click)="navigateToGetStarted">{{ 'app.nav.get_started' | translate }}</a>
-                        <a href="/features" class="nav-link ${isActive('/features')}" (click)="navigateToFeatures">{{ 'app.nav.features' | translate }}</a>
-                        <a href="/benchmark" class="nav-link ${isActive('/benchmark')}" (click)="navigateToBenchmark">Benchmark</a>
+                        <a href="/" class="nav-link {{ this.isActive('/') }}" (click)="navigateToHome">{{ 'app.nav.home' | translate }}</a>
+                        <a href="/get-started" class="nav-link {{ this.isActive('/get-started') }}" (click)="navigateToGetStarted">{{ 'app.nav.get_started' | translate }}</a>
+                        <a href="/features" class="nav-link {{ this.isActive('/features') }}" (click)="navigateToFeatures">{{ 'app.nav.features' | translate }}</a>
+                        <a href="/benchmark" class="nav-link {{ this.isActive('/benchmark') }}" (click)="navigateToBenchmark">Benchmark</a>
                     </nav>
                 </header>
                 
@@ -215,6 +214,5 @@ export const App = Component.create({
                     <p>{{ 'app.footer.view_source' | translate }} <a href="https://github.com/Konijima/ModernJS" target="_blank">GitHub</a></p>
                 </footer>
             </div>
-        `;
-    }
+    `
 });

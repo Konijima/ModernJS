@@ -1,4 +1,6 @@
 import { Component } from '../../core/component/component.js';
+import { TranslatePipe } from '../../core/pipes/translate.pipe.js';
+import { I18nService } from '../../core/services/i18n.service.js';
 
 const adjectives = ["pretty", "large", "big", "small", "tall", "short", "long", "handsome", "plain", "quaint", "clean", "elegant", "easy", "angry", "crazy", "helpful", "mushy", "odd", "unsightly", "adorable", "important", "inexpensive", "cheap", "expensive", "fancy"];
 const colours = ["red", "yellow", "blue", "green", "pink", "brown", "purple", "brown", "white", "black", "orange"];
@@ -19,90 +21,306 @@ function buildData(count = 1000) {
     return data;
 }
 
+// Approximate Angular v17 performance metrics (ms) for comparison
+// Based on js-framework-benchmark results
+const ANGULAR_METRICS = {
+    create1k: 85,
+    create10k: 950,
+    append1k: 95,
+    update10th: 110,
+    clear: 25,
+    swap: 65,
+    select: 30,
+    remove: 35
+};
+
 export const BenchmarkComponent = Component.create({
     selector: 'benchmark-test',
+    inject: { i18nService: I18nService },
+    pipes: { translate: TranslatePipe },
     state: {
         rows: [],
         selected: null,
-        lastMeasure: 0
+        lastMeasure: 0,
+        lastOp: null,
+        comparison: null
+    },
+    onInit() {
+        this.connect(this.i18nService, () => ({}));
     },
     styles: `
-        .container { padding: 20px; }
-        .buttons { margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
-        button { padding: 8px 16px; cursor: pointer; background: #2563eb; color: white; border: none; border-radius: 4px; }
-        button:hover { background: #1d4ed8; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        td, th { padding: 8px; border-bottom: 1px solid #ddd; text-align: left; }
-        tr.danger { background-color: #f8d7da; }
-        tr:hover td { background-color: #f8fafc; }
-        .lbl { font-weight: bold; }
-        .metric { margin-left: 20px; font-weight: bold; color: #2563eb; align-self: center; }
-        .remove-btn { cursor: pointer; color: #ef4444; }
-        .select-link { cursor: pointer; color: #2563eb; text-decoration: underline; }
+        :host {
+            display: block;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            margin-bottom: 2rem;
+        }
+        h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+        }
+        
+        .controls-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-2xl);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border-radius: var(--radius-lg);
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background: var(--card-bg);
+            border-color: var(--border-color);
+            color: var(--text-color);
+        }
+        .btn-secondary:hover {
+            border-color: var(--text-muted);
+            background: var(--bg-color);
+        }
+
+        .comparison-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-2xl);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .stat-box {
+            padding: 1.25rem;
+            border-radius: var(--radius-xl);
+            background: var(--bg-color);
+            border: 1px solid var(--border-subtle);
+        }
+        .stat-label { 
+            font-size: 0.875rem; 
+            color: var(--text-muted); 
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        .stat-value { 
+            font-size: 1.5rem; 
+            font-weight: 700; 
+            color: var(--text-color); 
+            font-feature-settings: "tnum";
+        }
+        .stat-diff { 
+            font-size: 0.875rem; 
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+        .text-green { color: var(--success-color, #10b981); }
+        .text-red { color: var(--danger-color, #ef4444); }
+
+        .table-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-2xl);
+            overflow: hidden;
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+        }
+        th {
+            text-align: left;
+            padding: 1rem 1.5rem;
+            background: var(--bg-color);
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.875rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        td { 
+            padding: 1rem 1.5rem; 
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-color);
+        }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: var(--hover-bg); }
+        tr.danger td { background: rgba(239, 68, 68, 0.1); }
+        
+        .select-link { 
+            cursor: pointer; 
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .select-link:hover { color: var(--primary-color); }
+        
+        .remove-btn { 
+            cursor: pointer; 
+            color: var(--text-muted);
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+        }
+        .remove-btn:hover { 
+            color: var(--danger-color);
+            background: rgba(239, 68, 68, 0.1);
+        }
     `,
     template: `
         <div class="container">
-            <div class="buttons">
-                <button (click)="run">Create 1,000 rows</button>
-                <button (click)="runLots">Create 10,000 rows</button>
-                <button (click)="add">Append 1,000 rows</button>
-                <button (click)="runUpdate">Update every 10th row</button>
-                <button (click)="clear">Clear</button>
-                <button (click)="swapRows">Swap Rows</button>
-                @if(this.state.lastMeasure > 0) {
-                    <span class="metric">Last op: {{ this.state.lastMeasure.toFixed(2) }} ms</span>
-                }
+            <div class="header">
+                <h2>{{ 'benchmark.title' | translate }}</h2>
             </div>
-            <table>
-                <tbody>
-                    @for(let row of this.state.rows) {
-                        <tr key="{{ row.id }}" class="{{ row.id === this.state.selected ? 'danger' : '' }}">
-                            <td>{{ row.id }}</td>
-                            <td><a class="select-link" (click)="this.select('{{ this.bind(row) }}')">{{ row.label }}</a></td>
-                            <td><a class="remove-btn" (click)="this.remove('{{ this.bind(row) }}')">❌</a></td>
+            
+            <div class="controls-card">
+                <button class="btn btn-primary" (click)="run">{{ 'benchmark.create_1k' | translate }}</button>
+                <button class="btn btn-primary" (click)="runLots">{{ 'benchmark.create_10k' | translate }}</button>
+                <button class="btn btn-secondary" (click)="add">{{ 'benchmark.append_1k' | translate }}</button>
+                <button class="btn btn-secondary" (click)="runUpdate">{{ 'benchmark.update_10th' | translate }}</button>
+                <button class="btn btn-secondary" (click)="clear">{{ 'benchmark.clear' | translate }}</button>
+                <button class="btn btn-secondary" (click)="swapRows">{{ 'benchmark.swap' | translate }}</button>
+            </div>
+
+            @if(state.lastMeasure > 0) {
+                <div class="comparison-card">
+                    <h3 style="margin: 0; font-size: 1.25rem;">{{ 'benchmark.comparison.title' | translate }}</h3>
+                    <div class="comparison-grid">
+                        <div class="stat-box">
+                            <div class="stat-label">{{ 'benchmark.comparison.modernjs' | translate }}</div>
+                            <div class="stat-value">{{ state.lastMeasure.toFixed(2) }} ms</div>
+                        </div>
+                        
+                        @if(state.comparison) {
+                            <div class="stat-box">
+                                <div class="stat-label">{{ 'benchmark.comparison.angular' | translate }}</div>
+                                <div class="stat-value">{{ state.comparison.angular }} ms</div>
+                            </div>
+                            
+                            <div class="stat-box">
+                                <div class="stat-label">{{ 'benchmark.comparison.diff' | translate }}</div>
+                                <div class="stat-value {{ state.comparison.diff < 0 ? 'text-green' : 'text-red' }}">
+                                    {{ Math.abs(state.comparison.diff).toFixed(2) }} ms
+                                </div>
+                                <div class="stat-diff {{ state.comparison.diff < 0 ? 'text-green' : 'text-red' }}">
+                                    {{ state.comparison.percent }}% {{ (state.comparison.diff < 0 ? 'benchmark.comparison.faster' : 'benchmark.comparison.slower') | translate }}
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 100px">ID</th>
+                            <th>Label</th>
+                            <th style="width: 60px"></th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @for(let row of state.rows) {
+                            <tr key="{{ row.id }}" class="{{ row.id === state.selected ? 'danger' : '' }}">
+                                <td>{{ row.id }}</td>
+                                <td><a class="select-link" (click)="select(row)">{{ row.label }}</a></td>
+                                <td><a class="remove-btn" (click)="remove(row)">×</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     `,
     
-    measure(fn) {
+    measure(opName, fn) {
         const start = performance.now();
         fn();
         // We need to wait for the render to complete.
-        // Since update() uses requestAnimationFrame, we can schedule a callback
-        // that will run after the update callback.
         requestAnimationFrame(() => {
             setTimeout(() => {
                 const end = performance.now();
-                this.state.lastMeasure = end - start;
+                const duration = end - start;
+                this.state.lastMeasure = duration;
+                this.state.lastOp = opName;
+                
+                // Calculate comparison
+                if (ANGULAR_METRICS[opName]) {
+                    const angularTime = ANGULAR_METRICS[opName];
+                    const diff = duration - angularTime;
+                    const percent = Math.abs((diff / angularTime) * 100).toFixed(1);
+                    
+                    this.state.comparison = {
+                        angular: angularTime,
+                        diff: diff,
+                        percent: percent
+                    };
+                } else {
+                    this.state.comparison = null;
+                }
             }, 0);
         });
     },
 
     run() {
-        this.measure(() => {
+        this.measure('create1k', () => {
             this.state.rows = buildData(1000);
             this.state.selected = null;
         });
     },
 
     runLots() {
-        this.measure(() => {
+        this.measure('create10k', () => {
             this.state.rows = buildData(10000);
             this.state.selected = null;
         });
     },
 
     add() {
-        this.measure(() => {
+        this.measure('append1k', () => {
             this.state.rows = [...this.state.rows, ...buildData(1000)];
         });
     },
 
     runUpdate() {
-        this.measure(() => {
+        this.measure('update10th', () => {
             const newRows = [...this.state.rows];
             for (let i = 0; i < newRows.length; i += 10) {
                 newRows[i] = { ...newRows[i], label: newRows[i].label + ' !!!' };
@@ -112,14 +330,14 @@ export const BenchmarkComponent = Component.create({
     },
 
     clear() {
-        this.measure(() => {
+        this.measure('clear', () => {
             this.state.rows = [];
             this.state.selected = null;
         });
     },
 
     swapRows() {
-        this.measure(() => {
+        this.measure('swap', () => {
             if (this.state.rows.length > 998) {
                 const newRows = [...this.state.rows];
                 const temp = newRows[1];
@@ -136,7 +354,7 @@ export const BenchmarkComponent = Component.create({
         }
         if (!row) return;
         
-        this.measure(() => {
+        this.measure('select', () => {
             this.state.selected = row.id;
         });
     },
@@ -147,7 +365,7 @@ export const BenchmarkComponent = Component.create({
         }
         if (!row) return;
 
-        this.measure(() => {
+        this.measure('remove', () => {
             this.state.rows = this.state.rows.filter(r => r.id !== row.id);
         });
     }

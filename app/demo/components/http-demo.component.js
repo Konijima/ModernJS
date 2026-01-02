@@ -281,8 +281,8 @@ export const HttpDemoComponent = Component.create({
                     <p class="text-muted mb-0">{{ 'http.desc' | translate }}</p>
                 </div>
                 <div>
-                    <button class="btn btn-primary" (click)="fetchUsers" [disabled]="{{ this.bind(this.state.loading) }}">
-                        <i class="fas fa-sync {{ this.state.loading ? 'fa-spin' : '' }}"></i> {{ 'http.refresh' | translate }}
+                    <button class="btn btn-primary" (click)="fetchUsers" [disabled]="state.loading">
+                        <i class="fas fa-sync {{ state.loading ? 'fa-spin' : '' }}"></i> {{ 'http.refresh' | translate }}
                     </button>
                 </div>
             </div>
@@ -292,19 +292,19 @@ export const HttpDemoComponent = Component.create({
                     <div>
                         <h3 class="mb-4 section-title"><i class="fas fa-users text-primary"></i> {{ 'http.users_title' | translate }}</h3>
                         <div class="user-list">
-                            @if (this.state.loading) {
+                            @if (state.loading) {
                                 <div class="text-center p-5">
                                     <div class="spinner-border text-primary" role="status"></div>
                                     <p class="mt-3 text-muted">Loading users...</p>
                                 </div>
                             }
-                            @if (!this.state.loading && this.state.users.length === 0) {
+                            @if (!state.loading && state.users.length === 0) {
                                 <div class="text-center p-5 text-muted" style="border: 2px dashed var(--border-color); border-radius: var(--radius-lg);">
                                     <i class="fas fa-cloud-download-alt fa-3x mb-3" style="opacity: 0.5"></i>
                                     <p>Click "Refresh Data" to fetch users</p>
                                 </div>
                             }
-                            @for (let user of this.state.users) {
+                            @for (let user of state.users) {
                                 <div class="user-card">
                                     <div class="avatar">{{ user.name.charAt(0) }}</div>
                                     <div class="user-info">
@@ -321,10 +321,10 @@ export const HttpDemoComponent = Component.create({
                         <div class="logs-panel">
                             <div class="logs-header">
                                 <span><i class="fas fa-network-wired"></i> Network Activity</span>
-                                <span class="badge bg-dark">{{ this.state.logs.length }} events</span>
+                                <span class="badge bg-dark">{{ state.logs.length }} events</span>
                             </div>
                             <div class="log-content">
-                                @for (let log of this.state.logs) {
+                                @for (let log of state.logs) {
                                     <div class="log-entry {{ log.type }}">
                                         <span class="log-time">{{ log.time }}</span>
                                         <div class="log-message">
@@ -341,7 +341,7 @@ export const HttpDemoComponent = Component.create({
                                         </div>
                                     </div>
                                 }
-                                @if (this.state.logs.length === 0) {
+                                @if (state.logs.length === 0) {
                                     <div class="text-center text-muted mt-5">
                                         <i class="fas fa-terminal fa-2x mb-3" style="opacity: 0.3"></i>
                                         <p>{{ 'http.no_logs' | translate }}</p>

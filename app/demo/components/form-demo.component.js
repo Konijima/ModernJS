@@ -114,7 +114,7 @@ export const FormDemoComponent = Component.create({
     },
     template: `
         @if(this.form) {
-        <div class="form-container" @animation="fade">
+        <div class="form-container" animate="fade">
             <h2 style="margin-top: 0; margin-bottom: 1.5rem;">{{ 'forms.title' | translate }}</h2>
             
             <form (submit)="handleSubmit">
@@ -123,16 +123,16 @@ export const FormDemoComponent = Component.create({
                     <input 
                         type="text"
                         autocomplete="username"
-                        [formControl]="this.bind(this.form.get('username'))"
-                        class="{{ this.form.get('username').invalid && this.form.get('username').touched ? 'invalid' : '' }}"
+                        [formControl]="form.get('username')"
+                        class="{{ form.get('username').invalid && form.get('username').touched ? 'invalid' : '' }}"
                         placeholder="{{ 'forms.placeholder.username' | translate }}"
                     >
-                    @if(this.form.get('username').invalid && this.form.get('username').touched) {
+                    @if(form.get('username').invalid && form.get('username').touched) {
                         <div class="error-message">
-                            @if(this.form.get('username').errors.required) {
-                                {{ 'forms.error.required' | translate : this.getPipe('translate').transform('forms.username') }}
+                            @if(form.get('username').errors.required) {
+                                {{ 'forms.error.required' | translate : getPipe('translate').transform('forms.username') }}
                             }
-                            @else if(this.form.get('username').errors.minLength) {
+                            @else if(form.get('username').errors.minLength) {
                                 {{ 'forms.error.minlength' | translate:'3' }}
                             }
                         </div>
@@ -144,16 +144,16 @@ export const FormDemoComponent = Component.create({
                     <input 
                         type="email"
                         autocomplete="email"
-                        [formControl]="this.bind(this.form.get('email'))"
-                        class="{{ this.form.get('email').invalid && this.form.get('email').touched ? 'invalid' : '' }}"
+                        [formControl]="form.get('email')"
+                        class="{{ form.get('email').invalid && form.get('email').touched ? 'invalid' : '' }}"
                         placeholder="{{ 'forms.placeholder.email' | translate }}"
                     >
-                    @if(this.form.get('email').invalid && this.form.get('email').touched) {
+                    @if(form.get('email').invalid && form.get('email').touched) {
                         <div class="error-message">
-                            @if(this.form.get('email').errors.required) {
-                                {{ 'forms.error.required' | translate : this.getPipe('translate').transform('forms.email') }}
+                            @if(form.get('email').errors.required) {
+                                {{ 'forms.error.required' | translate : getPipe('translate').transform('forms.email') }}
                             }
-                            @else if(this.form.get('email').errors.email) {
+                            @else if(form.get('email').errors.email) {
                                 {{ 'forms.error.email' | translate }}
                             }
                         </div>
@@ -165,30 +165,30 @@ export const FormDemoComponent = Component.create({
                     <input 
                         type="password"
                         autocomplete="current-password"
-                        [formControl]="this.bind(this.form.get('password'))"
-                        class="{{ this.form.get('password').invalid && this.form.get('password').touched ? 'invalid' : '' }}"
+                        [formControl]="form.get('password')"
+                        class="{{ form.get('password').invalid && form.get('password').touched ? 'invalid' : '' }}"
                         placeholder="{{ 'forms.placeholder.password' | translate }}"
                     >
-                    @if(this.form.get('password').invalid && this.form.get('password').touched) {
+                    @if(form.get('password').invalid && form.get('password').touched) {
                         <div class="error-message">
-                            @if(this.form.get('password').errors.required) {
-                                {{ 'forms.error.required' | translate : this.getPipe('translate').transform('forms.password') }}
+                            @if(form.get('password').errors.required) {
+                                {{ 'forms.error.required' | translate : getPipe('translate').transform('forms.password') }}
                             }
-                            @else if(this.form.get('password').errors.minLength) {
+                            @else if(form.get('password').errors.minLength) {
                                 {{ 'forms.error.minlength' | translate:'6' }}
                             }
                         </div>
                     }
                 </div>
 
-                <button type="submit" {{ !this.form.valid ? 'disabled' : '' }}>{{ 'forms.register' | translate }}</button>
+                <button type="submit" [disabled]="!form.valid">{{ 'forms.register' | translate }}</button>
             </form>
 
             <div class="debug-info">
-                <strong>{{ 'forms.status' | translate }}:</strong> {{ this.form.valid ? 'VALID' : 'INVALID' }}
+                <strong>{{ 'forms.status' | translate }}:</strong> {{ form.valid ? 'VALID' : 'INVALID' }}
                 <br>
                 <strong>{{ 'forms.value' | translate }}:</strong>
-                <pre style="margin: 0;">{{ JSON.stringify(this.form.value, null, 2) }}</pre>
+                <pre style="margin: 0;">{{ JSON.stringify(form.value, null, 2) }}</pre>
             </div>
         </div>
         }

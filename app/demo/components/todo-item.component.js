@@ -94,33 +94,43 @@ export const TodoItemComponent = Component.create({
         this.state.todo = value;
     },
 
-    template() {
-        const todo = this.state.todo;
-        
-        return `
-            @if (!this.state.todo) {
+    template: `
+            @if (!state.todo) {
                 <div>{{ 'LOADING' | translate }}</div>
             } @else {
                 <li 
-                    class="${todo && todo.completed ? 'completed' : ''}"
-                    onclick="if(event.target.type !== 'checkbox') { this.getRootNode().host.dispatchEvent(new CustomEvent('toggle', { detail: ${todo ? todo.id : 'null'} })) }"
+                    class="{{ state.todo.completed ? 'completed' : '' }}"
+                    (click)="handleToggle"
                 >
                     <input 
                         type="checkbox" 
                         class="form-checkbox"
-                        ${todo && todo.completed ? 'checked' : ''}
-                        onchange="this.getRootNode().host.dispatchEvent(new CustomEvent('toggle', { detail: ${todo ? todo.id : 'null'} }))"
+                        [checked]="state.todo.completed"
+                        (click)="handleCheckboxClick"
+                        (change)="handleToggle"
                     >
                     <span>
-                        ${todo ? todo.text : ''}
+                        {{ state.todo.text }}
                     </span>
                     <button 
                         class="btn-icon danger" 
                         title="Delete task"
-                        onclick="event.stopPropagation(); this.getRootNode().host.dispatchEvent(new CustomEvent('remove', { detail: ${todo ? todo.id : 'null'} }))"
+                        (click)="handleRemove"
                     ><i class="fas fa-trash"></i></button>
                 </li>
             }
-        `;
+    `,
+
+    handleCheckboxClick(e) {
+        e.stopPropagation();
+    },
+
+    handleToggle(e) {
+        this.dispatchEvent(new CustomEvent('toggle', { detail: this.state.todo.id }));
+    },
+
+    handleRemove(e) {
+        e.stopPropagation();
+        this.dispatchEvent(new CustomEvent('remove', { detail: this.state.todo.id }));
     }
 });

@@ -50,29 +50,26 @@ export const Modal = Component.create({
         }
     },
 
-    template() {
-        if (!this.state.isOpen) return '';
-
-        const sizeClass = this.state.options && this.state.options.size ? `modal-${this.state.options.size}` : '';
-        const customClass = this.state.options && this.state.options.customClass ? this.state.options.customClass : '';
-
-        return `
+    template: `
+        @if (!state.isOpen) {
+            
+        } @else {
             <div class="modal-backdrop open" (click)="handleBackdropClick">
-                <div class="modal-container ${sizeClass} ${customClass}" (click)="handleContainerClick">
+                <div class="modal-container {{ state.options && state.options.size ? 'modal-' + state.options.size : '' }} {{ state.options && state.options.customClass ? state.options.customClass : '' }}" (click)="handleContainerClick">
                     <header class="modal-header">
-                        <h3 class="modal-title">{{ this.state.title }}</h3>
-                        <button class="btn-close" (click)="handleCloseClick">&times;</button>
+                        <h3 class="modal-title">{{ state.title }}</h3>
+                        <button class="btn-close" (click)="handleCloseClick">×</button>
                     </header>
                     
                     <div class="modal-body">
-                        <p>{{ this.state.content }}</p>
+                        <p>{{ state.content }}</p>
                         
-                        @if (this.state.type === 'prompt') {
+                        @if (state.type === 'prompt') {
                             <input 
                                 type="text" 
                                 class="form-control" 
-                                value="{{ this.state.inputValue }}"
-                                placeholder="{{ this.state.placeholder }}"
+                                [value]="state.inputValue"
+                                placeholder="{{ state.placeholder }}"
                                 (input)="handleInput"
                                 (keydown)="handleKeydown"
                             />
@@ -80,19 +77,18 @@ export const Modal = Component.create({
                     </div>
 
                     <footer class="modal-footer">
-                        @for (let i = 0; i < this.state.actions.length; i++) {
+                        @for (let action of state.actions) {
                             <button 
-                                class="btn btn-{{ this.state.actions[i].type || 'secondary' }}"
-                                data-index="{{ i }}"
-                                (click)="handleActionClick">
-                                {{ this.state.actions[i].label }}
+                                class="btn btn-{{ action.type || 'secondary' }}"
+                                (click)="action.onClick()">
+                                {{ action.label }}
                             </button>
                         }
                     </footer>
                 </div>
             </div>
-        `;
-    },
+        }
+    `,
 
     handleBackdropClick(e) {
         if (this.state.options && this.state.options.backdrop === 'static') return;
@@ -105,13 +101,5 @@ export const Modal = Component.create({
 
     handleCloseClick(e) {
         this.modalService.close(null);
-    },
-
-    handleActionClick(e) {
-        const index = e.target.getAttribute('data-index');
-        const action = this.state.actions[index];
-        if (action && action.onClick) {
-            action.onClick();
-        }
     }
 });
