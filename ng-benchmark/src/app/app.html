@@ -1,0 +1,74 @@
+<div class="container">
+    <div class="header">
+        <h2>Benchmark</h2>
+    </div>
+    
+    <div class="controls-card">
+        <button class="btn btn-primary" (click)="run()">Create 1,000 rows</button>
+        <button class="btn btn-primary" (click)="runLots()">Create 10,000 rows</button>
+        <button class="btn btn-secondary" (click)="add()">Append 1,000 rows</button>
+        <button class="btn btn-secondary" (click)="runUpdate()">Update every 10th row</button>
+        <button class="btn btn-secondary" (click)="clear()">Clear</button>
+        <button class="btn btn-secondary" (click)="swapRows()">Swap Rows</button>
+        <button class="btn btn-primary" style="background-color: #7c3aed; border-color: #7c3aed;" (click)="runAll()">Run All Tests</button>
+    </div>
+
+    @if (report()) {
+        <div class="comparison-card">
+            <h3 style="margin: 0; font-size: 1.25rem;">Full Report</h3>
+            <table style="width: 100%; margin-top: 1rem; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th style="text-align: left; padding: 0.75rem; border-bottom: 1px solid #e2e8f0;">Action</th>
+                        <th style="text-align: left; padding: 0.75rem; border-bottom: 1px solid #e2e8f0;">Time (ms)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (item of report(); track item.opName) {
+                        <tr>
+                            <td style="padding: 0.75rem; border-bottom: 1px solid #f1f5f9;">{{ item.opName }}</td>
+                            <td style="padding: 0.75rem; border-bottom: 1px solid #f1f5f9;">{{ item.duration.toFixed(2) }}</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    @if (lastMeasure() > 0 && !report()) {
+        <div class="comparison-card">
+            <h3 style="margin: 0; font-size: 1.25rem;">Results</h3>
+            <div class="comparison-grid">
+                <div class="stat-box">
+                    <div class="stat-label">Action</div>
+                    <div class="stat-value">{{ lastOp() }}</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Time</div>
+                    <div class="stat-value">{{ lastMeasure().toFixed(2) }} ms</div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 100px">ID</th>
+                    <th>Label</th>
+                    <th style="width: 60px"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (row of rows(); track row.id) {
+                    <tr [class.danger]="row.id === selected()">
+                        <td>{{ row.id }}</td>
+                        <td><a class="select-link" (click)="select(row)">{{ row.label }}</a></td>
+                        <td><a class="remove-btn" (click)="remove(row)">×</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
