@@ -163,6 +163,8 @@ export class Component extends HTMLElement {
 
         this._subscriptions = [];
         this._refs = {}; // Registry for object references in templates
+        this._rafId = null;
+        this._updatePending = false;
         
         // Dependency Injection (Support both static inject and manual inject)
         const injections = this.constructor.inject || {};
@@ -216,6 +218,9 @@ export class Component extends HTMLElement {
     connectedCallback() {
         log('Lifecycle', `Connected ${this.tagName}`);
         
+        // Schedule initial render
+        this.update();
+
         // Call onInit hook if defined
         if (this.onInit) {
             this.onInit();
@@ -225,8 +230,6 @@ export class Component extends HTMLElement {
         if (this.constructor.connect) {
             this.constructor.connect.call(this);
         }
-
-        this.update();
     }
 
     /**
@@ -234,6 +237,12 @@ export class Component extends HTMLElement {
      * Cleans up subscriptions and calls onDestroy hook.
      */
     disconnectedCallback() {
+        if (this._rafId) {
+            cancelAnimationFrame(this._rafId);
+            this._rafId = null;
+            this._updatePending = false;
+        }
+
         this._subscriptions.forEach(unsubscribe => {
             if (typeof unsubscribe === 'function') {
                 unsubscribe();
@@ -307,14 +316,48 @@ export class Component extends HTMLElement {
     }
 
     /**
-     * Re-render the component.
-     * Uses DOM diffing to update the Shadow DOM efficiently.
+     * Schedule a re-render of the component.
+     * Batches updates using requestAnimationFrame to avoid unnecessary DOM diffs.
      */
     update() {
         // Prevent updates if not connected to DOM (e.g. during construction)
         if (!this.isConnected) {
             return;
         }
+
+        if (this._updatePending) return;
+        this._updatePending = true;
+
+        this._rafId = requestAnimationFrame(() => {
+            this._performUpdate();
+            this._updatePending = false;
+            this._rafId = null;
+        });
+    }
+
+    /**
+     * Force a synchronous re-render of the component.
+     * Useful for testing or when immediate DOM updates are required.
+     */
+    detectChanges() {
+        if (!this.isConnected) return;
+
+        if (this._updatePending && this._rafId) {
+            cancelAnimationFrame(this._rafId);
+            this._updatePending = false;
+            this._rafId = null;
+        }
+
+        this._performUpdate();
+    }
+
+    /**
+     * Internal method to perform the actual rendering.
+     * Uses DOM diffing to update the Shadow DOM efficiently.
+     * @private
+     */
+    _performUpdate() {
+        if (!this.isConnected) return;
 
         if (!this.render) {
             if (!this.constructor.noTemplate && import.meta.env.DEV && import.meta.env.VITE_DEBUG) {

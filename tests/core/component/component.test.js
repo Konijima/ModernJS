@@ -228,7 +228,7 @@ describe('Component', () => {
             expect(instance._refs[key]).toBe(obj);
         });
 
-        it('should warn if no render method is present', () => {
+        it('should warn if no render method is present', async () => {
             // Enable debug mode for this test
             vi.stubEnv('VITE_DEBUG', 'true');
             
@@ -244,6 +244,8 @@ describe('Component', () => {
             const instance = new NoRenderComponent();
             document.body.appendChild(instance);
             instance.update();
+            
+            await new Promise(resolve => requestAnimationFrame(resolve));
             
             expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('No render method found'));
             document.body.removeChild(instance);
@@ -271,10 +273,62 @@ describe('Component', () => {
             
             expect(updateSpy).toHaveBeenCalled();
         });
+
+        it('should update synchronously when detectChanges is called', () => {
+            const uniqueSelector = 'detect-changes-component-' + Math.random().toString(36).substr(2, 5);
+            
+            class DetectChangesComponent extends Component {
+                static selector = uniqueSelector;
+                static state = { count: 0 };
+                render() { return `Count: ${this.state.count}`; }
+            }
+            DetectChangesComponent.define();
+            
+            const instance = new DetectChangesComponent();
+            // Mock _performUpdate to verify synchronous call
+            const performUpdateSpy = vi.spyOn(instance, '_performUpdate');
+            
+            // Simulate connected state
+            Object.defineProperty(instance, 'isConnected', { value: true });
+            
+            instance.detectChanges();
+            
+            expect(performUpdateSpy).toHaveBeenCalled();
+        });
+
+        it('should render before onInit RAF callback', async () => {
+            const uniqueSelector = 'raf-order-component-' + Math.random().toString(36).substr(2, 5);
+            let renderCalledInRaf = false;
+
+            // Clear previous calls
+            renderer.render.mockClear();
+
+            class RafOrderComponent extends Component {
+                static selector = uniqueSelector;
+                render() { return '<div id="target"></div>'; }
+                onInit() {
+                    requestAnimationFrame(() => {
+                        // Check if render has been called
+                        renderCalledInRaf = renderer.render.mock.calls.length > 0;
+                    });
+                }
+            }
+            RafOrderComponent.define();
+
+            const instance = new RafOrderComponent();
+            document.body.appendChild(instance);
+
+            // Wait for RAFs to execute
+            await new Promise(resolve => requestAnimationFrame(resolve));
+            await new Promise(resolve => requestAnimationFrame(resolve)); // Just to be safe
+
+            expect(renderCalledInRaf).toBe(true);
+            document.body.removeChild(instance);
+        });
     });
     
     describe('Rendering', () => {
-        it('should call render and renderer.render on update', () => {
+        it('should call render and renderer.render on update', async () => {
             const uniqueSelector = 'render-component-' + Math.random().toString(36).substr(2, 5);
             
             class RenderComponent extends Component {
@@ -286,6 +340,8 @@ describe('Component', () => {
             const instance = new RenderComponent();
             document.body.appendChild(instance);
             instance.update();
+            
+            await new Promise(resolve => requestAnimationFrame(resolve));
             
             expect(template.compileTemplate).toHaveBeenCalled();
             expect(renderer.render).toHaveBeenCalled();

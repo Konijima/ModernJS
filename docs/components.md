@@ -134,6 +134,40 @@ The template engine supports `@if` and `@for` blocks.
 </ul>
 ```
 
+## Reactivity & Rendering
+
+ModernJS uses a hybrid reactivity system. Local component state is managed via **Proxies**, while shared state (Services) uses **Observables**.
+
+### State Updates & Batching
+
+When you modify `this.state`, the component automatically schedules a re-render. To ensure high performance, updates are **batched** using `requestAnimationFrame`.
+
+```javascript
+// In your component method
+this.state.count++; 
+this.state.title = 'New Title';
+
+// Only ONE render will occur in the next animation frame
+```
+
+This means that reading the DOM immediately after a state change will return the *old* values. If you need to perform actions after the DOM has updated, you can wait for the next frame:
+
+```javascript
+this.state.count++;
+requestAnimationFrame(() => {
+    console.log(this.shadowRoot.innerHTML); // Updated DOM
+});
+```
+
+### Manual Change Detection
+
+In some scenarios (like testing or specific integrations), you may need to force a synchronous update. You can use the `detectChanges()` method:
+
+```javascript
+this.state.count++;
+this.detectChanges(); // DOM is updated immediately
+```
+
 ## Styling
 
 Styles can be scoped to the component using the static `styles` property.
