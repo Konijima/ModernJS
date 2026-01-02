@@ -22,8 +22,9 @@ export function h(tag, props, children) {
     if (children) {
         if (Array.isArray(children)) {
             // Flatten nested arrays (e.g. from maps/loops)
-            // Use Infinity to handle deeply nested arrays from loops/conditionals
-            normalizedChildren = children.flat(Infinity).map(c => normalizeChild(c)).filter(c => c != null);
+            // Use flat() instead of flat(Infinity) for performance. 
+            // Templates usually don't nest deeply.
+            normalizedChildren = children.flat().map(c => normalizeChild(c)).filter(c => c != null);
         } else {
             const normalized = normalizeChild(children);
             if (normalized != null) {

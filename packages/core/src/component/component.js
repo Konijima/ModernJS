@@ -7,6 +7,7 @@ import { FRAMEWORK_VERSION } from '../version.js';
 
 // Cache for the global stylesheet to prevent FOUC
 let globalStyleSheet = null;
+let cachedGlobalStylesVNodes = null;
 
 const getGlobalStyleSheet = () => {
     if (globalStyleSheet) return globalStyleSheet;
@@ -28,6 +29,33 @@ const getGlobalStyleSheet = () => {
         }
     }
     return globalStyleSheet;
+};
+
+const getGlobalStylesVNodes = () => {
+    if (cachedGlobalStylesVNodes) return cachedGlobalStylesVNodes;
+
+    const nodes = [];
+    const globalStyles = Array.from(document.head.querySelectorAll('link[rel="stylesheet"], style'))
+        .filter(node => {
+            if (globalStyleSheet && node.tagName === 'LINK' && node.getAttribute('href') && node.getAttribute('href').includes('styles.css')) {
+                return false;
+            }
+            return true;
+        })
+        .reverse();
+        
+    globalStyles.forEach(node => {
+        if (node.tagName === 'STYLE') {
+            nodes.unshift(h('style', {}, [createTextVNode(node.textContent)]));
+        } else if (node.tagName === 'LINK') {
+            const props = {};
+            Array.from(node.attributes).forEach(attr => props[attr.name] = attr.value);
+            nodes.unshift(h('link', props, []));
+        }
+    });
+    
+    cachedGlobalStylesVNodes = nodes;
+    return nodes;
 };
 
 const log = (category, message, ...args) => {
@@ -394,7 +422,7 @@ export class Component extends HTMLElement {
         } else {
             // Flatten the array to handle nested arrays from control flow (e.g. @if, @for)
             // The compiler might return [ [VNode] ] for @if blocks
-            newDom = newDom.flat(Infinity);
+            newDom = newDom.flat();
         }
 
         // Inject styles into VNode tree
@@ -403,36 +431,14 @@ export class Component extends HTMLElement {
             newDom.unshift(styleVNode);
         }
 
-        // Inject global styles (This is tricky with VNodes as we need to clone DOM nodes)
-        // For VNodes, we can't easily mix real DOM nodes unless we wrap them.
-        // But our renderer supports VNodes.
-        // We can create a special VNode type for "Real DOM Node" or just convert them?
-        // Or we can just append them to the shadowRoot manually?
-        // The renderer clears/diffs everything.
-        
-        // Let's skip global style injection for VNodes for now to keep it simple, 
-        // or implement a "Wrapper" VNode.
-        // Actually, we can just create VNodes for the styles if they are simple.
-        // But <link> tags are simple.
-        
-        const globalStyles = Array.from(document.head.querySelectorAll('link[rel="stylesheet"], style'))
-            .filter(node => {
-                if (globalStyleSheet && node.tagName === 'LINK' && node.getAttribute('href') && node.getAttribute('href').includes('styles.css')) {
-                    return false;
-                }
-                return true;
-            })
-            .reverse();
-            
-        globalStyles.forEach(node => {
-            if (node.tagName === 'STYLE') {
-                newDom.unshift(h('style', {}, [createTextVNode(node.textContent)]));
-            } else if (node.tagName === 'LINK') {
-                const props = {};
-                Array.from(node.attributes).forEach(attr => props[attr.name] = attr.value);
-                newDom.unshift(h('link', props, []));
-            }
-        });
+        // Inject global styles
+        const globalNodes = getGlobalStylesVNodes();
+        if (globalNodes.length > 0) {
+            // We must clone the array to avoid modifying the cached one if we were to push to it
+            // But here we are unshifting into newDom, so it's fine.
+            // However, we need to be careful not to mutate the VNodes themselves in the renderer.
+            newDom.unshift(...globalNodes);
+        }
 
         // Capture current refs for this render cycle
         const currentRefs = { ...this._refs };

@@ -123,7 +123,7 @@ function createNode(vnode, component, refs) {
     }
 
     const el = document.createElement(vnode.tag);
-    updateAttributesVNode(el, vnode.props, component, refs);
+    updateAttributesVNode(el, vnode.props, component, refs, true);
     
     if (!vnode.children) {
         // This can happen if a VNode is manually created without children or malformed
@@ -139,18 +139,24 @@ function createNode(vnode, component, refs) {
     return el;
 }
 
-function updateAttributesVNode(target, props, component, refs) {
+function updateAttributesVNode(target, props, component, refs, isNew = false) {
     if (!props) return;
 
     // Remove old attributes
     // Note: We don't track old props on the DOM node easily without storing them.
     // For now, we iterate over attributes on the DOM and remove those not in props.
     // This is slightly expensive but correct.
-    Array.from(target.attributes).forEach(attr => {
-        if (!(attr.name in props) && !isEventProp(attr.name) && !isBindingProp(attr.name)) {
-             target.removeAttribute(attr.name);
+    if (!isNew) {
+        // Optimization: Iterate backwards to safely remove attributes
+        // and avoid Array.from allocation
+        const attrs = target.attributes;
+        for (let i = attrs.length - 1; i >= 0; i--) {
+            const attr = attrs[i];
+            if (!(attr.name in props) && !isEventProp(attr.name) && !isBindingProp(attr.name)) {
+                 target.removeAttribute(attr.name);
+            }
         }
-    });
+    }
 
     // Set new attributes
     for (const [name, value] of Object.entries(props)) {
@@ -238,28 +244,56 @@ function isBindingProp(name) {
  * Diffs children using VNodes.
  */
 function diffChildrenVNode(target, vnodes, component, refs) {
-    const targetChildren = Array.from(target.childNodes);
-    
-    // Keyed Diffing
-    const keyedMap = new Map();
-    let hasKeys = false;
-
-    targetChildren.forEach(child => {
-        if (child.nodeType === Node.ELEMENT_NODE && child.hasAttribute('key')) {
-            keyedMap.set(child.getAttribute('key'), child);
-            hasKeys = true;
+    // Optimization: Fast Clear
+    if (vnodes.length === 0 && target.firstChild) {
+        // If no animations, we can try to be faster
+        if (!component.constructor.animations) {
+             let child = target.firstChild;
+             let hasDirectives = false;
+             while (child) {
+                 if (child._directives) {
+                     hasDirectives = true;
+                     break;
+                 }
+                 child = child.nextSibling;
+             }
+             
+             if (!hasDirectives) {
+                 target.textContent = '';
+                 return;
+             }
         }
-    });
-
-    // If we have keys in the DOM, we try to match them with keys in VNodes
-    // Note: VNodes store key in `key` property, not props.
+    }
+    
+    // Keyed Diffing Check
+    let hasKeys = false;
+    let checkNode = target.firstChild;
+    while (checkNode) {
+        if (checkNode.nodeType === Node.ELEMENT_NODE && checkNode.hasAttribute('key')) {
+            hasKeys = true;
+            break;
+        }
+        checkNode = checkNode.nextSibling;
+    }
     
     if (hasKeys) {
-        const targetChildrenSet = new Set(targetChildren);
+        const keyedMap = new Map();
+        const children = [];
+        let child = target.firstChild;
+        
+        while (child) {
+            children.push(child);
+            if (child.nodeType === Node.ELEMENT_NODE && child.hasAttribute('key')) {
+                keyedMap.set(child.getAttribute('key'), child);
+            }
+            child = child.nextSibling;
+        }
+
         let nextSibling = target.firstChild;
 
-        vnodes.forEach((vnode) => {
-            if (!vnode) return;
+        for (let i = 0; i < vnodes.length; i++) {
+            const vnode = vnodes[i];
+            if (!vnode) continue;
             
             const key = vnode.key;
             let tChild = null;
@@ -270,12 +304,12 @@ function diffChildrenVNode(target, vnodes, component, refs) {
             }
 
             if (tChild) {
+                tChild._reused = true;
                 if (tChild !== nextSibling) {
                     target.insertBefore(tChild, nextSibling);
                 } else {
                     nextSibling = nextSibling.nextSibling;
                 }
-                targetChildrenSet.delete(tChild);
                 diffVNode(tChild, vnode, component, refs);
             } else {
                 const newNode = createNode(vnode, component, refs);
@@ -284,38 +318,53 @@ function diffChildrenVNode(target, vnodes, component, refs) {
                 } else {
                     target.appendChild(newNode);
                 }
-                // processBindings is handled in createNode via updateAttributesVNode
-                checkAnimations(newNode, component, ':enter');
+                
+                if (component.constructor.animations && newNode.nodeType === Node.ELEMENT_NODE && newNode.hasAttribute('animate')) {
+                    checkAnimations(newNode, component, ':enter');
+                }
             }
-        });
+        }
 
-        targetChildrenSet.forEach(node => {
-            handleRemoval(target, node, component);
-        });
+        // Remove remaining nodes
+        for (let i = 0; i < children.length; i++) {
+            const node = children[i];
+            if (!node._reused) {
+                handleRemoval(target, node, component);
+            } else {
+                delete node._reused;
+            }
+        }
         return;
     }
 
-    // Index-based Diffing
-    const maxLength = Math.max(targetChildren.length, vnodes.length);
-
-    for (let i = 0; i < maxLength; i++) {
-        const tChild = targetChildren[i];
+    // Index-based Diffing (Optimized)
+    let tChild = target.firstChild;
+    
+    for (let i = 0; i < vnodes.length; i++) {
         const vChild = vnodes[i];
-
+        
         if (!tChild) {
+            // Append new node
             if (vChild) {
                 const newNode = createNode(vChild, component, refs);
                 target.appendChild(newNode);
-                checkAnimations(newNode, component, ':enter');
+                if (component.constructor.animations && newNode.nodeType === Node.ELEMENT_NODE && newNode.hasAttribute('animate')) {
+                    checkAnimations(newNode, component, ':enter');
+                }
             }
-        } else if (!vChild) {
-            handleRemoval(target, tChild, component);
         } else {
-            const newNode = diffVNode(tChild, vChild, component, refs);
-            // If diffVNode returned a new node (replacement), it's already handled in diffVNode via handleReplacement
-            // But wait, diffVNode returns the node. If it replaced it, we need to know?
-            // My diffVNode implementation handles replacement internally if needed.
+            // Diff or Replace
+            const nextNode = tChild.nextSibling;
+            diffVNode(tChild, vChild, component, refs);
+            tChild = nextNode;
         }
+    }
+    
+    // Remove remaining nodes
+    while (tChild) {
+        const next = tChild.nextSibling;
+        handleRemoval(target, tChild, component);
+        tChild = next;
     }
 }
 
@@ -611,7 +660,7 @@ function processBindings(node, component, refs) {
 /**
  * Handles node removal with optional animation.
  */
-async function handleRemoval(parent, node, component) {
+function handleRemoval(parent, node, component) {
     // Cleanup directives
     if (node._directives) {
         Object.values(node._directives).forEach(directive => {
@@ -620,35 +669,47 @@ async function handleRemoval(parent, node, component) {
         node._directives = null;
     }
 
-    await checkAnimations(node, component, ':leave');
-    if (parent.contains(node)) {
-        parent.removeChild(node);
+    const result = checkAnimations(node, component, ':leave');
+
+    if (result && typeof result.then === 'function') {
+        result.then(() => {
+            if (parent.contains(node)) {
+                parent.removeChild(node);
+            }
+        });
+    } else {
+        if (parent.contains(node)) {
+            parent.removeChild(node);
+        }
     }
 }
 
 /**
  * Handles node replacement with optional animation.
  */
-async function handleReplacement(parent, oldNode, newNode, component, refs) {
-    // For replacement, we can animate out the old node then swap
-    // Or just swap immediately if no animation.
-    // Simpler approach: just swap for now, or animate leave then swap.
+function handleReplacement(parent, oldNode, newNode, component, refs) {
+    const result = checkAnimations(oldNode, component, ':leave');
     
-    // Check if oldNode has leave animation
-    const hasAnimation = await checkAnimations(oldNode, component, ':leave');
-    
-    if (parent.contains(oldNode)) {
-        parent.replaceChild(newNode, oldNode);
-        processBindings(newNode, component, refs);
-        checkAnimations(newNode, component, ':enter');
+    const replace = () => {
+        if (parent.contains(oldNode)) {
+            parent.replaceChild(newNode, oldNode);
+            processBindings(newNode, component, refs);
+            checkAnimations(newNode, component, ':enter');
+        }
+    };
+
+    if (result && typeof result.then === 'function') {
+        result.then(replace);
+    } else {
+        replace();
     }
 }
 
 /**
  * Checks and executes animations for a node.
- * @returns {Promise<boolean>} True if an animation was played
+ * @returns {Promise<boolean>|boolean} True if an animation was played
  */
-async function checkAnimations(node, component, state) {
+function checkAnimations(node, component, state) {
     if (node.nodeType !== Node.ELEMENT_NODE) return false;
     
     const animationsConfig = component.constructor.animations;
@@ -660,8 +721,7 @@ async function checkAnimations(node, component, state) {
     const triggerName = node.getAttribute('animate');
     
     if (triggerName) {
-        await AnimationManager.animate(node, triggerName, state, animationsConfig);
-        return true;
+        return AnimationManager.animate(node, triggerName, state, animationsConfig).then(() => true);
     }
     return false;
 }
