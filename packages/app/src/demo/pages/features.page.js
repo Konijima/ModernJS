@@ -1,7 +1,12 @@
-import { Component } from '@modernjs/core';
-import { TranslatePipe } from '@modernjs/core';
-import { Router } from '@modernjs/core';
-import { fadeAnimation } from '@modernjs/core';
+// ============================================================================
+// Framework Imports
+// ============================================================================
+import {
+    Component,
+    Router,
+    TranslatePipe,
+    fadeAnimation
+} from '@modernjs/core';
 
 export const FeaturesPage = Component.create({
     selector: 'features-page',

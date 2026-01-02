@@ -1,8 +1,21 @@
-import { Component } from '@modernjs/core';
+// ============================================================================
+// Framework Imports
+// ============================================================================
+import {
+    Component,
+    I18nService,
+    TranslatePipe,
+    fadeAnimation
+} from '@modernjs/core';
+
+// ============================================================================
+// Internal Dependencies
+// ============================================================================
 import { TodoService } from '../services/todo.service.js';
-import { I18nService } from '@modernjs/core';
-import { TranslatePipe } from '@modernjs/core';
-import { fadeAnimation } from '@modernjs/core';
+
+// ============================================================================
+// Application/Local Imports
+// ============================================================================
 import './todo-item.component.js';
 
 /**

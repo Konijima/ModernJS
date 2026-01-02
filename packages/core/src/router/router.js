@@ -1,5 +1,8 @@
-import { MetaService } from '../services/meta.service.js';
+// ============================================================================
+// Internal Dependencies
+// ============================================================================
 import { resolve } from '../di/di.js';
+import { MetaService } from '../services/meta.service.js';
 
 /**
  * Router Service

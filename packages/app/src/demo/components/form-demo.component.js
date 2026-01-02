@@ -1,12 +1,17 @@
-import { Component } from '@modernjs/core';
-import { FormGroup } from '@modernjs/core';
-import { FormControl } from '@modernjs/core';
-import { Validators } from '@modernjs/core';
-import { fadeAnimation } from '@modernjs/core';
-import { I18nService } from '@modernjs/core';
-import { ModalService } from '@modernjs/core';
-import { TranslatePipe } from '@modernjs/core';
-import { FormControlDirective } from '@modernjs/core';
+// ============================================================================
+// Framework Imports
+// ============================================================================
+import {
+    Component,
+    FormGroup,
+    FormControl,
+    Validators,
+    fadeAnimation,
+    I18nService,
+    ModalService,
+    TranslatePipe,
+    FormControlDirective
+} from '@modernjs/core';
 
 export const FormDemoComponent = Component.create({
     selector: 'form-demo',

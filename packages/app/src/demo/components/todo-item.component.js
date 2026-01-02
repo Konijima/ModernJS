@@ -1,6 +1,11 @@
-import { Component } from '@modernjs/core';
-import { I18nService } from '@modernjs/core';
-import { TranslatePipe } from '@modernjs/core';
+// ============================================================================
+// Framework Imports
+// ============================================================================
+import {
+    Component,
+    I18nService,
+    TranslatePipe
+} from '@modernjs/core';
 
 /**
  * Todo Item Component.

@@ -1,9 +1,14 @@
-import { Component } from '@modernjs/core';
-import { Router } from '@modernjs/core';
-import { UpperCasePipe } from '@modernjs/core';
-import { TranslatePipe } from '@modernjs/core';
-import { I18nService } from '@modernjs/core';
-import { fadeAnimation } from '@modernjs/core';
+// ============================================================================
+// Framework Imports
+// ============================================================================
+import {
+    Component,
+    Router,
+    UpperCasePipe,
+    TranslatePipe,
+    I18nService,
+    fadeAnimation
+} from '@modernjs/core';
 
 export const HomePage = Component.create({
     selector: 'home-page',

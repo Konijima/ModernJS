@@ -1,4 +1,11 @@
+// ============================================================================
+// Framework Imports
+// ============================================================================
 import { Component } from '@modernjs/core';
+
+// ============================================================================
+// Internal Dependencies
+// ============================================================================
 import { BenchmarkComponent } from '../components/benchmark.component.js';
 
 export const BenchmarkPage = Component.create({

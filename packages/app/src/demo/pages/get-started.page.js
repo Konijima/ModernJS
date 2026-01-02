@@ -1,8 +1,13 @@
-import { Component } from '@modernjs/core';
-import { Router } from '@modernjs/core';
-import { I18nService } from '@modernjs/core';
-import { TranslatePipe } from '@modernjs/core';
-import { fadeAnimation } from '@modernjs/core';
+// ============================================================================
+// Framework Imports
+// ============================================================================
+import {
+    Component,
+    Router,
+    I18nService,
+    TranslatePipe,
+    fadeAnimation
+} from '@modernjs/core';
 
 export const GetStartedPage = Component.create({
     selector: 'get-started-page',

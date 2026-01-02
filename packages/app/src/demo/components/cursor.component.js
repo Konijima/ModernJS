@@ -1,5 +1,10 @@
-import { Component } from '@modernjs/core';
-import { DeviceService } from '@modernjs/core';
+// ============================================================================
+// Framework Imports
+// ============================================================================
+import {
+    Component,
+    DeviceService
+} from '@modernjs/core';
 
 export const CursorComponent = Component.create({
     selector: 'cursor-overlay',

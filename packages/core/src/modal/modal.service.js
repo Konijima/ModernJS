@@ -1,3 +1,6 @@
+// ============================================================================
+// Internal Dependencies
+// ============================================================================
 import { Service } from '../services/service.js';
 
 export class ModalService extends Service {

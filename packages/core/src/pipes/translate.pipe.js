@@ -1,3 +1,6 @@
+// ============================================================================
+// Internal Dependencies
+// ============================================================================
 import { Pipe } from './pipe.js';
 import { resolve } from '../di/di.js';
 import { I18nService } from '../services/i18n.service.js';

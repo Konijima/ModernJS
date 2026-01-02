@@ -1,7 +1,18 @@
-import { AnimationManager } from '../animations/animation.js';
+// ============================================================================
+// Component System
+// ============================================================================
 import { VNodeFlags } from './vdom.js';
+
+// ============================================================================
+// Performance & Optimizations
+// ============================================================================
 import { registerDelegatedHandler, shouldDelegate } from './event-delegation.js';
 import { perfMonitor } from '../utils/performance.js';
+
+// ============================================================================
+// Features
+// ============================================================================
+import { AnimationManager } from '../animations/animation.js';
 
 /**
  * Robust DOM Diffing and Rendering Engine.

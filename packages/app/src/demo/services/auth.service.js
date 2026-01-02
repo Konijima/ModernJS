@@ -1,3 +1,6 @@
+// ============================================================================
+// Framework Imports
+// ============================================================================
 import { Service } from '@modernjs/core';
 
 export class AuthService extends Service {

@@ -1,14 +1,33 @@
-import { Component } from '@modernjs/core';
-import { Router } from '@modernjs/core';
-import { I18nService } from '@modernjs/core';
-import { TranslatePipe } from '@modernjs/core';
+// ============================================================================
+// Framework Imports
+// ============================================================================
+import {
+    Component,
+    Router,
+    HttpClient,
+    I18nService,
+    TranslatePipe
+} from '@modernjs/core';
+
+// ============================================================================
+// Application Configuration
+// ============================================================================
 import { routes } from './app.routes.js';
-import { HttpClient } from '@modernjs/core';
-import { AuthInterceptor } from './demo/interceptors/auth.interceptor.js';
 import { LANGUAGES, DEFAULT_LANGUAGE } from './i18n/config.js';
+
+// ============================================================================
+// Services & Interceptors
+// ============================================================================
+import { AuthInterceptor } from './demo/interceptors/auth.interceptor.js';
+
+// ============================================================================
+// Components (Side Effects)
+// ============================================================================
 import './demo/components/cursor.component.js';
 
-// Register Global Interceptors
+// ============================================================================
+// Global Registrations
+// ============================================================================
 HttpClient.provide(AuthInterceptor);
     
 /**

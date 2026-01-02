@@ -1,5 +1,8 @@
-import { Observable } from '../reactivity/observable.js';
+// ============================================================================
+// Internal Dependencies
+// ============================================================================
 import { resolve } from '../di/di.js';
+import { Observable } from '../reactivity/observable.js';
 
 export class HttpClient {
     static registry = [];

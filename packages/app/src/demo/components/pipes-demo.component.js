@@ -1,10 +1,22 @@
-import { Component } from '@modernjs/core';
-import { UpperCasePipe, LowerCasePipe, DatePipe, CurrencyPipe } from '@modernjs/core';
+// ============================================================================
+// Framework Imports
+// ============================================================================
+import {
+    Component,
+    UpperCasePipe,
+    LowerCasePipe,
+    DatePipe,
+    CurrencyPipe,
+    TranslatePipe,
+    ModalService,
+    I18nService,
+    fadeAnimation
+} from '@modernjs/core';
+
+// ============================================================================
+// Internal Dependencies
+// ============================================================================
 import { ReversePipe } from '../pipes/reverse.pipe.js';
-import { TranslatePipe } from '@modernjs/core';
-import { ModalService } from '@modernjs/core';
-import { I18nService } from '@modernjs/core';
-import { fadeAnimation } from '@modernjs/core';
 
 export const PipesDemoComponent = Component.create({
     selector: 'pipes-demo',

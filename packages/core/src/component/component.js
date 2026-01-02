@@ -1,9 +1,20 @@
+// ============================================================================
+// Internal Dependencies
+// ============================================================================
+import { FRAMEWORK_VERSION } from '../version.js';
 import { resolve } from '../di/di.js';
-import { render } from './renderer.js';
+
+// ============================================================================
+// Component System
+// ============================================================================
 import { compileTemplate } from './template.js';
 import { compileToVNode } from './compiler.js';
+import { render } from './renderer.js';
 import { h, createTextVNode, flatten } from './vdom.js';
-import { FRAMEWORK_VERSION } from '../version.js';
+
+// ============================================================================
+// Performance Optimizations
+// ============================================================================
 import { setupEventDelegation, teardownEventDelegation } from './event-delegation.js';
 import { analyzePatch, applyIncrementalUpdates, clearBindings, PatchMode } from './incremental-dom.js';
 

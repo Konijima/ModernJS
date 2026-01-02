@@ -1,3 +1,6 @@
+// ============================================================================
+// Internal Dependencies
+// ============================================================================
 import { Service } from './service.js';
 
 export class I18nService extends Service {

@@ -1,8 +1,13 @@
-import { Component } from '@modernjs/core';
-import { HttpClient } from '@modernjs/core';
-import { TranslatePipe } from '@modernjs/core';
-import { I18nService } from '@modernjs/core';
-import { fadeAnimation } from '@modernjs/core';
+// ============================================================================
+// Framework Imports
+// ============================================================================
+import {
+    Component,
+    HttpClient,
+    TranslatePipe,
+    I18nService,
+    fadeAnimation
+} from '@modernjs/core';
 
 export const HttpDemoComponent = Component.create({
     selector: 'http-demo',

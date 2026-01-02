@@ -1,7 +1,16 @@
-import { Component } from '@modernjs/core';
+// ============================================================================
+// Framework Imports
+// ============================================================================
+import {
+    Component,
+    Router,
+    fadeAnimation
+} from '@modernjs/core';
+
+// ============================================================================
+// Internal Dependencies
+// ============================================================================
 import { AuthService } from '../services/auth.service.js';
-import { Router } from '@modernjs/core';
-import { fadeAnimation } from '@modernjs/core';
 
 export const DashboardPage = Component.create({
     selector: 'dashboard-page',

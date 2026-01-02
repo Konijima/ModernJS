@@ -1,12 +1,21 @@
-import { Component } from '@modernjs/core';
+// ============================================================================
+// Framework Imports
+// ============================================================================
+import {
+    Component,
+    Router,
+    FormControlDirective,
+    FormGroup,
+    FormControl,
+    Validators,
+    TranslatePipe,
+    fadeAnimation
+} from '@modernjs/core';
+
+// ============================================================================
+// Internal Dependencies
+// ============================================================================
 import { AuthService } from '../services/auth.service.js';
-import { Router } from '@modernjs/core';
-import { FormControlDirective } from '@modernjs/core';
-import { FormGroup } from '@modernjs/core';
-import { FormControl } from '@modernjs/core';
-import { Validators } from '@modernjs/core';
-import { TranslatePipe } from '@modernjs/core';
-import { fadeAnimation } from '@modernjs/core';
 
 export const LoginPage = Component.create({
     selector: 'login-page',
