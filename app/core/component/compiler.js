@@ -213,11 +213,23 @@ function generateProps(props) {
         }
         // Check for interpolation in value
         else if (value.includes('{{')) {
-            // "class {{active}}" -> `class ${active}`
-            const expr = value.replace(/{{(.*?)}}/g, (m, p1) => `\${${parsePipes(p1)}}`);
+            // Split by {{...}} to handle text and expressions separately
+            const parts = value.split(/({{.*?}})/g);
+            const expr = parts.map(part => {
+                if (part.startsWith('{{') && part.endsWith('}}')) {
+                    // It's an expression
+                    const content = part.slice(2, -2);
+                    return `\${${parsePipes(content)}}`;
+                } else {
+                    // It's text, escape backticks
+                    return part.replace(/`/g, '\\`');
+                }
+            }).join('');
+            
             code += `'${key}': \`${expr}\`,`;
         } else {
-            code += `'${key}': '${value}',`;
+            // Static value: escape single quotes
+            code += `'${key}': '${value.replace(/'/g, "\\'")}',`;
         }
     }
     code += '}';
