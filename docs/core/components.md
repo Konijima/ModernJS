@@ -185,3 +185,25 @@ class StyledComponent extends Component {
     `;
 }
 ```
+
+## Performance Optimizations
+
+ModernJS includes several built-in performance optimizations that work automatically:
+
+### Event Delegation
+All components use event delegation to reduce the number of event listeners. Events are handled at the shadow root level and delegated to child elements.
+
+### Smart List Operations
+The framework automatically detects and optimizes common list operations:
+- **Append**: Adding items to the end of a list
+- **Prepend**: Adding items to the beginning
+- **Swap**: Swapping two elements
+- **Clear**: Removing all items
+
+### Incremental DOM Updates
+Simple property changes bypass the full VDOM diff and update the DOM directly when possible.
+
+### Props Caching
+Component props are cached and compared using shallow equality to avoid unnecessary updates.
+
+For detailed performance information and benchmarks, see the [Performance Documentation](../PERFORMANCE.md).
