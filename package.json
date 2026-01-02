@@ -7,7 +7,10 @@
   "scripts": {
     "dev": "npm run dev --workspace=@modernjs/demo-app",
     "build": "npm run build --workspace=@modernjs/demo-app",
-    "test": "npm run test --workspaces"
+    "clean": "rm -rf packages/*/dist",
+    "test": "npm run test --workspaces -- run",
+    "docker:up": "docker compose -f docker/docker-compose.yml up -d",
+    "docker:down": "docker compose -f docker/docker-compose.yml down"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^4.0.16",
