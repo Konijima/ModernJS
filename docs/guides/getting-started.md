@@ -2,15 +2,28 @@
 
 ## Installation
 
+The easiest way to get started is using the ModernJS CLI.
+
 ```bash
-# Clone the repository
+# Install the CLI globally
+npm install -g @modernjs/cli
+
+# Create a new project
+modernjs create my-app
+
+# Navigate to the project directory
+cd my-app
+
+# Start the development server
+npm run dev
+```
+
+If you prefer manual setup, you can clone the repository:
+
+```bash
 git clone https://github.com/Konijima/ModernJS.git
 cd ModernJS
-
-# Install dependencies
 npm install
-
-# Start development server
 npm run dev
 ```
 

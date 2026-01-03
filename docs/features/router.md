@@ -179,3 +179,28 @@ You can attach arbitrary data to a route using the `data` property. The router a
 ## Wildcard Routes
 
 Use `path: '**'` to define a catch-all route. This is commonly used for 404 "Not Found" pages. This route should be defined last if you implement more complex matching logic in the future, though currently, the router looks for exact matches first.
+
+## RouterLink Directive
+
+The `router-link` directive provides a declarative way to navigate between routes. It automatically handles click events, prevents full page reloads, and manages active classes.
+
+### Usage
+
+```html
+<!-- Basic navigation -->
+<a router-link="/dashboard">Dashboard</a>
+
+<!-- Active link styling -->
+<!-- The directive adds 'router-link-active' when the route is active -->
+<!-- and 'router-link-exact-active' when it matches exactly -->
+<nav>
+    <a router-link="/" class="nav-item">Home</a>
+    <a router-link="/about" class="nav-item">About</a>
+</nav>
+```
+
+### Active Classes
+
+- `router-link-active`: Added when the current URL starts with the link's path (e.g., link `/users` is active for URL `/users/123`).
+- `router-link-exact-active`: Added only when the current URL matches the link's path exactly.
+

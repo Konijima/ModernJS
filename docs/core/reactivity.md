@@ -69,3 +69,43 @@ export const MyComponent = Component.create({
     `
 });
 ```
+
+## Operators
+
+ModernJS provides pipeable operators to transform data streams.
+
+### map
+
+Transforms each value emitted by the source Observable.
+
+```javascript
+import { Observable, map } from '@modernjs/core';
+
+const source$ = new Observable(observer => {
+    observer.next(1);
+    observer.next(2);
+});
+
+source$.pipe(
+    map(x => x * 10)
+).subscribe(val => console.log(val)); // 10, 20
+```
+
+### filter
+
+Filters items emitted by the source Observable.
+
+```javascript
+import { Observable, filter } from '@modernjs/core';
+
+const source$ = new Observable(observer => {
+    observer.next(1);
+    observer.next(2);
+    observer.next(3);
+});
+
+source$.pipe(
+    filter(x => x > 1)
+).subscribe(val => console.log(val)); // 2, 3
+```
+

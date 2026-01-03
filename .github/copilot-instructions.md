@@ -26,6 +26,11 @@ The project is a **Monorepo** (NPM Workspaces) divided into two main packages:
     -   Built using the framework's components, services, and routing.
     -   Depends on `@modernjs/core`.
 
+3.  **CLI (`packages/cli/`)**: The command-line interface tool.
+    -   **Commands**: `create`, `add`, `serve`.
+    -   **Templates**: Project scaffolding templates.
+    -   **Generators**: Component and file generators.
+
 ## Coding Standards & Conventions
 
 ### Components
@@ -42,6 +47,7 @@ The project is a **Monorepo** (NPM Workspaces) divided into two main packages:
 -   **Reactivity**:
     -   Use `this.state` for local state.
     -   Use `this.connect(service, mapper)` to subscribe to service state changes.
+    -   **Services**: Use `BehaviorSubject` for state and `Observable` for streams.
 
 **Example:**
 ```javascript
@@ -108,8 +114,9 @@ package.json  # Root workspace config
 
 ## Agent Workflow
 
-1.  **Analyze**: Determine if the task involves Core framework logic or Application logic.
-2.  **Context**:
+1.  **Analyze**: Determine if the task involves Core framework logic, Application logic, or CLI tooling.
+2.  **CLI Awareness**: Be aware that the project has a CLI. When creating new components or services manually, ensure they follow the structure that `modernjs add` would generate.
+3.  **Context**:
     -   Read relevant files in `packages/core` for framework changes or `packages/app` for features.
     -   **Consult Documentation**: Read files in `docs/` for in-depth explanations of framework features (e.g., `docs/router.md`, `docs/dependency-injection.md`) if you need to understand how a specific system works.
 3.  **Implementation**:

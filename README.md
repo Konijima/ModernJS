@@ -45,15 +45,34 @@
 - **Template Engine**: Custom syntax supporting `@if`, `@for`, and `{{ interpolation }}`.
 - **Performance Optimized**: **NEW** Competitive with Angular - 25% faster at clear operations, 24% faster at large datasets (10k), see [Performance](PERFORMANCE.md).
 - **Comprehensive Testing**: Fully tested core modules using Vitest and JSDOM.
+- **CLI Tooling**: **NEW** Powerful CLI for project generation, scaffolding, and management.
 
 ## 🛠️ Installation
 
-Clone the repository and install dependencies:
+### Using the CLI (Recommended)
 
 ```bash
+# Install the CLI globally
+npm install -g @modernjs/cli
+
+# Create a new project
+modernjs create my-app
+cd my-app
+npm run dev
+```
+
+### Manual Installation
+
+```bash
+# Clone the repository
 git clone https://github.com/Konijima/ModernJS.git
 cd ModernJS
+
+# Install dependencies
 npm install
+
+# Start development server
+npm run dev
 ```
 
 ## 🚦 Development
