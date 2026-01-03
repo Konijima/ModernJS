@@ -57,6 +57,7 @@ Services can also depend on other services. Use the static `inject` array to def
 ```javascript
 import { HttpClient } from './http.client.js';
 
+// Plain service class (no state management needed)
 export class UserService {
     static inject = [HttpClient];
 
@@ -72,7 +73,7 @@ export class UserService {
 
 ## State Management
 
-Services in ModernJS extend `BehaviorSubject`, making them reactive by default.
+While services can be plain classes (as shown above), extending the `Service` class makes them reactive by default, as it extends `BehaviorSubject`.
 
 ```javascript
 import { Service } from '@modernjs/core';

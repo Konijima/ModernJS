@@ -302,4 +302,4 @@ Simple property changes bypass the full VDOM diff and update the DOM directly wh
 ### Props Caching
 Component props are cached and compared using shallow equality to avoid unnecessary updates.
 
-For detailed performance information and benchmarks, see the [Performance Documentation](../PERFORMANCE.md).
+For detailed performance information and benchmarks, see the [Performance Documentation](../../PERFORMANCE.md).
