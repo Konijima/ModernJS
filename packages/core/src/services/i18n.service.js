@@ -40,6 +40,10 @@ export class I18nService extends Service {
         return Object.values(this.languages).map(l => ({ code: l.code, label: l.label }));
     }
 
+    get locale() {
+        return this.state.locale;
+    }
+
     /**
      * Listen specifically for language changes.
      * @param {Function} callback - Called with the new locale string

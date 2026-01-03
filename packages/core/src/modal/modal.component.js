@@ -54,25 +54,25 @@ export const ModalComponent = Component.create({
     },
 
     template: `
-        @if (!state.isOpen) {
+        @if (!isOpen) {
             
         } @else {
             <div class="modal-backdrop open" (click)="handleBackdropClick">
-                <div class="modal-container {{ state.options && state.options.size ? 'modal-' + state.options.size : '' }} {{ state.options && state.options.customClass ? state.options.customClass : '' }}" (click)="handleContainerClick">
+                <div class="modal-container {{ options && options.size ? 'modal-' + options.size : '' }} {{ options && options.customClass ? options.customClass : '' }}" (click)="handleContainerClick">
                     <header class="modal-header">
-                        <h3 class="modal-title">{{ state.title }}</h3>
+                        <h3 class="modal-title">{{ title }}</h3>
                         <button class="btn-close" (click)="handleCloseClick">×</button>
                     </header>
                     
                     <div class="modal-body">
-                        <p>{{ state.content }}</p>
+                        <p>{{ content }}</p>
                         
-                        @if (state.type === 'prompt') {
+                        @if (type === 'prompt') {
                             <input 
                                 type="text" 
                                 class="form-control" 
-                                [value]="state.inputValue"
-                                placeholder="{{ state.placeholder }}"
+                                [value]="inputValue"
+                                placeholder="{{ placeholder }}"
                                 (input)="handleInput"
                                 (keydown)="handleKeydown"
                             />
@@ -80,7 +80,7 @@ export const ModalComponent = Component.create({
                     </div>
 
                     <footer class="modal-footer">
-                        @for (let action of state.actions) {
+                        @for (let action of actions) {
                             <button 
                                 class="btn btn-{{ action.type || 'secondary' }}"
                                 (click)="action.onClick()">

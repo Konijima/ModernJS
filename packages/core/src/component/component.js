@@ -393,10 +393,13 @@ export class Component extends HTMLElement {
         this._updatePending = true;
 
         this._rafId = requestAnimationFrame(() => {
-            this._performUpdate();
-            this._updatePending = false;
-            this._rafId = null;
-            this._pendingChanges = null;
+            try {
+                this._performUpdate();
+            } finally {
+                this._updatePending = false;
+                this._rafId = null;
+                this._pendingChanges = null;
+            }
         });
     }
 
@@ -417,6 +420,54 @@ export class Component extends HTMLElement {
     }
 
     /**
+     * Create a proxy for the render context.
+     * This allows {{ variable }} to resolve to state.variable automatically,
+     * while keeping methods accessible and blocking other component properties.
+     * @private
+     */
+    _getRenderContext() {
+        if (this._renderContext) return this._renderContext;
+
+        this._renderContext = new Proxy(this, {
+            has: (target, prop) => {
+                // 0. Block explicit state access
+                if (prop === 'state') return false;
+
+                // 1. Allow access to state properties
+                if (target.state && prop in target.state) return true;
+                
+                // 2. Allow access to instance properties (methods, injected services, internal props)
+                if (prop in target) return true;
+
+                // 3. Fallback to global scope (e.g. Math, console)
+                return false;
+            },
+            get: (target, prop) => {
+                // 0. Block explicit state access
+                if (prop === 'state') return undefined;
+
+                // 1. State properties
+                if (target.state && prop in target.state) {
+                    return target.state[prop];
+                }
+                
+                // 2. Instance properties
+                if (prop in target) {
+                    const value = target[prop];
+                    if (typeof value === 'function') {
+                        return value.bind(target);
+                    }
+                    return value;
+                }
+                
+                return undefined;
+            }
+        });
+
+        return this._renderContext;
+    }
+
+    /**
      * Internal method to perform the actual rendering.
      * Uses DOM diffing to update the Shadow DOM efficiently.
      * @private
@@ -424,90 +475,119 @@ export class Component extends HTMLElement {
     _performUpdate() {
         if (!this.isConnected) return;
 
-        if (!this.render) {
-            if (!this.constructor.noTemplate && import.meta.env.DEV && import.meta.env.VITE_DEBUG) {
-                console.warn(`[Framework] ⚠️ No render method found for ${this.tagName}`);
+        try {
+            if (!this.render) {
+                if (!this.constructor.noTemplate && import.meta.env.DEV && import.meta.env.VITE_DEBUG) {
+                    console.warn(`[Framework] ⚠️ No render method found for ${this.tagName}`);
+                }
+                return;
             }
-            return;
-        }
 
-        // Try incremental update if we have tracked changes
-        if (this._pendingChanges && this._previousState) {
-            const patchAnalysis = analyzePatch(this._previousState, this.state, this);
+            // Try incremental update if we have tracked changes
+            if (this._pendingChanges && this._previousState) {
+                const patchAnalysis = analyzePatch(this._previousState, this.state, this);
 
-            if (patchAnalysis.mode === PatchMode.INCREMENTAL) {
-                // Apply incremental updates directly to DOM
-                const updatedCount = applyIncrementalUpdates(this, patchAnalysis.changes);
+                if (patchAnalysis.mode === PatchMode.INCREMENTAL) {
+                    // Apply incremental updates directly to DOM
+                    const updatedCount = applyIncrementalUpdates(this, patchAnalysis.changes);
 
-                if (updatedCount > 0) {
-                    log('Render', `Incremental update ${this.tagName} (${updatedCount} nodes)`);
-                    this._previousState = JSON.parse(JSON.stringify(this.state));
+                    if (updatedCount > 0) {
+                        log('Render', `Incremental update ${this.tagName} (${updatedCount} nodes)`);
+                        this._previousState = JSON.parse(JSON.stringify(this.state));
 
-                    // Call onUpdate hook
-                    if (this.onUpdate) {
-                        this.onUpdate();
+                        // Call onUpdate hook
+                        if (this.onUpdate) {
+                            this.onUpdate();
+                        }
+                        return;
                     }
-                    return;
                 }
             }
-        }
 
-        log('Render', `Full update ${this.tagName}`);
-        
-        // Clear references from previous render to avoid memory leaks
-        this._refs = {};
-        
-        const templateResult = this.render();
-        let newDom;
+            log('Render', `Full update ${this.tagName}`);
+            
+            // Clear references from previous render to avoid memory leaks
+            this._refs = {};
+            
+            const templateResult = this.render();
+            let newDom;
 
-        if (typeof templateResult === 'string') {
-            // Handle string template with directives
-            if (!this._renderFn) {
-                this._renderFn = compileToVNode(templateResult);
+            if (typeof templateResult === 'string') {
+                // Handle string template with directives
+                if (!this._renderFn) {
+                    this._renderFn = compileToVNode(templateResult);
+                }
+                // Returns array of VNodes
+                newDom = this._renderFn.call(this, h, createTextVNode, this._getRenderContext());
+            } else {
+                // Handle direct DOM nodes (legacy or manual)
+                newDom = templateResult;
             }
-            // Returns array of VNodes
-            newDom = this._renderFn.call(this, h, createTextVNode, this);
-        } else {
-            // Handle direct DOM nodes (legacy or manual)
-            newDom = templateResult;
-        }
-        
-        // Ensure newDom is an array for consistent handling
-        if (!Array.isArray(newDom)) {
-            newDom = [newDom];
-        } else {
-            // Flatten the array to handle nested arrays from control flow (e.g. @if, @for)
-            // The compiler might return [ [VNode] ] for @if blocks
-            // Use custom flatten for performance and deep nesting support
-            const flattened = [];
-            flatten(newDom, flattened);
-            newDom = flattened;
-        }
+            
+            // Ensure newDom is an array for consistent handling
+            if (!Array.isArray(newDom)) {
+                newDom = [newDom];
+            } else {
+                // Flatten the array to handle nested arrays from control flow (e.g. @if, @for)
+                // The compiler might return [ [VNode] ] for @if blocks
+                // Use custom flatten for performance and deep nesting support
+                const flattened = [];
+                flatten(newDom, flattened);
+                newDom = flattened;
+            }
 
-        // Inject styles into VNode tree
-        if (this.constructor.styles) {
-            const styleVNode = h('style', {}, [createTextVNode(this.constructor.styles)]);
-            newDom.unshift(styleVNode);
-        }
+            // Inject styles into VNode tree
+            if (this.constructor.styles) {
+                const styleVNode = h('style', {}, [createTextVNode(this.constructor.styles)]);
+                newDom.unshift(styleVNode);
+            }
 
-        // Inject global styles
-        const globalNodes = getGlobalStylesVNodes();
-        if (globalNodes.length > 0) {
-            // We must clone the array to avoid modifying the cached one if we were to push to it
-            // But here we are unshifting into newDom, so it's fine.
-            // However, we need to be careful not to mutate the VNodes themselves in the renderer.
-            newDom.unshift(...globalNodes);
-        }
+            // Inject global styles
+            const globalNodes = getGlobalStylesVNodes();
+            if (globalNodes.length > 0) {
+                // We must clone the array to avoid modifying the cached one if we were to push to it
+                // But here we are unshifting into newDom, so it's fine.
+                // However, we need to be careful not to mutate the VNodes themselves in the renderer.
+                newDom.unshift(...globalNodes);
+            }
 
-        // Capture current refs for this render cycle
-        const currentRefs = { ...this._refs };
-        render(this.shadowRoot, newDom, this, currentRefs);
+            // Capture current refs for this render cycle
+            const currentRefs = { ...this._refs };
+            render(this.shadowRoot, newDom, this, currentRefs);
 
-        // Store current state for next incremental update
-        this._previousState = JSON.parse(JSON.stringify(this.state));
+            // Store current state for next incremental update
+            this._previousState = JSON.parse(JSON.stringify(this.state));
 
-        if (this.onUpdate) {
-            this.onUpdate();
+            if (this.onUpdate) {
+                this.onUpdate();
+            }
+        } catch (e) {
+            console.error(`[Framework] Error updating ${this.tagName}:`, e);
+            
+            // In development, try to show the Vite Error Overlay
+            if (import.meta.env.DEV) {
+                const overlayId = 'vite-error-overlay';
+                if (customElements.get(overlayId)) {
+                    document.querySelectorAll(overlayId).forEach(n => n.close());
+                    const overlay = new (customElements.get(overlayId))(e);
+                    document.body.appendChild(overlay);
+                }
+            }
+
+            // Dispatch an error event to try to trigger handlers immediately
+            // This helps tools like Vite catch the error even inside rAF/Promises
+            window.dispatchEvent(new ErrorEvent('error', {
+                error: e,
+                message: e.message,
+                bubbles: true,
+                cancelable: true,
+                composed: true
+            }));
+
+            // Also throw asynchronously to ensure it hits window.onerror if the event didn't work
+            setTimeout(() => {
+                throw e;
+            }, 0);
         }
     }
 }

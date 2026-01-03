@@ -16,6 +16,7 @@ export { inject } from './src/di/di.js';
 // ============================================================================
 export { Router } from './src/router/router.js';
 export { RouterOutlet } from './src/router/router-outlet.component.js';
+export { RouterLinkDirective } from './src/router/router-link.directive.js';
 
 // ============================================================================
 // Reactive Programming

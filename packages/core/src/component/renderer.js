@@ -255,6 +255,11 @@ function updateAttributesVNode(target, props, component, refs, isNew = false) {
         }
 
         // Standard Attribute
+        if (component.getDirective && component.getDirective(name)) {
+            applyDirective(target, name, value, component);
+            // Continue to set the attribute as well
+        }
+
         if (name.startsWith('@')) {
             // Skip framework specific attributes that leaked through
             return;
@@ -807,6 +812,11 @@ function updateAttributes(target, source, component, refs) {
         }
 
         // Standard Attribute
+        if (component.getDirective && component.getDirective(name)) {
+            applyDirective(target, name, value, component);
+            // Continue to set the attribute as well
+        }
+
         if (target.getAttribute(name) !== value) {
             target.setAttribute(name, value);
             // Sync checked property for inputs

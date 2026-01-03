@@ -1,12 +1,52 @@
 {
   "name": "@modernjs/core",
   "version": "1.0.0",
+  "description": "Pure JavaScript modern web framework with reactive components and state management",
   "type": "module",
   "main": "./index.js",
-  "exports": {
-    ".": "./index.js"
-  },
+  "exports": "./index.js",
+  "files": [
+    "src",
+    "index.js",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
-    "test": "vitest"
+    "test": "vitest",
+    "test:coverage": "vitest --coverage"
+  },
+  "keywords": [
+    "modernjs",
+    "javascript",
+    "framework",
+    "web",
+    "spa",
+    "reactive",
+    "components",
+    "state-management",
+    "router",
+    "vite"
+  ],
+  "author": "Konijima",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Konijima/ModernJS.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/Konijima/ModernJS#readme",
+  "bugs": {
+    "url": "https://github.com/Konijima/ModernJS/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "peerDependencies": {
+    "vite": ">=5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "vite": {
+      "optional": true
+    }
   }
 }
