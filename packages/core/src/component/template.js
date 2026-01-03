@@ -56,7 +56,8 @@ export function compileTemplate(template, context) {
     
     try {
         // Create function with context bound to 'this'
-        return new Function(code).call(context);
+        // Use 'with(this)' to allow implicit property access (e.g. {{ name }} instead of {{ this.name }})
+        return new Function(`with(this) { ${code} }`).call(context);
     } catch (e) {
         console.error("Template Error:", e);
         console.debug("Generated Code:", code);

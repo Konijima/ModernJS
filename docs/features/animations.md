@@ -38,9 +38,9 @@ export class NotificationComponent extends Component {
 Apply the animation to an element in your template using the `animate` attribute. The value should match the key defined in your `animations` object.
 
 ```html
-@if (this.isVisible) {
+@if (isVisible) {
     <div class="notification" animate="fade">
-        {{ this.message }}
+        {{ message }}
     </div>
 }
 ```

@@ -52,7 +52,7 @@ The `FormControlDirective` simplifies binding `FormControl` instances to input e
 **Usage:**
 
 ```html
-<input type="text" [formControl]="{{ this.bind(this.form.get('username')) }}">
+<input type="text" [formControl]="{{ bind(form.get('username')) }}">
 ```
 
 This directive handles:

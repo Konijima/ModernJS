@@ -7,7 +7,7 @@ ModernJS uses a string-based template system with a syntax similar to modern Jav
 Use double curly braces `{{ }}` to embed expressions in your template. The expression is evaluated in the context of your component instance.
 
 ```html
-<h1>Hello, {{ this.name }}!</h1>
+<h1>Hello, {{ name }}!</h1>
 <p>The sum is {{ 1 + 2 }}</p>
 ```
 
@@ -18,7 +18,7 @@ The template engine supports control flow blocks prefixed with `@`.
 ### Conditional Rendering (@if)
 
 ```html
-@if (this.isLoggedIn) {
+@if (isLoggedIn) {
     <button (click)="logout()">Logout</button>
 } @else {
     <button (click)="login()">Login</button>
@@ -28,9 +28,9 @@ The template engine supports control flow blocks prefixed with `@`.
 You can also use `@else if`:
 
 ```html
-@if (this.status === 'loading') {
+@if (status === 'loading') {
     <p>Loading...</p>
-} @else if (this.status === 'error') {
+} @else if (status === 'error') {
     <p>Error occurred.</p>
 } @else {
     <p>Data loaded.</p>
@@ -43,7 +43,7 @@ Use standard JavaScript `for...of` syntax to iterate over arrays.
 
 ```html
 <ul>
-    @for (const item of this.items) {
+    @for (const item of items) {
         <li>{{ item.name }} - ${{ item.price }}</li>
     }
 </ul>
@@ -54,8 +54,8 @@ Use standard JavaScript `for...of` syntax to iterate over arrays.
 Pipes allow you to transform data directly in your templates. They are applied using the `|` character.
 
 ```html
-<p>Birthday: {{ this.birthday | date }}</p>
-<p>Total: {{ this.amount | currency : 'EUR' }}</p>
+<p>Birthday: {{ birthday | date }}</p>
+<p>Total: {{ amount | currency : 'EUR' }}</p>
 ```
 
 ### Built-in Pipes

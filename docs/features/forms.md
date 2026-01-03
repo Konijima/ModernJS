@@ -43,7 +43,7 @@ export const LoginParams = Component.create({
                 <label>Username</label>
                 <input 
                     type="text"
-                    [formControl]="{{ this.bind(this.form.get('username')) }}"
+                    [formControl]="{{ bind(form.get('username')) }}"
                 >
                 @if(form.get('username').invalid && form.get('username').touched) {
                     <div class="error">Username is required</div>

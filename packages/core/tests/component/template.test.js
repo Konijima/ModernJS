@@ -9,7 +9,7 @@ describe('Template Engine', () => {
     });
 
     it('should handle interpolation', () => {
-        const template = 'Hello {{ this.name }}';
+        const template = 'Hello {{ name }}';
         const context = { name: 'ModernJS' };
         const result = compileTemplate(template, context);
         expect(result).toBe('Hello ModernJS');
@@ -17,7 +17,7 @@ describe('Template Engine', () => {
 
     it('should handle @if blocks', () => {
         const template = `
-            @if(this.show) {
+            @if(show) {
                 Visible
             } @else {
                 Hidden
@@ -30,7 +30,7 @@ describe('Template Engine', () => {
 
     it('should handle @for loops', () => {
         const template = `
-            @for(let item of this.items) {
+            @for(let item of items) {
                 <span>{{ item }}</span>
             }
         `;
@@ -42,7 +42,7 @@ describe('Template Engine', () => {
     });
 
     it('should handle pipes', () => {
-        const template = '{{ this.value | uppercase }}';
+        const template = '{{ value | uppercase }}';
         const context = {
             value: 'hello',
             _pipes: {
@@ -56,7 +56,7 @@ describe('Template Engine', () => {
     });
 
     it('should handle pipes with arguments', () => {
-        const template = '{{ this.value | slice:0:2 }}';
+        const template = '{{ value | slice:0:2 }}';
         const context = {
             value: 'hello',
             _pipes: {
