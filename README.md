@@ -121,20 +121,20 @@ npm test -- --coverage
 
 Detailed documentation for the framework core is available in the `docs/` directory:
 
-- [**Components**](docs/components.md): Lifecycle, templates, and styling.
-- [**Templates**](docs/templates.md): Syntax, control flow (`@if`, `@for`), and pipes.
-- [**Reactivity**](docs/reactivity.md): Observables, Subjects, and AsyncPipe.
-- [**Forms**](docs/forms.md): Reactive forms, validation, and controls.
-- [**HTTP Client**](docs/http.md): HTTP requests and interceptors.
-- [**Dependency Injection**](docs/dependency-injection.md): Services and injection.
-- [**Core Services**](docs/services.md): Built-in services (Storage, Device, Meta).
-- [**Pipes**](docs/pipes.md): Data transformation pipes.
-- [**Directives**](docs/directives.md): Custom directives.
-- [**Router**](docs/router.md): Navigation and route configuration.
-- [**Animations**](docs/animations.md): Enter/leave animations.
-- [**Modal**](docs/modal.md): Dialogs, alerts, confirms, and prompts.
-- [**Internationalization**](docs/i18n.md): Multi-language support.
-- [**Docker**](docs/docker.md): Deployment with Docker and Nginx.
+- [**Components**](docs/core/components.md): Lifecycle, templates, and styling.
+- [**Templates**](docs/core/templates.md): Syntax, control flow (`@if`, `@for`), and pipes.
+- [**Reactivity**](docs/core/reactivity.md): Observables, Subjects, and AsyncPipe.
+- [**Forms**](docs/features/forms.md): Reactive forms, validation, and controls.
+- [**HTTP Client**](docs/features/http.md): HTTP requests and interceptors.
+- [**Dependency Injection**](docs/core/dependency-injection.md): Services and injection.
+- [**Core Services**](docs/api/services.md): Built-in services (Storage, Device, Meta).
+- [**Pipes**](docs/api/pipes.md): Data transformation pipes.
+- [**Directives**](docs/api/directives.md): Custom directives.
+- [**Router**](docs/features/router.md): Navigation and route configuration.
+- [**Animations**](docs/features/animations.md): Enter/leave animations.
+- [**Modal**](docs/features/modal.md): Dialogs, alerts, confirms, and prompts.
+- [**Internationalization**](docs/features/i18n.md): Multi-language support.
+- [**Docker**](docs/guides/docker.md): Deployment with Docker and Nginx.
 
 ## 📂 Project Structure
 
