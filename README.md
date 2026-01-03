@@ -30,22 +30,27 @@
 
 ## 🚀 Features
 
-- **Monorepo Architecture**: **NEW** Strict separation between Framework (`@modernjs/core`) and Application (`@modernjs/demo-app`).
-- **Native Web Components**: Built on top of `HTMLElement` and Custom Elements v1.
-- **Reactive State**: Uses `Proxy` for transparent state management and DOM updates.
-- **Reactivity System**: **NEW** RxJS-like Observables, Subjects, and AsyncPipe.
-- **Dependency Injection**: Built-in DI container for managing services and singletons.
-- **Client-Side Routing**: Angular-inspired routing with Guards (`canActivate`), `RouterOutlet`, and lazy loading support.
-- **Reactive Forms**: **NEW** Model-driven forms with `FormGroup`, `FormControl`, and Validators.
-- **Directives**: **NEW** Angular-style directives for extending DOM behavior (e.g., `[formControl]`).
-- **HTTP Client**: **NEW** Reactive HTTP client with Interceptor support.
-- **Internationalization (i18n)**: Built-in support for multi-language applications.
-- **Animations**: Native Web Animations API integration with `:enter` and `:leave` triggers.
-- **Virtual DOM & Diffing**: Efficient DOM updates with a custom rendering engine.
-- **Template Engine**: Custom syntax supporting `@if`, `@for`, and `{{ interpolation }}`.
-- **Performance Optimized**: **NEW** Competitive with Angular - 25% faster at clear operations, 24% faster at large datasets (10k), see [Performance](PERFORMANCE.md).
-- **Comprehensive Testing**: Fully tested core modules using Vitest and JSDOM.
-- **CLI Tooling**: **NEW** Powerful CLI for project generation, scaffolding, and management.
+### 🏗️ Core Architecture
+- **Native Web Components**: Built on standard `HTMLElement` and Custom Elements v1 for maximum compatibility and performance.
+- **Monorepo Structure**: Designed for scale with strict separation between framework core and application logic.
+- **Dependency Injection**: Robust built-in DI container for managing services, singletons, and modular architecture.
+
+### ⚡ Reactivity & State
+- **Transparent Reactivity**: Uses `Proxy` for seamless state management and automatic DOM updates without boilerplate.
+- **Advanced Streams**: RxJS-inspired Observables and Subjects for handling asynchronous data flows and event handling.
+- **Efficient Rendering**: Custom Virtual DOM with smart diffing and a powerful template engine supporting `@if`, `@for`, and interpolation.
+
+### 🛠️ Developer Experience
+- **Powerful CLI**: Complete toolchain for project generation, scaffolding components, and development server management.
+- **Client-Side Routing**: Full-featured router with lazy loading, guards (`canActivate`), and nested routes.
+- **Reactive Forms**: Model-driven form handling with `FormGroup`, `FormControl`, and built-in validation.
+- **HTTP Client**: Reactive HTTP client with interceptors for handling API requests and responses.
+
+### 🎨 UI & Performance
+- **Directives System**: Extend DOM capabilities with Angular-style directives for custom behaviors.
+- **Animations**: Integrated support for the Web Animations API, including complex enter/leave transitions.
+- **Internationalization**: Built-in i18n support for creating multi-language global applications.
+- **High Performance**: Optimized rendering engine, outperforming traditional frameworks in large dataset operations (see [Performance](PERFORMANCE.md)).
 
 ## 🛠️ Installation
 
