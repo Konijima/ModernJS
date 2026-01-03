@@ -24,7 +24,8 @@ export class CounterComponent extends Component {
     // Template
     render() {
         return `
-            <h2>Count: {{ count }}</h2>
+            <div class="counter">
+                <h2>Count: {{ count }}</h2>
                 <button (click)="increment">+</button>
                 <button (click)="decrement">-</button>
             </div>
@@ -39,6 +40,24 @@ export class CounterComponent extends Component {
         this.state.count--;
     }
 }
+```
+
+### 2. Factory Method
+
+For a more functional approach, you can use `Component.create()`.
+
+```javascript
+import { Component } from '@modernjs/core';
+
+export const UserProfile = Component.create({
+    selector: 'user-profile',
+    state: { name: 'John' },
+    template: `
+        <div class="profile">
+            <h3>{{ name }}</h3>
+        </div>
+    `
+});
 ```
 
 ## Templates
@@ -63,20 +82,36 @@ Use `(event)="handler"` to bind events.
 <button (click)="handleClick">Click Me</button>
 ```
 
+### Property Binding
+
+Use `[property]="reference"` to bind values to child component properties.
+
+```javascript
+// Parent
+const ref = this.bind({ id: 1, data: 'test' });
+return `<child-comp [config]="${ref}"></child-comp>`;
+```
+
 ### Control Flow
 
 ModernJS supports `@if` and `@for` blocks.
 
-```javascript
-// State: { show: true, items: ['A', 'B', 'C'] }
-
-@if (show) {
-    <ul>
-        @for (item of items) {
-            <li>{{ item }}</li>
-        }
-    </ul>
+**Conditionals:**
+```html
+@if (isLoading) {
+    <spinner-cmp></spinner-cmp>
+} @else {
+    <content-cmp></content-cmp>
 }
+```
+
+**Loops:**
+```html
+<ul>
+    @for (item of items) {
+        <li>{{ item.name }}</li>
+    }
+</ul>
 ```
 
 ## Styling
@@ -86,77 +121,14 @@ Styles can be defined using the `styles` property. These styles are scoped to th
 ```javascript
 class MyComponent extends Component {
     static styles = `
+        :host {
+            display: block;
+            padding: 1rem;
+        }
         h1 { color: blue; }
         .highlight { background: yellow; }
     `;
 }
-```
-
-## Lifecycle Hooks
-
-- `onInit()`: Called when the component is initialized and connected to the DOM.
-- `onUpdate()`: Called after the component updates.
-- `onDestroy()`: Called when the component is removed from the DOM.
-
-```javascript
-class LifecycleComponent extends Component {
-    onInit() {
-        console.log('Initialized');
-    }
-
-    onDestroy() {
-        console.log('Destroyed');
-    }
-}
-```
-
-## Component Factory
-
-For a more functional approach, you can use `Component.create()`.
-
-```javascript
-export const UserProfile = Component.create({
-    selector: 'user-profile',
-    state: { name: 'John' },
-    template: `
-        <div class="profile">
-            <h3>{{ name }}</h3>
-        </div>
-    `
-});
-```
-        `;
-    }
-
-    increment() {
-        this.state.count++;
-    }
-
-    decrement() {
-        this.state.count--;
-    }
-}
-
-// Register the component
-CounterComponent.define();
-```
-
-### 2. Factory Method
-
-Use `Component.create()` for a more functional configuration style.
-
-```javascript
-import { Component } from '@modernjs/core';
-
-const UserCard = Component.create({
-    selector: 'user-card',
-    state: { name: 'John' },
-    template: `
-        <div class="card">
-            <h3>{{ this.state.name }}</h3>
-        </div>
-    `
-});
 ```
 
 ## Lifecycle Hooks
@@ -172,7 +144,7 @@ Components support standard Web Component lifecycle callbacks along with framewo
 | `disconnectedCallback()` | Native Web Component hook. Calls `onDestroy`. |
 
 ```javascript
-class MyComponent extends Component {
+class LifecycleComponent extends Component {
     onInit() {
         console.log('Component initialized');
         this.interval = setInterval(() => this.tick(), 1000);
@@ -183,51 +155,6 @@ class MyComponent extends Component {
         clearInterval(this.interval);
     }
 }
-```
-
-## Templates & Rendering
-
-Templates are defined in the `render()` method and support a custom syntax for control flow and data binding.
-
-### Interpolation
-Use `{{ expression }}` to output data.
-```html
-<p>Hello {{ this.state.name }}</p>
-```
-
-### Event Binding
-Use `(event)="methodName"` to bind DOM events to component methods.
-```html
-<button (click)="handleClick">Click Me</button>
-```
-
-### Property Binding
-Use `[property]="reference"` to bind values to child component properties.
-```javascript
-// Parent
-const ref = this.bind({ id: 1, data: 'test' });
-return `<child-comp [config]="${ref}"></child-comp>`;
-```
-
-### Control Flow
-The template engine supports `@if` and `@for` blocks.
-
-**Conditionals:**
-```html
-@if(this.state.isLoading) {
-    <spinner-cmp></spinner-cmp>
-} @else {
-    <content-cmp></content-cmp>
-}
-```
-
-**Loops:**
-```html
-<ul>
-    @for(let item of this.state.items) {
-        <li>{{ item.name }}</li>
-    }
-</ul>
 ```
 
 ## Reactivity & Rendering
@@ -262,24 +189,6 @@ In some scenarios (like testing or specific integrations), you may need to force
 ```javascript
 this.state.count++;
 this.detectChanges(); // DOM is updated immediately
-```
-
-## Styling
-
-Styles can be scoped to the component using the static `styles` property.
-
-```javascript
-class StyledComponent extends Component {
-    static styles = `
-        :host {
-            display: block;
-            padding: 1rem;
-        }
-        .highlight {
-            color: var(--primary-color);
-        }
-    `;
-}
 ```
 
 ## Performance Optimizations
