@@ -67,7 +67,7 @@ export async function createCommand(projectName, options) {
       type: 'confirm',
       name: 'i18n',
       message: 'Would you like to add internationalization (i18n)?',
-      default: false
+      default: true
     },
     {
       type: 'confirm',
