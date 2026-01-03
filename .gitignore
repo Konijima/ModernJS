@@ -10,3 +10,7 @@ coverage
 # IDE & System
 .DS_Store
 .vscode
+
+# Dev
+**.tgz
+tmp
