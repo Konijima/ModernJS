@@ -154,11 +154,15 @@ packages/
 │       ├── di/
 │       ├── router/
 │       └── ...
-└── app/            # @modernjs/demo-app (The Application)
-    ├── index.html  # Entry Point
-    └── src/        # App Logic
-        ├── demo/
-        └── ...
+├── app/            # @modernjs/demo-app (The Application)
+│   ├── index.html  # Entry Point
+│   └── src/        # App Logic
+│       ├── demo/
+│       └── ...
+└── cli/            # @modernjs/cli (Command Line Interface)
+    ├── bin/        # Executable
+    └── src/        # CLI Logic
+ng-benchmark/       # Angular Benchmark Comparison
 docker/             # Docker Configuration
 docs/               # Documentation
 ```
