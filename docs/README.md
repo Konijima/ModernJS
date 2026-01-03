@@ -52,7 +52,7 @@ class MyComponent extends Component {
     render() {
         return `
             <div>
-                <h2>Count: {{ state.count }}</h2>
+                <h2>Count: {{ count }}</h2>
                 <button (click)="increment">+</button>
             </div>
         `;

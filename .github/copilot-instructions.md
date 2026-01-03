@@ -61,7 +61,7 @@ export const MyComponent = Component.create({
     onInit() {
         this.connect(this.myService, (state) => ({ data: state.data }));
     },
-    template: `<div>{{state.count}}</div>`
+    template: `<div>{{count}}</div>`
 });
 ```
 

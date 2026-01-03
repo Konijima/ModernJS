@@ -59,11 +59,14 @@ state$.next({ count: 1 });
 The `AsyncPipe` allows you to subscribe to Observables directly in your templates. It handles subscription and unsubscription automatically.
 
 ```javascript
-import { Component, AsyncPipe } from '@modernjs/core';
+import { Component, AsyncPipe, BehaviorSubject } from '@modernjs/core';
 
 export const MyComponent = Component.create({
     selector: 'my-comp',
     pipes: { async: AsyncPipe },
+    onInit() {
+        this.state$ = new BehaviorSubject(0);
+    },
     template: `
         <div>Count: {{ state$ | async }}</div>
     `

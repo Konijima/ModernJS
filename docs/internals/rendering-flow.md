@@ -120,7 +120,11 @@
 └─────────────────────────────────────────────────────────────────┘
 
     String Template
-    "<div>{{ state.count }}</div>"
+    "    // 1. Compile Template
+    "<div>{{ count }}</div>"
+    // -> Function(context) { return ... }
+
+    // 2. Execute Template Function"
               │
               ▼
     ┌──────────────────┐

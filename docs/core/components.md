@@ -24,11 +24,107 @@ export class CounterComponent extends Component {
     // Template
     render() {
         return `
-            <div class="counter">
-                <h2>Count: {{ this.state.count }}</h2>
+            <h2>Count: {{ count }}</h2>
                 <button (click)="increment">+</button>
                 <button (click)="decrement">-</button>
             </div>
+        `;
+    }
+
+    increment() {
+        this.state.count++;
+    }
+
+    decrement() {
+        this.state.count--;
+    }
+}
+```
+
+## Templates
+
+Templates are defined using the `render()` method or the `template` property (for `Component.create`).
+
+### Data Binding
+
+Use `{{ expression }}` to output data. The expression is evaluated in the context of the component state.
+
+```javascript
+// State: { name: 'World' }
+// Template:
+<p>Hello {{ name }}</p>
+```
+
+### Event Handling
+
+Use `(event)="handler"` to bind events.
+
+```javascript
+<button (click)="handleClick">Click Me</button>
+```
+
+### Control Flow
+
+ModernJS supports `@if` and `@for` blocks.
+
+```javascript
+// State: { show: true, items: ['A', 'B', 'C'] }
+
+@if (show) {
+    <ul>
+        @for (item of items) {
+            <li>{{ item }}</li>
+        }
+    </ul>
+}
+```
+
+## Styling
+
+Styles can be defined using the `styles` property. These styles are scoped to the component using Shadow DOM.
+
+```javascript
+class MyComponent extends Component {
+    static styles = `
+        h1 { color: blue; }
+        .highlight { background: yellow; }
+    `;
+}
+```
+
+## Lifecycle Hooks
+
+- `onInit()`: Called when the component is initialized and connected to the DOM.
+- `onUpdate()`: Called after the component updates.
+- `onDestroy()`: Called when the component is removed from the DOM.
+
+```javascript
+class LifecycleComponent extends Component {
+    onInit() {
+        console.log('Initialized');
+    }
+
+    onDestroy() {
+        console.log('Destroyed');
+    }
+}
+```
+
+## Component Factory
+
+For a more functional approach, you can use `Component.create()`.
+
+```javascript
+export const UserProfile = Component.create({
+    selector: 'user-profile',
+    state: { name: 'John' },
+    template: `
+        <div class="profile">
+            <h3>{{ name }}</h3>
+        </div>
+    `
+});
+```
         `;
     }
 

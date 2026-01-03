@@ -58,7 +58,7 @@ class CounterComponent extends Component {
     render() {
         return `
             <div class="counter">
-                <h2>Count: {{ state.count }}</h2>
+                <h2>Count: {{ count }}</h2>
                 <button (click)="increment">+</button>
                 <button (click)="decrement">-</button>
             </div>

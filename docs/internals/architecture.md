@@ -29,10 +29,14 @@ class MyComponent extends Component {
     static selector = 'my-component';
     static state = { count: 0 };
 
+    // Render method returns template string
     render() {
-        return `<div>Count: {{ state.count }}</div>`;
+        return `<div>Count: {{ count }}</div>`;
     }
 }
+```
+
+### 2. Dependency Injection (DI)
 
 // Step 2: Register with Custom Elements
 MyComponent.define(); // → customElements.define('my-component', MyComponent)
@@ -225,7 +229,11 @@ _performUpdate() {
 String templates are compiled to functions:
 
 ```javascript
-// Template: `<div>{{ state.count }}</div>`
+// Template: `<div>{{ count }}</div>`
+// VDOM: { tag: 'div', children: ['Count: ', 0] }
+```
+
+### 2. Diffing
 // Compiles to:
 function(h, text, context) {
     return h('div', {}, [text(context.state.count)]);

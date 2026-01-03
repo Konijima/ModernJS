@@ -64,9 +64,13 @@ export const MyComponent = Component.create({
         this.connect(this.device, state => ({ isMobile: state.isMobile }));
     },
     template: `
-        <div class="{{ state.isMobile ? 'mobile-view' : 'desktop-view' }}">
-            Content
+        template: `
+        <div class="{{ isMobile ? 'mobile-view' : 'desktop-view' }}">
+            <h1>My App</h1>
         </div>
+    `
+});
+```
     `
 });
 ```
