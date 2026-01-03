@@ -100,22 +100,22 @@ export const TodoItemComponent = Component.create({
     },
 
     template: `
-            @if (!state.todo) {
+            @if (!todo) {
                 <div>{{ 'LOADING' | translate }}</div>
             } @else {
                 <li 
-                    class="{{ state.todo.completed ? 'completed' : '' }}"
+                    class="{{ todo.completed ? 'completed' : '' }}"
                     (click)="handleToggle"
                 >
                     <input 
                         type="checkbox" 
                         class="form-checkbox"
-                        [checked]="state.todo.completed"
+                        [checked]="todo.completed"
                         (click)="handleCheckboxClick"
                         (change)="handleToggle"
                     >
                     <span>
-                        {{ state.todo.text }}
+                        {{ todo.text }}
                     </span>
                     <button 
                         class="btn-icon danger" 

@@ -188,7 +188,7 @@ export const PipesDemoComponent = Component.create({
                 <h3>{{ 'DEMO_TITLE' | translate }}</h3>
             </div>
             <p class="text-muted" style="font-size: 0.9375rem;">{{ 'WELCOME' | translate }}</p>
-            <p class="text-subtle" style="font-size: 0.875rem; margin-top: 0.5rem;">{{ 'CURRENT_LANG' | translate:i18nService.state.locale }}</p>
+            <p class="text-subtle" style="font-size: 0.875rem; margin-top: 0.5rem;">{{ 'CURRENT_LANG' | translate:i18nService.locale }}</p>
             <div style="margin-top: 1rem; display: flex; gap: 0.75rem;">
                 @for (let lang of i18nService.supportedLanguages) {
                     <button 
@@ -228,15 +228,15 @@ export const PipesDemoComponent = Component.create({
             <div class="code-block">
                 <div class="code-line">
                     <span class="code-label">Full:</span>
-                    <span class="code-value">{{ state.currentDate | date:'full' }}</span>
+                    <span class="code-value">{{ currentDate | date:'full' }}</span>
                 </div>
                 <div class="code-line">
                     <span class="code-label">Short:</span>
-                    <span class="code-value">{{ state.currentDate | date:'short' }}</span>
+                    <span class="code-value">{{ currentDate | date:'short' }}</span>
                 </div>
                 <div class="code-line">
                     <span class="code-label">Time:</span>
-                    <span class="code-value">{{ state.currentDate | date:'time' }}</span>
+                    <span class="code-value">{{ currentDate | date:'time' }}</span>
                 </div>
             </div>
         </div>

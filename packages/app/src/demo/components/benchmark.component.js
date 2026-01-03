@@ -260,7 +260,7 @@ export const BenchmarkComponent = Component.create({
                 <button class="btn btn-accent" (click)="runAll">Run All Tests</button>
             </div>
 
-            @if(state.report) {
+            @if(report) {
                 <div class="comparison-card">
                     <h3 style="margin: 0; font-size: 1.25rem;">Full Report</h3>
                     <table class="report-table">
@@ -273,7 +273,7 @@ export const BenchmarkComponent = Component.create({
                             </tr>
                         </thead>
                         <tbody>
-                            @for(let item of state.report) {
+                            @for(let item of report) {
                                 <tr>
                                     <td>{{ item.opName }}</td>
                                     <td>{{ item.duration.toFixed(2) }}</td>
@@ -288,32 +288,32 @@ export const BenchmarkComponent = Component.create({
                 </div>
             }
 
-            @if(state.lastMeasure > 0 && !state.report) {
+            @if(lastMeasure > 0 && !report) {
                 <div class="comparison-card">
                     <h3 style="margin: 0; font-size: 1.25rem;">{{ 'benchmark.comparison.title' | translate }}</h3>
                     <div class="comparison-grid">
                         <div class="stat-box">
                             <div class="stat-label">Action</div>
-                            <div class="stat-value">{{ state.lastOp }}</div>
+                            <div class="stat-value">{{ lastOp }}</div>
                         </div>
                         <div class="stat-box">
                             <div class="stat-label">{{ 'benchmark.comparison.modernjs' | translate }}</div>
-                            <div class="stat-value">{{ state.lastMeasure.toFixed(2) }} ms</div>
+                            <div class="stat-value">{{ lastMeasure.toFixed(2) }} ms</div>
                         </div>
                         
-                        @if(state.comparison) {
+                        @if(comparison) {
                             <div class="stat-box">
                                 <div class="stat-label">{{ 'benchmark.comparison.angular' | translate }}</div>
-                                <div class="stat-value">{{ state.comparison.angular }} ms</div>
+                                <div class="stat-value">{{ comparison.angular }} ms</div>
                             </div>
                             
                             <div class="stat-box">
                                 <div class="stat-label">{{ 'benchmark.comparison.diff' | translate }}</div>
-                                <div class="stat-value {{ state.comparison.diff < 0 ? 'text-green' : 'text-red' }}">
-                                    {{ Math.abs(state.comparison.diff).toFixed(2) }} ms
+                                <div class="stat-value {{ comparison.diff < 0 ? 'text-green' : 'text-red' }}">
+                                    {{ Math.abs(comparison.diff).toFixed(2) }} ms
                                 </div>
-                                <div class="stat-diff {{ state.comparison.diff < 0 ? 'text-green' : 'text-red' }}">
-                                    {{ state.comparison.percent }}% {{ (state.comparison.diff < 0 ? 'benchmark.comparison.faster' : 'benchmark.comparison.slower') | translate }}
+                                <div class="stat-diff {{ comparison.diff < 0 ? 'text-green' : 'text-red' }}">
+                                    {{ comparison.percent }}% {{ (comparison.diff < 0 ? 'benchmark.comparison.faster' : 'benchmark.comparison.slower') | translate }}
                                 </div>
                             </div>
                         }
@@ -331,8 +331,8 @@ export const BenchmarkComponent = Component.create({
                         </tr>
                     </thead>
                     <tbody>
-                        @for(let row of state.rows) {
-                            <tr key="{{ row.id }}" class="{{ row.id === state.selected ? 'danger' : '' }}">
+                        @for(let row of rows) {
+                            <tr key="{{ row.id }}" class="{{ row.id === selected ? 'danger' : '' }}">
                                 <td>{{ row.id }}</td>
                                 <td><a class="select-link" (click)="select(row)">{{ row.label }}</a></td>
                                 <td><a class="remove-btn" (click)="remove(row)">×</a></td>

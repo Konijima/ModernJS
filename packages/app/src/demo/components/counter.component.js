@@ -77,7 +77,7 @@ export const CounterComponent = Component.create({
 
     template: `
             <div class="count-display">
-                <div class="count">{{ state.count }}</div>
+                <div class="count">{{ count }}</div>
                 <div class="btn-group">
                     <button class="btn btn-primary btn-lg" (click)="handleIncrement">
                         <i class="fas fa-plus"></i> {{ 'counter.increment' | translate }}

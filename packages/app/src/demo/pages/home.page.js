@@ -7,7 +7,8 @@ import {
     UpperCasePipe,
     TranslatePipe,
     I18nService,
-    fadeAnimation
+    fadeAnimation,
+    RouterLinkDirective
 } from '@modernjs/core';
 
 export const HomePage = Component.create({
@@ -21,13 +22,12 @@ export const HomePage = Component.create({
         uppercase: UpperCasePipe,
         translate: TranslatePipe
     },
+    directives: {
+        'router-link': RouterLinkDirective
+    },
     
     openGitHub() {
         window.open('https://github.com/Konijima/ModernJS', '_blank');
-    },
-
-    goToGetStarted() {
-        this.router.navigate('/get-started');
     },
 
     styles: `
@@ -48,9 +48,9 @@ export const HomePage = Component.create({
             </p>
             
             <div class="hero-actions">
-                <button class="btn btn-primary btn-lg" (click)="goToGetStarted">
+                <a class="btn btn-primary btn-lg" router-link="/get-started">
                     <i class="fas fa-play"></i> {{ 'home.hero.get_started' | translate }}
-                </button>
+                </a>
                 <button class="btn btn-secondary btn-lg" (click)="openGitHub">
                     <i class="fab fa-github"></i> {{ 'home.hero.github' | translate }}
                 </button>

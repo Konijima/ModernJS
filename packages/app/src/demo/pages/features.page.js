@@ -5,7 +5,8 @@ import {
     Component,
     Router,
     TranslatePipe,
-    fadeAnimation
+    fadeAnimation,
+    RouterLinkDirective
 } from '@modernjs/core';
 
 export const FeaturesPage = Component.create({
@@ -16,6 +17,9 @@ export const FeaturesPage = Component.create({
     },
     pipes: {
         translate: TranslatePipe
+    },
+    directives: {
+        'router-link': RouterLinkDirective
     },
     checkScroll(e) {
         const tabs = e.target || this.shadowRoot.querySelector('.tabs');
@@ -54,13 +58,6 @@ export const FeaturesPage = Component.create({
     
     onDestroy() {
         if (this.routerSub) this.routerSub();
-    },
-    
-    handleTabClick(e) {
-        const btn = e.target.closest('.tab');
-        if (btn && btn.dataset.path) {
-            this.router.navigate(btn.dataset.path);
-        }
     },
     
     isActive(path) {
@@ -116,7 +113,7 @@ export const FeaturesPage = Component.create({
             background: var(--hover-bg);
             color: var(--text-color);
         }
-        .tab.active {
+        .tab.active, .tab.router-link-active {
             background: var(--bg-color);
             color: var(--primary-color);
             box-shadow: var(--shadow-sm);
@@ -228,22 +225,22 @@ export const FeaturesPage = Component.create({
                     <i class="fas fa-chevron-left"></i>
                 </div>
                 <div class="tabs" (scroll)="checkScroll">
-                    <button class="tab {{ isActive('/features/todo') ? 'active' : '' }}" data-path="/features/todo" (click)="handleTabClick">
+                    <button class="tab" router-link="/features/todo">
                         <i class="fas fa-check-square"></i> {{ 'features.tabs.todo' | translate }}
                     </button>
-                    <button class="tab {{ isActive('/features/counter') ? 'active' : '' }}" data-path="/features/counter" (click)="handleTabClick">
+                    <button class="tab" router-link="/features/counter">
                         <i class="fas fa-calculator"></i> {{ 'features.tabs.counter' | translate }}
                     </button>
-                    <button class="tab {{ isActive('/features/pipes') ? 'active' : '' }}" data-path="/features/pipes" (click)="handleTabClick">
+                    <button class="tab" router-link="/features/pipes">
                         <i class="fas fa-filter"></i> {{ 'features.tabs.pipes' | translate }}
                     </button>
-                    <button class="tab {{ isActive('/features/form') ? 'active' : '' }}" data-path="/features/form" (click)="handleTabClick">
+                    <button class="tab" router-link="/features/form">
                         <i class="fas fa-edit"></i> {{ 'features.tabs.forms' | translate }}
                     </button>
-                    <button class="tab {{ isActive('/features/http') ? 'active' : '' }}" data-path="/features/http" (click)="handleTabClick">
+                    <button class="tab" router-link="/features/http">
                         <i class="fas fa-cloud"></i> {{ 'features.tabs.http' | translate }}
                     </button>
-                    <button class="tab {{ isActive('/features/dashboard') || isActive('/features/login') ? 'active' : '' }}" data-path="/features/dashboard" (click)="handleTabClick">
+                    <button class="tab {{ isActive('/features/login') ? 'router-link-active' : '' }}" router-link="/features/dashboard">
                         <i class="fas fa-lock"></i> {{ 'features.tabs.auth' | translate }}
                     </button>
                 </div>

@@ -6,7 +6,8 @@ import {
     Router,
     HttpClient,
     I18nService,
-    TranslatePipe
+    TranslatePipe,
+    RouterLinkDirective
 } from '@modernjs/core';
 
 // ============================================================================
@@ -43,6 +44,9 @@ export const App = Component.create({
     pipes: {
         translate: TranslatePipe
     },
+    directives: {
+        'router-link': RouterLinkDirective
+    },
     
     onInit() {
         // Configure I18n
@@ -53,16 +57,6 @@ export const App = Component.create({
 
         // Define Routes
         this.router.register(routes);
-
-        // Subscribe to route changes to update nav
-        this.router.subscribe(() => {
-            this.update();
-        });
-
-        // Subscribe to language changes to update UI
-        this.i18nService.onLangChange(() => {
-            this.update();
-        });
     },
 
     setLang(lang) {
@@ -76,33 +70,7 @@ export const App = Component.create({
         }
     },
 
-    navigateToHome(e) {
-        e.preventDefault();
-        this.router.navigate('/');
-    },
 
-    navigateToGetStarted(e) {
-        e.preventDefault();
-        this.router.navigate('/get-started');
-    },
-
-    navigateToFeatures(e) {
-        e.preventDefault();
-        this.router.navigate('/features');
-    },
-
-    navigateToBenchmark(e) {
-        e.preventDefault();
-        this.router.navigate('/benchmark');
-    },
-
-    isActive(route) {
-        const path = window.location.pathname;
-        if (route === '/') {
-            return path === '/' ? 'active' : '';
-        }
-        return path === route || path.startsWith(route + '/') ? 'active' : '';
-    },
 
     styles: `
         :host {
@@ -209,9 +177,9 @@ export const App = Component.create({
                             <p class="app-subtitle">{{ 'app.subtitle' | translate }}</p>
                         </div>
                         <div class="lang-switcher">
-                            @for(let lang of this.i18nService.supportedLanguages) {
+                            @for(let lang of i18nService.supportedLanguages) {
                                 <button 
-                                    class="btn-lang {{ this.i18nService.state.locale === lang.code ? 'active' : '' }}" 
+                                    class="btn-lang {{ i18nService.locale === lang.code ? 'active' : '' }}" 
                                     data-lang="{{ lang.code }}"
                                     (click)="handleLangClick">
                                     {{ lang.label }}
@@ -221,10 +189,10 @@ export const App = Component.create({
                     </div>
                     
                     <nav class="nav-links">
-                        <a href="/" class="nav-link {{ this.isActive('/') }}" (click)="navigateToHome">{{ 'app.nav.home' | translate }}</a>
-                        <a href="/get-started" class="nav-link {{ this.isActive('/get-started') }}" (click)="navigateToGetStarted">{{ 'app.nav.get_started' | translate }}</a>
-                        <a href="/features" class="nav-link {{ this.isActive('/features') }}" (click)="navigateToFeatures">{{ 'app.nav.features' | translate }}</a>
-                        <a href="/benchmark" class="nav-link {{ this.isActive('/benchmark') }}" (click)="navigateToBenchmark">Benchmark</a>
+                        <a router-link="/" class="nav-link">{{ 'app.nav.home' | translate }}</a>
+                        <a router-link="/get-started" class="nav-link">{{ 'app.nav.get_started' | translate }}</a>
+                        <a router-link="/features" class="nav-link">{{ 'app.nav.features' | translate }}</a>
+                        <a router-link="/benchmark" class="nav-link">Benchmark</a>
                     </nav>
                 </header>
                 

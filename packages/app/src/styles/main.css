@@ -466,7 +466,8 @@ h3 { font-size: 1.5rem; line-height: 1.4; }
     color: var(--text-color);
     background: var(--card-hover);
 }
-.nav-link.active {
+.nav-link.active,
+.nav-link.router-link-active {
     color: var(--primary-color);
     background: rgba(56, 189, 248, 0.1);
     font-weight: 600;

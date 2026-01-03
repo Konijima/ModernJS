@@ -6,7 +6,8 @@ import {
     Router,
     I18nService,
     TranslatePipe,
-    fadeAnimation
+    fadeAnimation,
+    RouterLinkDirective
 } from '@modernjs/core';
 
 export const GetStartedPage = Component.create({
@@ -19,14 +20,14 @@ export const GetStartedPage = Component.create({
     pipes: {
         translate: TranslatePipe
     },
+    directives: {
+        'router-link': RouterLinkDirective
+    },
     
     onInit() {
         this.connect(this.i18nService, () => ({})); // Re-render on language change
     },
 
-    goToFeatures() {
-        this.router.navigate('/features');
-    },
     openGitHub() {
         window.open('https://github.com/Konijima/ModernJS', '_blank');
     },
@@ -177,9 +178,9 @@ export const GetStartedPage = Component.create({
             </div>
 
             <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;">
-                <button class="btn btn-primary btn-lg" (click)="goToFeatures">
+                <a class="btn btn-primary btn-lg" router-link="/features">
                     <i class="fas fa-flask"></i> {{ 'get_started.view_features' | translate }}
-                </button>
+                </a>
                 <button class="btn btn-secondary btn-lg" (click)="openGitHub">
                     <i class="fab fa-github"></i> {{ 'get_started.github' | translate }}
                 </button>

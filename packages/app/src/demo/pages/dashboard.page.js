@@ -113,9 +113,9 @@ export const DashboardPage = Component.create({
                 <i class="fas fa-shield-alt"></i>
             </div>
             <h1>Protected Dashboard</h1>
-            @if(this.state.user) {
+            @if(user) {
                 <div class="user-badge">
-                    <i class="fas fa-user"></i> {{ this.state.user.name }}
+                    <i class="fas fa-user"></i> {{ user.name }}
                 </div>
                 <p class="welcome-text">
                     You have successfully accessed this protected route.<br>

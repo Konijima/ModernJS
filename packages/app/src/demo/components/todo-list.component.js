@@ -159,14 +159,14 @@ export const TodoListComponent = Component.create({
                     </button>
                 </div>
 
-                @if (this.state.todos.length === 0) {
+                @if (todos.length === 0) {
                     <div class="empty-state">
                         <i class="fas fa-inbox"></i>
                         {{ 'todo.empty' | translate }}
                     </div>
                 } @else {
                     <ul>
-                        @for (let todo of this.state.todos) {
+                        @for (let todo of todos) {
                             <todo-item 
                                 [todo]="todo"
                                 (toggle)="handleToggle"
@@ -176,8 +176,8 @@ export const TodoListComponent = Component.create({
                     </ul>
 
                     <div class="stats">
-                        <span>{{ 'todo.stats.completed' | translate:[this.state.todos.filter(t => t.completed).length, this.state.todos.length] }}</span>
-                        @if (this.state.todos.every(t => t.completed)) {
+                        <span>{{ 'todo.stats.completed' | translate:[todos.filter(t => t.completed).length, todos.length] }}</span>
+                        @if (todos.every(t => t.completed)) {
                             <span class="success-badge"><i class="fas fa-check"></i> {{ 'todo.stats.all_done' | translate }}</span>
                         }
                     </div>
