@@ -72,21 +72,18 @@ export const BenchmarkComponent = Component.create({
     styles: `
         :host {
             display: block;
-            padding: 2rem;
         }
-        .container {
+        .page-container {
             max-width: 1200px;
             margin: 0 auto;
         }
         .header {
             margin-bottom: 2rem;
+            text-align: center;
         }
         h2 {
             font-size: 2rem;
             font-weight: 700;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
             margin: 0;
         }
         
@@ -245,19 +242,19 @@ export const BenchmarkComponent = Component.create({
         }
     `,
     template: `
-        <div class="container">
+        <div class="page-container">
             <div class="header">
-                <h2>{{ 'benchmark.title' | translate }}</h2>
+                <span class="badge" style="margin-bottom: 1rem;"><i class="fas fa-tachometer-alt"></i> {{ 'benchmark.badge' | translate }}</span>
+                <h2 style="margin-bottom: 0.5rem;">{{ 'benchmark.title' | translate }}</h2>
+                <p class="text-muted" style="font-size: 0.9375rem;">
+                    {{ 'benchmark.description' | translate }}
+                </p>
             </div>
             
-            <div class="controls-card">
-                <button class="btn btn-primary" (click)="run">{{ 'benchmark.create_1k' | translate }}</button>
-                <button class="btn btn-primary" (click)="runLots">{{ 'benchmark.create_10k' | translate }}</button>
-                <button class="btn btn-secondary" (click)="add">{{ 'benchmark.append_1k' | translate }}</button>
-                <button class="btn btn-secondary" (click)="runUpdate">{{ 'benchmark.update_10th' | translate }}</button>
-                <button class="btn btn-secondary" (click)="clear">{{ 'benchmark.clear' | translate }}</button>
-                <button class="btn btn-secondary" (click)="swapRows">{{ 'benchmark.swap' | translate }}</button>
-                <button class="btn btn-accent" (click)="runAll">Run All Tests</button>
+            <div class="controls-card" style="justify-content: center;">
+                <button class="btn btn-accent" (click)="runAll" style="min-width: 200px;">
+                    <i class="fas fa-play" style="margin-right: 0.5rem;"></i> {{ 'benchmark.run_all' | translate }}
+                </button>
             </div>
 
             @if(report) {
@@ -321,26 +318,28 @@ export const BenchmarkComponent = Component.create({
                 </div>
             }
 
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 100px">ID</th>
-                            <th>Label</th>
-                            <th style="width: 60px"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for(let row of rows) {
-                            <tr key="{{ row.id }}" class="{{ row.id === selected ? 'danger' : '' }}">
-                                <td>{{ row.id }}</td>
-                                <td><a class="select-link" (click)="select(row)">{{ row.label }}</a></td>
-                                <td><a class="remove-btn" (click)="remove(row)">×</a></td>
+            @if(rows.length > 0) {
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 100px">ID</th>
+                                <th>Label</th>
+                                <th style="width: 60px"></th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            @for(let row of rows) {
+                                <tr key="{{ row.id }}" class="{{ row.id === selected ? 'danger' : '' }}">
+                                    <td>{{ row.id }}</td>
+                                    <td><a class="select-link" (click)="select(row)">{{ row.label }}</a></td>
+                                    <td><a class="remove-btn" (click)="remove(row)">×</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
         </div>
     `,
     

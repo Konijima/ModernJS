@@ -56,22 +56,41 @@ export const PipesDemoComponent = Component.create({
         }
     },
     async showAlert() {
-        await this.modalService.alert('This is a simple alert dialog.', 'Alert');
+        await this.modalService.alert(
+            this.i18nService.translate('features.modal.alert.message'),
+            this.i18nService.translate('features.modal.alert.title')
+        );
     },
 
     async showConfirm() {
-        const result = await this.modalService.confirm('Do you want to proceed with this action?', 'Confirm Action');
+        const result = await this.modalService.confirm(
+            this.i18nService.translate('features.modal.confirm.message'),
+            this.i18nService.translate('features.modal.confirm.title')
+        );
         if (result) {
-            this.modalService.alert('You clicked OK!', 'Confirmed');
+            this.modalService.alert(
+                this.i18nService.translate('features.modal.confirm.ok'),
+                this.i18nService.translate('features.modal.confirm.confirmed')
+            );
         } else {
-            this.modalService.alert('You clicked Cancel.', 'Cancelled');
+            this.modalService.alert(
+                this.i18nService.translate('features.modal.confirm.cancel'),
+                this.i18nService.translate('features.modal.confirm.cancelled')
+            );
         }
     },
 
     async showPrompt() {
-        const name = await this.modalService.prompt('Please enter your name:', 'Guest', 'Welcome');
+        const name = await this.modalService.prompt(
+            this.i18nService.translate('features.modal.prompt.message'),
+            this.i18nService.translate('features.modal.prompt.default'),
+            this.i18nService.translate('features.modal.prompt.title')
+        );
         if (name !== null) {
-            this.modalService.alert(`Hello, ${name}!`, 'Welcome');
+            this.modalService.alert(
+                this.i18nService.translate('features.modal.prompt.hello', [name]),
+                this.i18nService.translate('features.modal.prompt.title')
+            );
         }
     },
 
@@ -192,7 +211,7 @@ export const PipesDemoComponent = Component.create({
             <div style="margin-top: 1rem; display: flex; gap: 0.75rem;">
                 @for (let lang of i18nService.supportedLanguages) {
                     <button 
-                        class="btn btn-secondary" 
+                        class="btn {{ i18nService.locale === lang.code ? 'btn-primary' : 'btn-secondary' }}" 
                         data-lang="{{ lang.code }}"
                         (click)="handleLangClick">
                         {{ getLangLabel(lang) }}
@@ -204,26 +223,26 @@ export const PipesDemoComponent = Component.create({
         <div class="card">
             <div class="demo-header">
                 <div class="demo-icon accent"><i class="fas fa-window-maximize"></i></div>
-                <h3>Modal System</h3>
+                <h3>{{ 'features.modal.system.title' | translate }}</h3>
             </div>
             <p class="text-muted" style="font-size: 0.9375rem; margin-bottom: 1rem;">
-                Demonstration of the new Promise-based modal system with various types.
+                {{ 'features.modal.system.desc' | translate }}
             </p>
             <div class="btn-group">
-                <button class="btn btn-primary" (click)="showAlert">Alert</button>
-                <button class="btn btn-secondary" (click)="showConfirm">Confirm</button>
-                <button class="btn btn-secondary" (click)="showPrompt">Prompt</button>
-                <button class="btn btn-accent" (click)="showModal">Custom</button>
+                <button class="btn btn-primary" (click)="showAlert">{{ 'features.modal.alert' | translate }}</button>
+                <button class="btn btn-secondary" (click)="showConfirm">{{ 'features.modal.confirm' | translate }}</button>
+                <button class="btn btn-secondary" (click)="showPrompt">{{ 'features.modal.prompt' | translate }}</button>
+                <button class="btn btn-accent" (click)="showModal">{{ 'features.modal.custom' | translate }}</button>
             </div>
         </div>
 
         <div class="card">
             <div class="demo-header">
                 <div class="demo-icon warning"><i class="fas fa-clock"></i></div>
-                <h3>Date & Time</h3>
+                <h3>{{ 'features.pipes.date.title' | translate }}</h3>
             </div>
             <p class="text-muted" style="font-size: 0.9375rem; margin-bottom: 1rem;">
-                Live updates using the DatePipe with various formats.
+                {{ 'features.pipes.date.desc' | translate }}
             </p>
             <div class="code-block">
                 <div class="code-line">

@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 // ============================================================================
 // Internal Dependencies
 // ============================================================================
@@ -93,13 +94,118 @@ if (import.meta.env.DEV) {
 }
 
 /**
+ * @typedef {Object} ComponentConfig
+ * @property {string} selector - The HTML tag name for the component (must contain a hyphen)
+ * @property {string} [styles] - CSS styles for the component
+ * @property {Record<string, new (...args: any[]) => any> | Array<new (...args: any[]) => any>} [inject] - Services to inject
+ * @property {Record<string, any>} [state] - Initial state object
+ * @property {(this: Component) => void} [connect] - Lifecycle hook for connecting to services
+ * @property {string|Function} [template] - Template string or render function
+ * @property {Record<string, typeof import('../pipes/pipe.js').Pipe>} [pipes] - Pipes to use in the template
+ * @property {Record<string, typeof import('../directive/directive.js').Directive>} [directives] - Directives to use in the template
+ * @property {Record<string, any>} [animations] - Animation definitions
+ * @property {function(): void} [onInit] - Lifecycle hook called when component is initialized
+ * @property {function(): void} [onDestroy] - Lifecycle hook called when component is destroyed
+ */
+
+/**
  * Base Component class using Web Components and Proxy for reactivity.
  * Provides a lightweight framework for building reactive UI components.
  * @extends HTMLElement
+ * @property {function(): any} [render]
+ * @property {Object} [initialState]
  */
 export class Component extends HTMLElement {
     /**
+     * The CSS selector for the component.
+     * Must contain a hyphen (e.g., 'my-component').
+     * @type {string}
+     */
+    static selector;
+
+    /**
+     * CSS styles for the component.
+     * These styles are scoped to the component's Shadow DOM.
+     * @type {string}
+     */
+    static styles;
+
+    /**
+     * Services to inject into the component.
+     * Can be an object mapping property names to Service classes,
+     * or an array of Service classes (property names will be camelCase of class name).
+     * @type {Record<string, new (...args: any[]) => any> | Array<new (...args: any[]) => any>}
+     */
+    static inject;
+
+    /**
+     * Initial state of the component.
+     * This object is reactive - changes to it will trigger updates.
+     * @type {Record<string, any>}
+     */
+    static state;
+
+    /**
+     * Lifecycle hook to connect to services.
+     * Called during component initialization.
+     * @type {(this: Component) => void}
+     */
+    static connect;
+
+    /**
+     * The HTML template for the component.
+     * Can be a string or a render function.
+     * @type {string|Function}
+     */
+    static template;
+
+    /**
+     * Pipes available for use in the template.
+     * Map of pipe names to Pipe classes.
+     * @type {Record<string, typeof import('../pipes/pipe.js').Pipe>}
+     */
+    static pipes;
+
+    /**
+     * Directives available for use in the template.
+     * Map of directive selectors to Directive classes.
+     * @type {Record<string, typeof import('../directive/directive.js').Directive>}
+     */
+    static directives;
+
+    /**
+     * Animation definitions for the component.
+     * @type {Record<string, any>}
+     */
+    static animations;
+
+    /**
+     * If true, suppresses the warning about missing template/render method.
+     * @type {boolean}
+     */
+    static noTemplate;
+
+    /** @type {Object} */
+    initialState;
+
+    /**
+     * Lifecycle hook called when component is initialized.
+     */
+    onInit() {}
+
+    /**
+     * Lifecycle hook called when component is destroyed.
+     */
+    onDestroy() {}
+
+    /**
+     * Lifecycle hook called after each update.
+     */
+    onUpdate() {}
+
+    /**
      * Get the current framework version
+     * @returns {string}
      */
     static get version() {
         return FRAMEWORK_VERSION;
@@ -109,13 +215,7 @@ export class Component extends HTMLElement {
      * Create and register a component with a simple configuration object.
      * This is a factory method that generates a class extending Component.
      * 
-     * @param {object} config - The component configuration
-     * @param {string} config.selector - The HTML tag name for the component
-     * @param {string} [config.styles] - CSS styles for the component
-     * @param {object|Array} [config.inject] - Services to inject
-     * @param {object} [config.state] - Initial state object
-     * @param {Function} [config.connect] - Lifecycle hook for connecting to services
-     * @param {Function|string} [config.template] - Template function or string
+     * @param {ComponentConfig & { [x: string]: any } & ThisType<Component & { [x: string]: any }>} config - The component configuration
      * @returns {typeof Component} The generated component class
      */
     static create(config) {
@@ -161,7 +261,9 @@ export class Component extends HTMLElement {
         
         if (!config) {
             if (this.template) {
-                this.prototype.render = this.template;
+                /** @type {any} */ (this.prototype).render = typeof this.template === 'string' 
+                    ? () => this.template 
+                    : this.template;
             } else if (!this.noTemplate) {
                 // Only warn if noTemplate is not explicitly set to true
                 if (import.meta.env.DEV && import.meta.env.VITE_DEBUG) {
@@ -180,7 +282,11 @@ export class Component extends HTMLElement {
             if (config.animations) this.animations = config.animations;
             if (config.pipes) this.pipes = config.pipes;
             if (config.directives) this.directives = config.directives;
-            if (config.template) this.prototype.render = config.template;
+            if (config.template) {
+                /** @type {any} */ (this.prototype).render = typeof config.template === 'string'
+                    ? () => config.template
+                    : config.template;
+            }
             
             if (config.selector) {
                 this.selector = config.selector;
@@ -204,13 +310,16 @@ export class Component extends HTMLElement {
             this.shadowRoot.adoptedStyleSheets = [globalSheet];
         }
 
+        /** @type {Array<Function|{unsubscribe:Function}>} */
         this._subscriptions = [];
+        /** @type {Object.<string, any>} */
         this._refs = {}; // Registry for object references in templates
         this._rafId = null;
         this._updatePending = false;
         
         // Dependency Injection (Support both static inject and manual inject)
-        const injections = this.constructor.inject || {};
+        const Ctor = /** @type {typeof Component} */ (this.constructor);
+        const injections = Ctor.inject || {};
         
         if (Array.isArray(injections)) {
             injections.forEach(ServiceClass => {
@@ -224,7 +333,7 @@ export class Component extends HTMLElement {
         }
 
         // Initialize reactive state
-        let initialState = this.constructor.state || this.initialState || {};
+        let initialState = Ctor.state || this.initialState || {};
         
         // Ensure state is a unique copy for this instance
         if (initialState && typeof initialState === 'object') {
@@ -255,8 +364,9 @@ export class Component extends HTMLElement {
         });
 
         // Initialize pipes
+        /** @type {Object.<string, any>} */
         this._pipes = {};
-        const pipes = this.constructor.pipes || {};
+        const pipes = Ctor.pipes || {};
         Object.entries(pipes).forEach(([name, PipeClass]) => {
             this._pipes[name] = new PipeClass(this);
         });
@@ -281,8 +391,9 @@ export class Component extends HTMLElement {
         }
 
         // Call static connect if defined (for create() syntax)
-        if (this.constructor.connect) {
-            this.constructor.connect.call(this);
+        const Ctor = /** @type {typeof Component} */ (this.constructor);
+        if (Ctor.connect) {
+            Ctor.connect.call(this);
         }
     }
 
@@ -326,7 +437,7 @@ export class Component extends HTMLElement {
     /**
      * Connect a service state to the component state.
      * 
-     * @param {Service} service - The service to subscribe to
+     * @param {any} service - The service to subscribe to
      * @param {Function} mapFn - Function to map service state to component state
      */
     connect(service, mapFn) {
@@ -340,23 +451,24 @@ export class Component extends HTMLElement {
     /**
      * Retrieve a registered directive class.
      * @param {string} name - The selector of the directive
-     * @returns {typeof Directive} The directive class
+     * @returns {any} The directive class
      */
     getDirective(name) {
-        if (!this.constructor.directives) return null;
+        const Ctor = /** @type {typeof Component} */ (this.constructor);
+        if (!Ctor.directives) return null;
         // Direct match
-        if (this.constructor.directives[name]) return this.constructor.directives[name];
+        if (Ctor.directives[name]) return Ctor.directives[name];
         
         // Case-insensitive match (since HTML attributes are lowercase)
         const lowerName = name.toLowerCase();
-        const key = Object.keys(this.constructor.directives).find(k => k.toLowerCase() === lowerName);
-        return key ? this.constructor.directives[key] : null;
+        const key = Object.keys(Ctor.directives).find(k => k.toLowerCase() === lowerName);
+        return key ? Ctor.directives[key] : null;
     }
 
     /**
      * Retrieve a registered pipe instance programmatically.
      * @param {string} name - The name of the pipe (e.g., 'date')
-     * @returns {Pipe} The pipe instance
+     * @returns {any} The pipe instance
      */
     getPipe(name) {
         return this._pipes && this._pipes[name];
@@ -476,8 +588,9 @@ export class Component extends HTMLElement {
         if (!this.isConnected) return;
 
         try {
-            if (!this.render) {
-                if (!this.constructor.noTemplate && import.meta.env.DEV && import.meta.env.VITE_DEBUG) {
+            const Ctor = /** @type {typeof Component} */ (this.constructor);
+            if (!/** @type {any} */(this).render) {
+                if (!Ctor.noTemplate && import.meta.env.DEV && import.meta.env.VITE_DEBUG) {
                     console.warn(`[Framework] ⚠️ No render method found for ${this.tagName}`);
                 }
                 return;
@@ -509,7 +622,7 @@ export class Component extends HTMLElement {
             // Clear references from previous render to avoid memory leaks
             this._refs = {};
             
-            const templateResult = this.render();
+            const templateResult = /** @type {any} */(this).render();
             let newDom;
 
             if (typeof templateResult === 'string') {
@@ -537,8 +650,8 @@ export class Component extends HTMLElement {
             }
 
             // Inject styles into VNode tree
-            if (this.constructor.styles) {
-                const styleVNode = h('style', {}, [createTextVNode(this.constructor.styles)]);
+            if (Ctor.styles) {
+                const styleVNode = h('style', {}, [createTextVNode(Ctor.styles)]);
                 newDom.unshift(styleVNode);
             }
 
@@ -568,7 +681,7 @@ export class Component extends HTMLElement {
             if (import.meta.env.DEV) {
                 const overlayId = 'vite-error-overlay';
                 if (customElements.get(overlayId)) {
-                    document.querySelectorAll(overlayId).forEach(n => n.close());
+                    document.querySelectorAll(overlayId).forEach(n => /** @type {any} */ (n).close());
                     const overlay = new (customElements.get(overlayId))(e);
                     document.body.appendChild(overlay);
                 }

@@ -1,15 +1,16 @@
 // ============================================================================
 // Framework Imports
 // ============================================================================
-import { Component } from '@modernjs/core';
+import { Component, fadeAnimation } from '@modernjs/core';
 
 // ============================================================================
 // Internal Dependencies
 // ============================================================================
-import { BenchmarkComponent } from '../components/benchmark.component.js';
+import '../components/benchmark.component.js';
 
 export const BenchmarkPage = Component.create({
     selector: 'benchmark-page',
+    animations: fadeAnimation,
     template: `
         <div class="page">
             <benchmark-test></benchmark-test>

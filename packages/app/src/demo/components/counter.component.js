@@ -17,17 +17,21 @@ import { CounterService } from '../services/counter.service.js';
  * Counter Component.
  * A simple component to demonstrate state management and event handling.
  */
-export const CounterComponent = Component.create({
-    selector: 'my-counter',
-    animations: fadeAnimation,
-    inject: {
+export class CounterComponent extends Component {
+    static selector = 'my-counter';
+
+    static animations = fadeAnimation;
+
+    static inject = {
         counterService: CounterService,
         i18nService: I18nService
-    },
-    pipes: {
+    };
+
+    static pipes = {
         translate: TranslatePipe
-    },
-    styles: `
+    };
+
+    static styles = `
         :host {
             display: block;
             text-align: center;
@@ -56,26 +60,16 @@ export const CounterComponent = Component.create({
             gap: 0.75rem;
             justify-content: center;
         }
-    `,
-    state: {
+    `;
+
+    static state = {
+        /**
+         * Total count on the counter
+         */
         count: 0
-    },
+    };
 
-    onInit() {
-        this.connect(this.counterService, (count) => ({ count }));
-        this.connect(this.i18nService, () => ({})); // Re-render on language change
-    },
-
-    /**
-     * Setter for the count property.
-     * Allows the parent component to bind to the count state.
-     * @param {number} value - The new count value
-     */
-    set count(value) {
-        this.state.count = value;
-    },
-
-    template: `
+    static template = `
             <div class="count-display">
                 <div class="count">{{ count }}</div>
                 <div class="btn-group">
@@ -84,7 +78,21 @@ export const CounterComponent = Component.create({
                     </button>
                 </div>
             </div>
-    `,
+    `;
+
+    onInit() {
+        this.connect(this.counterService, (count) => ({ count }));
+        this.connect(this.i18nService, () => ({})); // Re-render on language change
+    }
+
+    /**
+     * Setter for the count property.
+     * Allows the parent component to bind to the count state.
+     * @param {number} value - The new count value
+     */
+    set count(value) {
+        this.state.count = value;
+    }
 
     /**
      * Handle the increment button click.
@@ -94,4 +102,6 @@ export const CounterComponent = Component.create({
         this.counterService.increment();
         this.dispatchEvent(new CustomEvent('increment'));
     }
-});
+}
+
+CounterComponent.define();

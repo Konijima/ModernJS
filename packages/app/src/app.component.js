@@ -55,6 +55,9 @@ export const App = Component.create({
             defaultLanguage: DEFAULT_LANGUAGE
         });
 
+        // Subscribe to language changes
+        this.connect(this.i18nService, () => ({}));
+
         // Define Routes
         this.router.register(routes);
     },

@@ -21,6 +21,16 @@ export const FeaturesPage = Component.create({
     directives: {
         'router-link': RouterLinkDirective
     },
+    state: {
+        tabs: [
+            { link: '/features/todo', icon: 'fas fa-check-square', label: 'features.tabs.todo' },
+            { link: '/features/counter', icon: 'fas fa-calculator', label: 'features.tabs.counter' },
+            { link: '/features/pipes', icon: 'fas fa-filter', label: 'features.tabs.pipes' },
+            { link: '/features/form', icon: 'fas fa-edit', label: 'features.tabs.forms' },
+            { link: '/features/http', icon: 'fas fa-cloud', label: 'features.tabs.http' },
+            { link: '/features/dashboard', icon: 'fas fa-lock', label: 'features.tabs.auth', activeCheck: '/features/login' }
+        ]
+    },
     checkScroll(e) {
         const tabs = e.target || this.shadowRoot.querySelector('.tabs');
         if (!tabs) return;
@@ -75,7 +85,6 @@ export const FeaturesPage = Component.create({
             align-items: start;
             max-width: 1400px;
             margin: 0 auto;
-            padding: 2rem;
         }
         .header {
             grid-column: 1 / -1;
@@ -225,24 +234,11 @@ export const FeaturesPage = Component.create({
                     <i class="fas fa-chevron-left"></i>
                 </div>
                 <div class="tabs" (scroll)="checkScroll">
-                    <button class="tab" router-link="/features/todo">
-                        <i class="fas fa-check-square"></i> {{ 'features.tabs.todo' | translate }}
-                    </button>
-                    <button class="tab" router-link="/features/counter">
-                        <i class="fas fa-calculator"></i> {{ 'features.tabs.counter' | translate }}
-                    </button>
-                    <button class="tab" router-link="/features/pipes">
-                        <i class="fas fa-filter"></i> {{ 'features.tabs.pipes' | translate }}
-                    </button>
-                    <button class="tab" router-link="/features/form">
-                        <i class="fas fa-edit"></i> {{ 'features.tabs.forms' | translate }}
-                    </button>
-                    <button class="tab" router-link="/features/http">
-                        <i class="fas fa-cloud"></i> {{ 'features.tabs.http' | translate }}
-                    </button>
-                    <button class="tab {{ isActive('/features/login') ? 'router-link-active' : '' }}" router-link="/features/dashboard">
-                        <i class="fas fa-lock"></i> {{ 'features.tabs.auth' | translate }}
-                    </button>
+                    @for (const tab of tabs) {
+                        <button class="tab {{ (tab.activeCheck && isActive(tab.activeCheck)) ? 'router-link-active' : '' }}" [router-link]="tab.link">
+                            <i class="{{ tab.icon }}"></i> {{ tab.label | translate }}
+                        </button>
+                    }
                 </div>
                 <div class="scroll-hint right">
                     <i class="fas fa-chevron-right"></i>

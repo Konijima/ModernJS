@@ -77,7 +77,7 @@ export const CursorComponent = Component.create({
         this.resize();
         
         this.bindEvents();
-        this.animate();
+        this.renderLoop();
     },
 
     cleanupWebGL() {
@@ -233,7 +233,7 @@ export const CursorComponent = Component.create({
         this.gl.vertexAttribPointer(this.locations.position, 2, this.gl.FLOAT, false, 0, 0);
     },
 
-    animate(time) {
+    renderLoop(time) {
         if (!this.initialized) return;
 
         // Smooth state transitions
@@ -266,6 +266,6 @@ export const CursorComponent = Component.create({
 
         this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
 
-        this.rafId = requestAnimationFrame(this.animate.bind(this));
+        this.rafId = requestAnimationFrame(this.renderLoop.bind(this));
     }
 });

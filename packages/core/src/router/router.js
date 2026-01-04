@@ -5,15 +5,31 @@ import { resolve } from '../di/di.js';
 import { MetaService } from '../services/meta.service.js';
 
 /**
+ * @typedef {Object} Route
+ * @property {string} path - The path for the route
+ * @property {any} [component] - The component to render
+ * @property {string} [redirectTo] - Path to redirect to
+ * @property {Array<any>} [canActivate] - Guards to check before activation
+ * @property {Array<Route>} [children] - Child routes
+ * @property {Object} [data] - Arbitrary data associated with the route
+ * @property {string} [title] - Page title
+ */
+
+/**
  * Router Service
  * Handles client-side routing and navigation.
  */
 export class Router {
     static inject = [MetaService];
 
+    /**
+     * @param {MetaService} metaService 
+     */
     constructor(metaService) {
         this.metaService = metaService;
+        /** @type {Route[]} */
         this.routes = [];
+        /** @type {Route[]} */
         this.currentRoute = [];
         this.listeners = [];
         
@@ -25,7 +41,7 @@ export class Router {
 
     /**
      * Register routes configuration
-     * @param {Array<{path: string, component: any}>} routes 
+     * @param {Route[]} routes 
      */
     register(routes) {
         this.routes = routes;

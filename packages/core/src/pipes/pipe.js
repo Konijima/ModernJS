@@ -3,6 +3,11 @@
  */
 export class Pipe {
     /**
+     * @param {import('../component/component.js').Component} [context] - The component instance using this pipe
+     */
+    constructor(context) {}
+
+    /**
      * Transform a value.
      * @param {any} value - The value to transform
      * @param {...any} args - Optional arguments

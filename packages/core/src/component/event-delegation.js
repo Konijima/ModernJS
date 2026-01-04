@@ -29,7 +29,7 @@ const DELEGATED_EVENTS = new Set([
 
 /**
  * Setup event delegation for a component root
- * @param {Element} root - The component's root element (or shadow root)
+ * @param {Element|ShadowRoot} root - The component's root element (or shadow root)
  * @param {Object} component - The component instance
  */
 export function setupEventDelegation(root, component) {
@@ -51,7 +51,7 @@ export function setupEventDelegation(root, component) {
 
 /**
  * Clean up event delegation for a component
- * @param {Element} root - The component's root element
+ * @param {Element|ShadowRoot} root - The component's root element
  */
 export function teardownEventDelegation(root) {
     const handlers = delegatedEvents.get(root);

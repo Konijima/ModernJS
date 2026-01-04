@@ -2,11 +2,18 @@
 // Internal Dependencies
 // ============================================================================
 import { BehaviorSubject } from '../reactivity/observable.js';
+import { FormControl } from './form-control.js';
 
 export class FormGroup {
+    /**
+     * @param {Object.<string, FormControl>} controls 
+     */
     constructor(controls) {
+        /** @type {Object.<string, FormControl>} */
         this.controls = controls;
+        /** @type {BehaviorSubject<Object>} */
         this.valueChanges = new BehaviorSubject(this._getGroupValue());
+        /** @type {BehaviorSubject<string>} */
         this.statusChanges = new BehaviorSubject('VALID');
         
         Object.keys(controls).forEach(key => {
@@ -22,6 +29,11 @@ export class FormGroup {
     get valid() { return this.statusChanges.value === 'VALID'; }
     get invalid() { return this.statusChanges.value === 'INVALID'; }
 
+    /**
+     * Get a control by name
+     * @param {string} controlName 
+     * @returns {FormControl}
+     */
     get(controlName) {
         return this.controls[controlName];
     }
