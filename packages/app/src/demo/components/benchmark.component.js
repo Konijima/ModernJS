@@ -4,6 +4,7 @@
 import {
     Component,
     I18nService,
+    DeviceService,
     TranslatePipe
 } from '@modernjs/core';
 
@@ -54,9 +55,20 @@ const MODERNJS_METRICS = {
     create10k: 582.25,   // Average: (584 + 592 + 566 + 587) / 4
 };
 
+const BENCHMARK_NOTES = {
+    create1k: "Create 1,000 rows from scratch. Tests initial rendering performance.",
+    create1k_2: "Create 1,000 rows again. Tests rendering performance with warm JIT.",
+    append1k: "Append 1,000 rows to existing 1,000. Tests DOM insertion performance.",
+    update10th: "Update every 10th row in 2,000 rows. Tests partial update performance.",
+    clear: "Clear 2,000 rows. Tests DOM removal performance.",
+    clear_2: "Clear 1,000 rows. Tests DOM removal performance with warm JIT.",
+    swap: "Swap 2 rows in 1,000 rows. Tests row reordering performance.",
+    create10k: "Create 10,000 rows. Stress test for large data rendering."
+};
+
 export const BenchmarkComponent = Component.create({
     selector: 'benchmark-test',
-    inject: { i18nService: I18nService },
+    inject: { i18nService: I18nService, deviceService: DeviceService },
     pipes: { translate: TranslatePipe },
     state: {
         rows: [],
@@ -64,10 +76,13 @@ export const BenchmarkComponent = Component.create({
         lastMeasure: 0,
         lastOp: null,
         comparison: null,
-        report: null
+        report: null,
+        score: null,
+        browser: ''
     },
     onInit() {
         this.connect(this.i18nService, () => ({}));
+        this.connect(this.deviceService, (state) => ({ browser: state.browser }));
     },
     styles: `
         :host {
@@ -240,6 +255,36 @@ export const BenchmarkComponent = Component.create({
             text-align: left;
             border-bottom: 1px solid var(--border-subtle);
         }
+
+        .report-badge {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-color);
+            height: 42px;
+        }
+        .report-badge.primary {
+            border-color: var(--primary-color);
+        }
+        .report-badge .label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-right: 0.5rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        .report-badge .value {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--text-color);
+            line-height: 1;
+        }
+        .report-badge.primary .value {
+            color: var(--primary-color);
+        }
     `,
     template: `
         <div class="page-container">
@@ -259,11 +304,28 @@ export const BenchmarkComponent = Component.create({
 
             @if(report) {
                 <div class="comparison-card">
-                    <h3 style="margin: 0; font-size: 1.25rem;">Full Report</h3>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3 style="margin: 0; font-size: 1.25rem;">Full Report</h3>
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            @if(browser) {
+                                <div class="report-badge">
+                                    <span class="label"><i class="fas fa-globe" style="margin-right: 0.5rem;"></i></span>
+                                    <span class="value">{{ browser }}</span>
+                                </div>
+                            }
+                            @if(score) {
+                                <div class="report-badge primary">
+                                    <span class="label">Score:</span>
+                                    <span class="value">{{ score }}</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
                     <table class="report-table">
                         <thead>
                             <tr>
                                 <th>Action</th>
+                                <th>Note</th>
                                 <th>Time (ms)</th>
                                 <th>Angular (ms)</th>
                                 <th>Diff</th>
@@ -273,6 +335,7 @@ export const BenchmarkComponent = Component.create({
                             @for(let item of report) {
                                 <tr>
                                     <td>{{ item.opName }}</td>
+                                    <td style="font-size: 0.85rem; color: var(--text-muted);">{{ item.note }}</td>
                                     <td>{{ item.duration.toFixed(2) }}</td>
                                     <td>{{ item.comparison ? item.comparison.angular : '-' }}</td>
                                     <td class="{{ item.comparison && item.comparison.diff < 0 ? 'text-green' : 'text-red' }}">
@@ -379,7 +442,10 @@ export const BenchmarkComponent = Component.create({
 
     async runAll() {
         this.state.report = null;
+        this.state.score = null;
         const report = [];
+        let totalTime = 0;
+        let totalAngularTime = 0;
 
         // Standard benchmark sequence - matches js-framework-benchmark
         // Start with clean state
@@ -389,54 +455,75 @@ export const BenchmarkComponent = Component.create({
 
         console.log('Starting benchmark sequence...');
 
+        const runStep = async (fn, nameOverride) => {
+            const result = await fn();
+            if (nameOverride) result.opName = nameOverride;
+            
+            result.note = BENCHMARK_NOTES[result.opName];
+            
+            if (result.comparison) {
+                totalTime += result.duration;
+                totalAngularTime += result.comparison.angular;
+            }
+            
+            report.push(result);
+            return result;
+        };
+
         // 1. Create 1k rows from empty
         console.log('Test 1: Creating 1k rows from empty...');
-        report.push(await this.run());
+        await runStep(() => this.run());
         console.log(`Rows after create1k: ${this.state.rows.length}`);
 
         // 2. Append 1k rows (now have 2k)
         console.log('Test 2: Appending 1k rows...');
-        report.push(await this.add());
+        await runStep(() => this.add());
         console.log(`Rows after append: ${this.state.rows.length}`);
 
         // 3. Update every 10th row (on 2k dataset)
         console.log('Test 3: Updating every 10th row...');
-        report.push(await this.runUpdate());
+        await runStep(() => this.runUpdate());
 
         // 4. Clear all rows (important: clear the 2k rows)
         console.log('Test 4: Clearing all rows...');
-        report.push(await this.clear());
+        await runStep(() => this.clear());
         console.log(`Rows after clear: ${this.state.rows.length}`);
 
         // 5. Create 1k rows again from empty
         console.log('Test 5: Creating 1k rows from empty (2nd time)...');
-        const create1kAgain = await this.run();
-        create1kAgain.opName = 'create1k_2';
-        report.push(create1kAgain);
+        await runStep(() => this.run('create1k_2'));
         console.log(`Rows after 2nd create1k: ${this.state.rows.length}`);
 
         // 6. Swap rows 1 and 998 (requires 1k rows)
         console.log('Test 6: Swapping rows 1 and 998...');
-        report.push(await this.swapRows());
+        await runStep(() => this.swapRows());
 
         // 7. Clear again
         console.log('Test 7: Clearing all rows (2nd time)...');
-        const clearAgain = await this.clear();
-        clearAgain.opName = 'clear_2';
-        report.push(clearAgain);
+        await runStep(() => this.clear('clear_2'));
 
         // 8. Create 10k rows from empty
         console.log('Test 8: Creating 10k rows from empty...');
-        report.push(await this.runLots());
+        await runStep(() => this.runLots());
         console.log(`Rows after create10k: ${this.state.rows.length}`);
 
         console.log('Benchmark sequence complete!');
 
+        // Calculate Score
+        if (totalTime > 0) {
+            const score = (totalAngularTime / totalTime) * 100;
+            this.state.score = score.toFixed(1);
+        }
+
         this.state.report = report;
+
+        // Clear at the end
+        await new Promise(r => setTimeout(r, 1000));
+        this.state.rows = [];
     },
 
-    run() {
-        return this.measure('create1k', () => {
+    run(opName = 'create1k') {
+        return this.measure(opName, () => {
             this.state.rows = buildData(1000);
             this.state.selected = null;
         });
@@ -465,8 +552,8 @@ export const BenchmarkComponent = Component.create({
         });
     },
 
-    clear() {
-        return this.measure('clear', () => {
+    clear(opName = 'clear') {
+        return this.measure(opName, () => {
             this.state.rows = [];
             this.state.selected = null;
         });
