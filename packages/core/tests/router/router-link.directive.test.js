@@ -52,53 +52,63 @@ describe('RouterLinkDirective', () => {
         });
     });
 
-    it('should set active class when path matches', () => {
+    it('should set active class when path matches', async () => {
         window.location.pathname = '/home';
         directive.onInit();
         directive.onUpdate('/home');
+        
+        await Promise.resolve(); // Wait for microtask
         
         expect(element.classList.contains('router-link-active')).toBe(true);
         expect(element.classList.contains('router-link-exact-active')).toBe(true);
     });
 
-    it('should set active class when path is prefix', () => {
+    it('should set active class when path is prefix', async () => {
         window.location.pathname = '/home/details';
         directive.onInit();
         directive.onUpdate('/home');
+        
+        await Promise.resolve(); // Wait for microtask
         
         expect(element.classList.contains('router-link-active')).toBe(true);
         expect(element.classList.contains('router-link-exact-active')).toBe(false);
     });
 
-    it('should handle trailing slashes in location', () => {
+    it('should handle trailing slashes in location', async () => {
         window.location.pathname = '/home/';
         directive.onInit();
         directive.onUpdate('/home');
         
+        await Promise.resolve(); // Wait for microtask
+        
         expect(element.classList.contains('router-link-active')).toBe(true);
         expect(element.classList.contains('router-link-exact-active')).toBe(true);
     });
 
-    it('should handle trailing slashes in link', () => {
+    it('should handle trailing slashes in link', async () => {
         window.location.pathname = '/home';
         directive.onInit();
         directive.onUpdate('/home/');
         
+        await Promise.resolve(); // Wait for microtask
+        
         expect(element.classList.contains('router-link-active')).toBe(true);
         expect(element.classList.contains('router-link-exact-active')).toBe(true);
     });
 
-    it('should update active state when router notifies', () => {
+    it('should update active state when router notifies', async () => {
         window.location.pathname = '/about';
         directive.onInit();
         directive.onUpdate('/home');
         
+        await Promise.resolve(); // Wait for microtask
         expect(element.classList.contains('router-link-active')).toBe(false);
         
         // Simulate navigation
         window.location.pathname = '/home';
         router.notify();
         
+        await Promise.resolve(); // Wait for microtask
         expect(element.classList.contains('router-link-active')).toBe(true);
     });
 });

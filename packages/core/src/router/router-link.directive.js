@@ -50,19 +50,22 @@ export class RouterLinkDirective extends Directive {
         const isExact = normalizedCurrent === normalizedPath;
         const isActive = isExact || (normalizedPath !== '/' && normalizedCurrent.startsWith(normalizedPath));
 
-        if (isActive) {
-            this.element.classList.add('router-link-active');
-        } else {
-            this.element.classList.remove('router-link-active');
-        }
+        // Defer DOM update to ensure it runs after the renderer has set the class attribute
+        Promise.resolve().then(() => {
+            if (isActive) {
+                this.element.classList.add('router-link-active');
+            } else {
+                this.element.classList.remove('router-link-active');
+            }
 
-        if (isExact) {
-            this.element.classList.add('router-link-exact-active');
-            this.element.setAttribute('aria-current', 'page');
-        } else {
-            this.element.classList.remove('router-link-exact-active');
-            this.element.removeAttribute('aria-current');
-        }
+            if (isExact) {
+                this.element.classList.add('router-link-exact-active');
+                this.element.setAttribute('aria-current', 'page');
+            } else {
+                this.element.classList.remove('router-link-exact-active');
+                this.element.removeAttribute('aria-current');
+            }
+        });
     }
 
     onDestroy() {
