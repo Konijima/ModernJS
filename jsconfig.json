@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "es2022",
+    "checkJs": true,
+    "allowJs": true,
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "@modernjs/core": ["packages/core/index.js"]
+    },
+    "types": ["vite/client"],
+    "plugins": [
+      { "name": "@modernjs/language-service" }
+    ]
+  },
+  "include": ["packages/app/src/**/*", "packages/core/src/**/*"],
+  "exclude": ["node_modules", "**/dist", "**/tests"]
+}

@@ -5,6 +5,10 @@
   "dependencies": {
     "@modernjs/core": "*"
   },
+  "devDependencies": {
+    "@modernjs/language-service": "file:../tooling/language-service",
+    "vite": "^5.0.0"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",

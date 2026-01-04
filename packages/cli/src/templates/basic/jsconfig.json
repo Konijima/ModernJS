@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "module": "esnext",
+        "target": "es2022",
+        "moduleResolution": "bundler",
+        "checkJs": true,
+        "strict": false,
+        "plugins": [
+            { "name": "@modernjs/language-service" }
+        ]
+    },
+    "exclude": ["node_modules", "dist"]
+}
