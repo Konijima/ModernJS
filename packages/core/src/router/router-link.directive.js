@@ -41,8 +41,14 @@ export class RouterLinkDirective extends Directive {
         
         const currentPath = window.location.pathname;
         
-        const isExact = currentPath === this.path;
-        const isActive = isExact || (this.path !== '/' && currentPath.startsWith(this.path));
+        // Normalize paths to handle trailing slashes consistently
+        const normalize = (p) => p.endsWith('/') && p.length > 1 ? p.slice(0, -1) : p;
+        
+        const normalizedCurrent = normalize(currentPath);
+        const normalizedPath = normalize(this.path);
+        
+        const isExact = normalizedCurrent === normalizedPath;
+        const isActive = isExact || (normalizedPath !== '/' && normalizedCurrent.startsWith(normalizedPath));
 
         if (isActive) {
             this.element.classList.add('router-link-active');
